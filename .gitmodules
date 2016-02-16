@@ -1,0 +1,3 @@
+[submodule ".emacs.d/gdb-ok"]
+	path = .emacs.d/gdb-ok
+	url = https://github.com/okeri/gdb-ok.git
