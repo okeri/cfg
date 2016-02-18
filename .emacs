@@ -31,7 +31,9 @@
 (setq column-number-mode t)
 (setq company-backends '(company-clang company-nxml company-css company-cmake company-capf company-files))
 (setq compilation-scroll-output t)
+(setq ff-quiet-mode t)
 (setq ff-always-try-to-create nil)
+;(setq ff-ignore-include nil)
 (setq use-dialog-box nil)
 (setq ido-enable-flex-matching t)
 (setq ido-everywhere t)
@@ -89,10 +91,10 @@
 (global-set-key [(meta /)] 'company-manual-begin)
 (global-set-key [(control meta _)] 'company-files)
 (global-set-key [(control j)] 'indent-region)
-(global-set-key [?\C-c ?l] 'citags-update-project)
-(global-set-key [(meta .)] 'citags-symbol-def)
-(global-set-key [(meta \,)] 'citags-symbol-back)
-(global-set-key [(meta m)] 'citags-symbol-ref)
+(global-set-key [?\C-x ?\C-l] 'citags-update-project)
+(global-set-key [?\C-x ?\C-d] 'citags-symbol-def)
+(global-set-key [?\C-x ?\C-a] 'citags-symbol-back)
+(global-set-key [?\C-x ?\C-r] 'citags-symbol-ref)
 (global-set-key [mouse-4] 'scroll-down)
 (global-set-key [mouse-5] 'scroll-up)
 
@@ -184,7 +186,6 @@
 (add-hook 'prog-mode-hook
 	  (lambda()
 	    (linum-mode 1)
-	    ;(flyspell-prog-mode)
 	    (company-mode-on)
 	    (add-to-list 'write-file-functions 'delete-trailing-whitespace)))
 
