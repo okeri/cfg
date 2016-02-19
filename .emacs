@@ -38,6 +38,7 @@
 (setq ido-enable-flex-matching t)
 (setq ido-everywhere t)
 (setq w32-get-true-file-atttributes nil)
+(setq gud-key-prefix "\C-x\C-g")
 
 ;; init
 (display-time)
