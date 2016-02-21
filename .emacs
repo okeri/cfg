@@ -9,7 +9,7 @@
 (load "gdb-ok.elc")
 (load "sabbrevs.elc")
 
-;; work support
+;; job-related
 (when (file-readable-p "~/.emacs.d/lisp/work.el")
   (load "work.el"))
 
@@ -33,7 +33,6 @@
 (setq compilation-scroll-output t)
 (setq ff-quiet-mode t)
 (setq ff-always-try-to-create nil)
-;(setq ff-ignore-include nil)
 (setq use-dialog-box nil)
 (setq ido-enable-flex-matching t)
 (setq ido-everywhere t)
@@ -79,23 +78,16 @@
 (global-set-key [?\C-c left] 'uncomment-region)
 (global-set-key [?\C-c right] 'comment-region)
 (global-set-key [?\C-c ?d] 'vc-diff)
-(global-set-key [?\C-c ?v] 'hide-ifdef-toggle-shadowing)
 (global-set-key [?\C-c ?c] 'eshell)
 (global-set-key [?\C-c ?\C-j] 'eval-print-last-sexp)
 (global-set-key [?\C-c ?\t] 'untabify)
-(global-set-key [?\C-x ?d] 'ff-find-other-file)
 (global-set-key [?\C-x ?x] 'previous-multiframe-window)
 (global-set-key [?\C-x ?\C-x] 'other-window)
 (global-set-key [?\C-x ?f] 'ibuffer)
 (global-set-key [?\C-x ?g] 'ibuffer-other-window)
-(global-set-key [(meta n)] 'beginning-of-line-text)
 (global-set-key [(meta /)] 'company-manual-begin)
 (global-set-key [(control meta _)] 'company-files)
 (global-set-key [(control j)] 'indent-region)
-(global-set-key [?\C-x ?\C-l] 'citags-update-project)
-(global-set-key [?\C-x ?\C-d] 'citags-symbol-def)
-(global-set-key [?\C-x ?\C-a] 'citags-symbol-back)
-(global-set-key [?\C-x ?\C-r] 'citags-symbol-ref)
 (global-set-key [mouse-4] 'scroll-down)
 (global-set-key [mouse-5] 'scroll-up)
 
@@ -162,10 +154,16 @@
 
 ;; hooks and etc...
 (defun c_exts()
+  (setq abbrev-mode t)
   (c-set-style "Google")
   (local-set-key (kbd "RET") 'newline-and-indent)
+  (local-set-key [?\C-x ?\C-l] 'citags-update-project)
+  (local-set-key [?\C-x ?\C-d] 'citags-symbol-def)
+  (local-set-key [?\C-x ?d] 'ff-find-other-file)
+  (local-set-key [?\C-x ?\C-a] 'citags-symbol-back)
+  (local-set-key [?\C-x ?\C-r] 'citags-symbol-ref)
   (local-set-key [\C-f6] 'flymake-checks-toggle)
-  (setq abbrev-mode t)
+
   ;;linter via flymake may be good idea)
   (defun flymake-checks()
     (require 'flymake-google-cpplint)
@@ -179,7 +177,8 @@
 	(progn
 	  (message "linter disabled")
 	  (flymake-mode-off)
-	  (remove-hook 'post-command-hook 'flyc/show-fly-error-at-point-pretty-soon t)
+	  (remove-hook 'post-command-hook
+		       'flyc/show-fly-error-at-point-pretty-soon t)
 	  (setq flymake-easy--active nil))
       (flymake-checks))))
 
