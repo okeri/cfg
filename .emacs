@@ -30,6 +30,7 @@
 (setq linum-format "%5.d|")
 (setq column-number-mode t)
 (setq company-backends '(company-clang company-nxml company-css company-cmake company-capf company-files))
+(setq company-async-timeout 5)
 (setq compilation-scroll-output t)
 (setq ff-quiet-mode t)
 (setq ff-always-try-to-create nil)
@@ -38,6 +39,7 @@
 (setq ido-everywhere t)
 (setq w32-get-true-file-atttributes nil)
 (setq gud-key-prefix "\C-x\C-g")
+(setq citags-update-on-save nil)
 
 ;; init
 (display-time)
