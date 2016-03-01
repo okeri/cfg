@@ -5,7 +5,10 @@
 (require 'company)
 (require 'google-c-style)
 (require 'find-file)
-(require 'citags)
+(require 'ggtags)
+(require 'fgtags)
+(require 'hideif)
+
 (load "gdb-ok.elc")
 (load "sabbrevs.elc")
 
@@ -29,7 +32,7 @@
 (setq save-abbrevs nil)
 (setq linum-format "%5.d|")
 (setq column-number-mode t)
-(setq company-backends '(company-clang company-nxml company-css company-cmake company-capf company-files))
+(setq company-backends '(company-gtags company-nxml company-css company-cmake company-capf company-files))
 (setq company-async-timeout 5)
 (setq compilation-scroll-output t)
 (setq ff-quiet-mode t)
@@ -39,7 +42,9 @@
 (setq ido-everywhere t)
 (setq w32-get-true-file-atttributes nil)
 (setq gud-key-prefix "\C-x\C-g")
-(setq citags-update-on-save nil)
+(setq fgtags-cache-dir "~/cache/")
+(setq ggtags-enable-navigation-keys nil)
+(setq ggtags-highlight-tag nil)
 
 ;; init
 (display-time)
@@ -67,7 +72,7 @@
 
 ;; bindings
 (global-set-key [\C-f1] 'gdb-start)
-(global-set-key [f7] 'citags-compile)
+(global-set-key [f7] 'fgtags-compile)
 (global-set-key [f8] 'next-error)
 (global-set-key [\C-f8] 'previous-error)
 (global-set-key [f9] 'isearch-toggle-case-fold)
@@ -87,6 +92,7 @@
 (global-set-key [?\C-x ?\C-x] 'other-window)
 (global-set-key [?\C-x ?f] 'ibuffer)
 (global-set-key [?\C-x ?g] 'ibuffer-other-window)
+(global-set-key [?\C-x ?d] 'ff-find-other-file)
 (global-set-key [(meta /)] 'company-manual-begin)
 (global-set-key [(control meta _)] 'company-files)
 (global-set-key [(control j)] 'indent-region)
@@ -155,35 +161,6 @@
       (message "write triggers enabled"))))
 
 ;; hooks and etc...
-(defun c_exts()
-  (setq abbrev-mode t)
-  (c-set-style "Google")
-  (local-set-key (kbd "RET") 'newline-and-indent)
-  (local-set-key [?\C-x ?\C-l] 'citags-update-project)
-  (local-set-key [?\C-x ?\C-d] 'citags-symbol-def)
-  (local-set-key [?\C-x ?d] 'ff-find-other-file)
-  (local-set-key [?\C-x ?\C-a] 'citags-symbol-back)
-  (local-set-key [?\C-x ?\C-r] 'citags-symbol-ref)
-  (local-set-key [\C-f6] 'flymake-checks-toggle)
-
-  ;;linter via flymake may be good idea)
-  (defun flymake-checks()
-    (require 'flymake-google-cpplint)
-    (require 'flymake-cursor)
-    (flymake-google-cpplint-load)
-    (message "linter enabled"))
-
-  (defun flymake-checks-toggle()
-    (interactive)
-    (if (and (boundp 'flymake-easy--active) flymake-easy--active)
-	(progn
-	  (message "linter disabled")
-	  (flymake-mode-off)
-	  (remove-hook 'post-command-hook
-		       'flyc/show-fly-error-at-point-pretty-soon t)
-	  (setq flymake-easy--active nil))
-      (flymake-checks))))
-
 ;; common progmodes
 (add-hook 'prog-mode-hook
 	  (lambda()
@@ -192,7 +169,17 @@
 	    (add-to-list 'write-file-functions 'delete-trailing-whitespace)))
 
 ;; c-mode hooks
-(add-hook 'c-mode-common-hook 'c_exts)
+(add-hook 'c-mode-common-hook
+	  (lambda()
+	    (local-set-key [?\C-x ?\C-l] 'ggtags-update-tags)
+	    (local-set-key [?\C-x ?\C-e] 'ggtags-find-definition)
+	    (local-set-key [?\C-x ?\C-a] 'ggtags-view-search-history-prev)
+	    (local-set-key [?\C-x ?\C-r] 'ggtags-find-reference)
+	    (local-set-key [?\C-x ?\C-d] 'ggtags-find-tag-dwim)
+	    (setq abbrev-mode t)
+	    (c-set-style "Google")
+	    (local-set-key (kbd "RET") 'newline-and-indent)))
+
 
 ;; faces
 (custom-set-faces

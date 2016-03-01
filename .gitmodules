@@ -1,3 +1,6 @@
 [submodule ".emacs.d/gdb-ok"]
 	path = .emacs.d/gdb-ok
 	url = https://github.com/okeri/gdb-ok.git
+[submodule "/home/ezhi/.emacs.d/fgtags"]
+	path = /home/ezhi/.emacs.d/fgtags
+	url = https://github.com/okeri/fgtags.git
