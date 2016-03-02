@@ -31,7 +31,8 @@
 (setq save-abbrevs nil)
 (setq linum-format "%5.d|")
 (setq column-number-mode t)
-(setq company-backends '(company-nxml company-css company-cmake company-capf company-files))
+(setq company-backends '(company-nxml company-css company-cmake
+				      company-capf company-files))
 (setq company-async-timeout 5)
 (setq compilation-scroll-output t)
 (setq ff-quiet-mode t)
@@ -71,7 +72,7 @@
 
 ;; bindings
 (global-set-key [\C-f1] 'gdb-start)
-(global-set-key [f7] 'fgtags-compile)
+(global-set-key [f7] 'citags-compile)
 (global-set-key [f8] 'next-error)
 (global-set-key [\C-f8] 'previous-error)
 (global-set-key [f9] 'isearch-toggle-case-fold)
@@ -190,7 +191,8 @@
 	    (local-set-key [?\C-x ?\C-l] 'citags-update-project)
 	    (local-set-key [?\C-x ?\C-a] 'citags-symbol-back)
 	    (local-set-key [?\C-x ?\C-r] 'citags-symbol-ref)
-	    (local-set-key [?\C-x ?\C-d] 'citags-symbol-def)))
+	    (local-set-key [?\C-x ?\C-d] 'citags-symbol-def)
+	    (irony-mode t)))
 
 
 ;; faces
@@ -218,5 +220,5 @@
 (add-hook 'java-mode-hook
 	  (lambda ()
 	    "Treat Java 1.5 @-style annotations as comments."
-1	    (setq c-comment-start-regexp "(@|/(/|[*][*]?))")
+	    (setq c-comment-start-regexp "(@|/(/|[*][*]?))")
 	    (modify-syntax-entry ?@ "< b" java-mode-syntax-table)))
