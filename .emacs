@@ -5,9 +5,8 @@
 (require 'company)
 (require 'google-c-style)
 (require 'find-file)
-(require 'ggtags)
-(require 'fgtags)
-(require 'hideif)
+(require 'citags)
+
 
 (load "gdb-ok.elc")
 (load "sabbrevs.elc")
@@ -32,7 +31,7 @@
 (setq save-abbrevs nil)
 (setq linum-format "%5.d|")
 (setq column-number-mode t)
-(setq company-backends '(company-gtags company-nxml company-css company-cmake company-capf company-files))
+(setq company-backends '(company-nxml company-css company-cmake company-capf company-files))
 (setq company-async-timeout 5)
 (setq compilation-scroll-output t)
 (setq ff-quiet-mode t)
@@ -42,9 +41,9 @@
 (setq ido-everywhere t)
 (setq w32-get-true-file-atttributes nil)
 (setq gud-key-prefix "\C-x\C-g")
-(setq fgtags-cache-dir "~/cache/")
 (setq ggtags-enable-navigation-keys nil)
 (setq ggtags-highlight-tag nil)
+
 
 ;; init
 (display-time)
@@ -161,24 +160,37 @@
       (message "write triggers enabled"))))
 
 ;; hooks and etc...
-;; common progmodes
 (add-hook 'prog-mode-hook
 	  (lambda()
 	    (linum-mode 1)
 	    (company-mode-on)
 	    (add-to-list 'write-file-functions 'delete-trailing-whitespace)))
 
-;; c-mode hooks
 (add-hook 'c-mode-common-hook
 	  (lambda()
+	    (setq abbrev-mode t)
+	    (c-set-style "Google")
+	    (local-set-key (kbd "RET") 'newline-and-indent)))
+
+(add-hook 'c-mode-hook
+	  (lambda()
+	    (require 'ggtags)
+	    (push 'company-gtags company-backends)
 	    (local-set-key [?\C-x ?\C-l] 'ggtags-update-tags)
 	    (local-set-key [?\C-x ?\C-e] 'ggtags-find-definition)
 	    (local-set-key [?\C-x ?\C-a] 'ggtags-view-search-history-prev)
 	    (local-set-key [?\C-x ?\C-r] 'ggtags-find-reference)
 	    (local-set-key [?\C-x ?\C-d] 'ggtags-find-tag-dwim)
-	    (setq abbrev-mode t)
-	    (c-set-style "Google")
-	    (local-set-key (kbd "RET") 'newline-and-indent)))
+	    (ggtags-mode t)))
+
+(add-hook 'c++-mode-hook
+	  (lambda()
+	    (require 'irony)
+	    (push 'company-irony company-backends)
+	    (local-set-key [?\C-x ?\C-l] 'citags-update-project)
+	    (local-set-key [?\C-x ?\C-a] 'citags-symbol-back)
+	    (local-set-key [?\C-x ?\C-r] 'citags-symbol-ref)
+	    (local-set-key [?\C-x ?\C-d] 'citags-symbol-def)))
 
 
 ;; faces
@@ -206,5 +218,5 @@
 (add-hook 'java-mode-hook
 	  (lambda ()
 	    "Treat Java 1.5 @-style annotations as comments."
-	    (setq c-comment-start-regexp "(@|/(/|[*][*]?))")
+1	    (setq c-comment-start-regexp "(@|/(/|[*][*]?))")
 	    (modify-syntax-entry ?@ "< b" java-mode-syntax-table)))
