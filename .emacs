@@ -1,6 +1,5 @@
 ;; copyright oleg keri (c) 2009-2016
 ;; ezhi99@gmail.com
-
 (add-to-list 'load-path "~/.emacs.d/lisp")
 (require 'company)
 (require 'google-c-style)
@@ -42,8 +41,6 @@
 (setq ido-everywhere t)
 (setq w32-get-true-file-atttributes nil)
 (setq gud-key-prefix "\C-x\C-g")
-(setq ggtags-enable-navigation-keys nil)
-(setq ggtags-highlight-tag nil)
 
 
 ;; init
@@ -98,7 +95,7 @@
 (global-set-key [(control j)] 'indent-region)
 (global-set-key [mouse-4] 'scroll-down)
 (global-set-key [mouse-5] 'scroll-up)
-
+(global-unset-key [?\C-x ?\C-e])
 
 ;; gdb init function
 (defun gdb-start()
@@ -173,17 +170,6 @@
 	    (c-set-style "Google")
 	    (local-set-key (kbd "RET") 'newline-and-indent)))
 
-(add-hook 'c-mode-hook
-	  (lambda()
-	    (require 'ggtags)
-	    (push 'company-gtags company-backends)
-	    (local-set-key [?\C-x ?\C-l] 'ggtags-update-tags)
-	    (local-set-key [?\C-x ?\C-e] 'ggtags-find-definition)
-	    (local-set-key [?\C-x ?\C-a] 'ggtags-view-search-history-prev)
-	    (local-set-key [?\C-x ?\C-r] 'ggtags-find-reference)
-	    (local-set-key [?\C-x ?\C-d] 'ggtags-find-tag-dwim)
-	    (ggtags-mode t)))
-
 (add-hook 'c++-mode-hook
 	  (lambda()
 	    (require 'irony)
@@ -193,7 +179,6 @@
 	    (local-set-key [?\C-x ?\C-r] 'citags-symbol-ref)
 	    (local-set-key [?\C-x ?\C-d] 'citags-symbol-def)
 	    (irony-mode t)))
-
 
 ;; faces
 (custom-set-faces
