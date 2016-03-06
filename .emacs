@@ -12,7 +12,7 @@
 
 ;; job-related
 (when (file-readable-p "~/.emacs.d/lisp/work.el")
-  (load "work.el"))
+ (load "work.el"))
 
 ;; vars
 (defalias 'yes-or-no-p 'y-or-n-p)
@@ -178,6 +178,7 @@
 	    (local-set-key [?\C-x ?\C-a] 'citags-symbol-back)
 	    (local-set-key [?\C-x ?\C-r] 'citags-symbol-ref)
 	    (local-set-key [?\C-x ?\C-d] 'citags-symbol-def)
+	    (citags-init)
 	    (irony-mode t)))
 
 ;; faces
