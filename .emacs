@@ -30,9 +30,9 @@
 (setq save-abbrevs nil)
 (setq linum-format "%5.d|")
 (setq column-number-mode t)
-(setq company-backends '(company-nxml company-css company-cmake
-				      company-capf company-files))
-(setq company-async-timeout 5)
+(setq company-backends '(company-citags company-capf company-files company-nxml
+					company-css company-cmake))
+(setq company-async-timeout 3)
 (setq compilation-scroll-output t)
 (setq ff-quiet-mode t)
 (setq ff-always-try-to-create nil)
@@ -172,14 +172,11 @@
 
 (add-hook 'c++-mode-hook
 	  (lambda()
-	    (require 'irony)
-	    (push 'company-irony company-backends)
 	    (local-set-key [?\C-x ?\C-l] 'citags-update-project)
 	    (local-set-key [?\C-x ?\C-a] 'citags-symbol-back)
 	    (local-set-key [?\C-x ?\C-r] 'citags-symbol-ref)
 	    (local-set-key [?\C-x ?\C-d] 'citags-symbol-def)
-	    (citags-init)
-	    (irony-mode t)))
+	    (citags-init)))
 
 ;; faces
 (custom-set-faces
