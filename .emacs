@@ -89,7 +89,6 @@
 (global-set-key [?\C-x ?\C-x] 'other-window)
 (global-set-key [?\C-x ?f] 'ibuffer)
 (global-set-key [?\C-x ?g] 'ibuffer-other-window)
-(global-set-key [?\C-x ?d] 'ff-find-other-file)
 (global-set-key [(meta /)] 'company-manual-begin)
 (global-set-key [(control meta _)] 'company-files)
 (global-set-key [(control j)] 'indent-region)
@@ -176,6 +175,7 @@
 	    (local-set-key [?\C-x ?\C-a] 'cde-symbol-back)
 	    (local-set-key [?\C-x ?\C-r] 'cde-symbol-ref)
 	    (local-set-key [?\C-x ?\C-d] 'cde-symbol-def)
+	    (local-set-key [?\C-x ?d] 'cde-header-source)
 	    (cde-init)))
 
 ;; faces
