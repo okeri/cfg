@@ -4,7 +4,7 @@
 (require 'company)
 (require 'google-c-style)
 (require 'find-file)
-(require 'citags)
+(require 'cde)
 
 
 (load "gdb-ok.elc")
@@ -30,7 +30,7 @@
 (setq save-abbrevs nil)
 (setq linum-format "%5.d|")
 (setq column-number-mode t)
-(setq company-backends '(company-citags company-capf company-files company-nxml
+(setq company-backends '(company-cde company-capf company-files company-nxml
 					company-css company-cmake))
 (setq company-async-timeout 3)
 (setq compilation-scroll-output t)
@@ -69,7 +69,7 @@
 
 ;; bindings
 (global-set-key [\C-f1] 'gdb-start)
-(global-set-key [f7] 'citags-compile)
+(global-set-key [f7] 'cde-compile)
 (global-set-key [f8] 'next-error)
 (global-set-key [\C-f8] 'previous-error)
 (global-set-key [f9] 'isearch-toggle-case-fold)
@@ -172,11 +172,11 @@
 
 (add-hook 'c++-mode-hook
 	  (lambda()
-	    (local-set-key [?\C-x ?\C-l] 'citags-update-project)
-	    (local-set-key [?\C-x ?\C-a] 'citags-symbol-back)
-	    (local-set-key [?\C-x ?\C-r] 'citags-symbol-ref)
-	    (local-set-key [?\C-x ?\C-d] 'citags-symbol-def)
-	    (citags-init)))
+	    (local-set-key [?\C-x ?\C-l] 'cde-update-project)
+	    (local-set-key [?\C-x ?\C-a] 'cde-symbol-back)
+	    (local-set-key [?\C-x ?\C-r] 'cde-symbol-ref)
+	    (local-set-key [?\C-x ?\C-d] 'cde-symbol-def)
+	    (cde-init)))
 
 ;; faces
 (custom-set-faces
