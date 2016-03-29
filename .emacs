@@ -41,7 +41,8 @@
 (setq ido-everywhere t)
 (setq w32-get-true-file-atttributes nil)
 (setq gud-key-prefix "\C-x\C-g")
-
+(setq cde-debug t)
+(setq cde-check 1)
 
 ;; init
 (display-time)
@@ -176,7 +177,7 @@
 	    (local-set-key [?\C-x ?\C-r] 'cde-symbol-ref)
 	    (local-set-key [?\C-x ?\C-d] 'cde-symbol-def)
 	    (local-set-key [?\C-x ?d] 'cde-header-source)
-	    (cde-init)))
+	    (cde-mode)))
 
 ;; faces
 (custom-set-faces
