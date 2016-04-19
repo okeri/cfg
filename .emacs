@@ -3,10 +3,7 @@
 (add-to-list 'load-path "~/.emacs.d/lisp")
 (require 'company)
 (require 'google-c-style)
-(require 'find-file)
 (require 'cde)
-
-
 (load "gdb-ok.elc")
 (load "sabbrevs.elc")
 
@@ -34,8 +31,6 @@
 					company-css company-cmake))
 (setq company-async-timeout 3)
 (setq compilation-scroll-output t)
-(setq ff-quiet-mode t)
-(setq ff-always-try-to-create nil)
 (setq use-dialog-box nil)
 (setq ido-enable-flex-matching t)
 (setq ido-everywhere t)
