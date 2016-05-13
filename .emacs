@@ -65,7 +65,7 @@
 
 ;; bindings
 (global-set-key [\C-f1] 'gdb-start)
-(global-set-key [f7] 'cde-compile)
+(global-set-key [f7] 'compile)
 (global-set-key [f8] 'next-error)
 (global-set-key [\C-f8] 'previous-error)
 (global-set-key [f9] 'isearch-toggle-case-fold)
@@ -167,6 +167,7 @@
 
 (add-hook 'c++-mode-hook
 	  (lambda()
+	    (global-set-key [f7] 'cde-compile)
 	    (local-set-key [?\C-x ?\C-l] 'cde-update-project)
 	    (local-set-key [?\C-x ?\C-a] 'cde-symbol-back)
 	    (local-set-key [?\C-x ?\C-r] 'cde-symbol-ref)
