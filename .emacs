@@ -7,10 +7,6 @@
 (load "gdb-ok.elc")
 (load "sabbrevs.elc")
 
-;; job-related
-(when (file-readable-p "~/.emacs.d/lisp/work.el")
- (load "work.el"))
-
 ;; vars
 (defalias 'yes-or-no-p 'y-or-n-p)
 
@@ -37,7 +33,7 @@
 (setq w32-get-true-file-atttributes nil)
 (setq gud-key-prefix "\C-x\C-g")
 (setq cde-debug t)
-(setq cde-check 0.5)
+(setq cde-check 1)
 
 ;; init
 (display-time)
@@ -175,6 +171,27 @@
 	    (local-set-key [?\C-x ?d] 'cde-header-source)
 	    (cde-mode)))
 
+(add-hook 'python-mode-hook
+	  '(lambda()
+	     (require 'anaconda-mode)
+	     (require 'company-anaconda)
+	     (require 'package)
+	     (add-to-list 'company-backends 'company-anaconda)
+	     (local-set-key [?\C-x ?\C-a] 'anaconda-mode-go-back)
+	     (local-set-key [?\C-x ?\C-r] 'anaconda-mode-find-references)
+	     (local-set-key [?\C-x ?\C-d] 'anaconda-mode-find-definitions)
+	     (anaconda-mode)))
+
+(add-hook 'java-mode-hook
+	  (lambda ()
+	    "Treat Java 1.5 @-style annotations as comments."
+	    (setq c-comment-start-regexp "(@|/(/|[*][*]?))")
+	    (modify-syntax-entry ?@ "< b" java-mode-syntax-table)))
+
+;;
+(font-lock-add-keywords 'c++-mode
+			'(("\\<\\(alignof\\|alignas\\|constexpr\\|decltype\\|noexcept\\|nullptr\\|static_assert\\|thread_local\\|override\\|final\\)\\>" . font-lock-keyword-face)))
+
 ;; faces
 (custom-set-faces
  '(font-lock-keyword-face ((t (:bold t :foreground "cyan"))))
@@ -195,10 +212,3 @@
  '(diff-context ((t (:foreground "white"))))
  '(company-tooltip ((t (:background "grey" :foreground "black"))))
  '(company-tooltip-selection ((t (:background "color-23" :foreground "black")))))
-
-;; java comments workaround
-(add-hook 'java-mode-hook
-	  (lambda ()
-	    "Treat Java 1.5 @-style annotations as comments."
-	    (setq c-comment-start-regexp "(@|/(/|[*][*]?))")
-	    (modify-syntax-entry ?@ "< b" java-mode-syntax-table)))
