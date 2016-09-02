@@ -4,6 +4,9 @@
 (require 'company)
 (require 'google-c-style)
 (require 'cde)
+(require 'yaml-mode)
+(require 'qml-mode)
+
 (load "gdb-ok.elc")
 (load "sabbrevs.elc")
 
@@ -24,7 +27,7 @@
 (setq linum-format "%5.d|")
 (setq column-number-mode t)
 (setq company-backends '(company-cde company-capf company-files company-nxml
-					company-css company-cmake))
+				     company-css company-cmake))
 (setq company-async-timeout 3)
 (setq compilation-scroll-output t)
 (setq use-dialog-box nil)
@@ -43,6 +46,8 @@
 (xterm-mouse-mode)
 (c-add-style "Google" google-c-style)
 (add-to-list 'auto-mode-alist '("\\.h\\'" . c++-mode))
+(add-to-list 'auto-mode-alist '("\\.yaml\\'" . yaml-mode))
+(add-to-list 'auto-mode-alist '("\\.qml\\'" . qml-mode))
 
 ;; cp1251 support
 (define-coding-system-alias 'windows-1251 'cp1251)
@@ -188,21 +193,18 @@
 	    (setq c-comment-start-regexp "(@|/(/|[*][*]?))")
 	    (modify-syntax-entry ?@ "< b" java-mode-syntax-table)))
 
-;;
-(font-lock-add-keywords 'c++-mode
-			'(("\\<\\(alignof\\|alignas\\|constexpr\\|decltype\\|noexcept\\|nullptr\\|static_assert\\|thread_local\\|override\\|final\\)\\>" . font-lock-keyword-face)))
 
 ;; faces
 (custom-set-faces
  '(font-lock-keyword-face ((t (:bold t :foreground "cyan"))))
  '(font-lock-comment-face ((t (:foreground "yellow"))))
- '(font-lock-doc-face ((t (:bold t :foreground "color-68"))))
- '(font-lock-preprocessor-face ((t (:foreground "color-23"))))
- '(font-lock-string-face ((t (:foreground "color-23"))))
- '(font-lock-variable-name-face ((t (:weight normal :foreground "color-57"))))
+ '(font-lock-doc-face ((t (:bold t :foreground "color-166"))))
+ '(font-lock-preprocessor-face ((t (:foreground "color-33"))))
+ '(font-lock-string-face ((t (:foreground "color-33"))))
+ '(font-lock-variable-name-face ((t (:weight normal :foreground "color-180"))))
  '(font-lock-function-name-face ((t (:bold t :foreground "Blue"))))
  '(font-lock-type-face ((t (:foreground "green"))))
- '(font-lock-constant-face ((t (:foreground "dark slate blue"))))
+ '(font-lock-constant-face ((t (:foreground "color-56"))))
  '(linum ((t (:weight normal :foreground "grey40"))))
  '(error ((t (:foreground "red"))))
  '(diff-added ((t (:foreground "green"))))
