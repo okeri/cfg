@@ -6,6 +6,7 @@
 (require 'cde)
 (require 'yaml-mode)
 (require 'qml-mode)
+(require 'fish-mode)
 
 (load "gdb-ok.elc")
 (load "sabbrevs.elc")
@@ -48,6 +49,7 @@
 (add-to-list 'auto-mode-alist '("\\.h\\'" . c++-mode))
 (add-to-list 'auto-mode-alist '("\\.yaml\\'" . yaml-mode))
 (add-to-list 'auto-mode-alist '("\\.qml\\'" . qml-mode))
+(add-to-list 'auto-mode-alist '("\\.fish\\'" . fish-mode))
 
 ;; cp1251 support
 (define-coding-system-alias 'windows-1251 'cp1251)
@@ -83,7 +85,9 @@
 (global-set-key [?\C-c ?\C-j] 'eval-print-last-sexp)
 (global-set-key [?\C-c ?\t] 'untabify)
 (global-set-key [?\C-x ?x] 'previous-multiframe-window)
-(global-set-key [?\C-x ?\C-x] 'other-window)
+(global-set-key [?\C-x ?\C-x] 'next-multiframe-window)
+(global-set-key (kbd "ESC <left>") 'previous-multiframe-window)
+(global-set-key (kbd "ESC <right>") 'next-multiframe-window)
 (global-set-key [?\C-x ?f] 'ibuffer)
 (global-set-key [?\C-x ?g] 'ibuffer-other-window)
 (global-set-key [(meta /)] 'company-manual-begin)
@@ -180,7 +184,6 @@
 	  '(lambda()
 	     (require 'anaconda-mode)
 	     (require 'company-anaconda)
-	     (require 'package)
 	     (add-to-list 'company-backends 'company-anaconda)
 	     (local-set-key [?\C-x ?\C-a] 'anaconda-mode-go-back)
 	     (local-set-key [?\C-x ?\C-r] 'anaconda-mode-find-references)
