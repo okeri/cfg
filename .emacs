@@ -199,7 +199,7 @@
 
 ;; faces
 (custom-set-faces
- '(font-lock-keyword-face ((t (:bold t :foreground "cyan"))))
+ '(font-lock-keyword-face ((t (:foreground "cyan"))))
  '(font-lock-comment-face ((t (:foreground "yellow"))))
  '(font-lock-doc-face ((t (:bold t :foreground "color-166"))))
  '(font-lock-preprocessor-face ((t (:foreground "color-33"))))
