@@ -1,2 +1,2 @@
 # cfg
-Private config for emacs
+dotfiles
