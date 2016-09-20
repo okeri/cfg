@@ -6,7 +6,7 @@ set $up p
 set $right f
 
 
-set $term urxvt
+set $term urxvtc
 set $menu dmenu_run
 
 output * bg /home/okeri/Documents/moon.jpg fill
@@ -153,3 +153,4 @@ for_window [class="Empty Space"] geometry {"x": 575, "y": 50, "width": 450, "hei
 exec urxvt
 exec chromium
 exec swaymsg 'workspace im;exec Telegram;workspace 1'
+exec pkill -SIGRTMIN+10 i3blocks
