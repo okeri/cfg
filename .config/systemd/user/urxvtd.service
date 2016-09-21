@@ -1,0 +1,10 @@
+[Unit]
+Description=rxvt-unicode server
+
+[Service]
+Type=forking
+ExecStart=/usr/bin/urxvtd -q -f
+Restart=always
+
+[Install]
+WantedBy=default.target
