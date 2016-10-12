@@ -11,7 +11,7 @@ set $menu dmenu_run
 
 output * bg /home/okeri/Documents/moon.jpg fill
 floating_modifier $mod normal
-#workspace_layout tabbed
+workspace_layout tabbed
 
 ### Key bindings
     bindsym $mod+Down exec $term

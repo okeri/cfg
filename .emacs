@@ -37,7 +37,7 @@
 (setq w32-get-true-file-atttributes nil)
 (setq gud-key-prefix "\C-x\C-g")
 (setq cde-debug t)
-(setq cde-check 1)
+(setq cde-check 1.5)
 
 ;; init
 (display-time)
