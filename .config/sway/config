@@ -150,7 +150,7 @@ bindsym XF86Launch1 exec swaylock -i /home/okeri/Documents/lock.png
 for_window [class="URxvt"] border none
 for_window [class="Empty Space"] geometry {"x": 575, "y": 50, "width": 450, "height": 800}
 
-exec urxvt
+exec $term
 exec chromium
 #exec swaymsg 'workspace 2;exec Telegram;workspace 1'
 exec pkill -SIGRTMIN+10 i3blocks

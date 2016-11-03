@@ -11,7 +11,7 @@ if [ ! "$DISPLAY" ]
 end
 
 if not contains /opt/android-ndk $PATH
-	set -x PATH $PATH $HOME/.cargo/bin $ANDROID_SDK_ROOT/tools $ANDROID_SDK_ROOT/platform-tools $ANDROID_SDK_ROOT/build-tools/20.0.0/ /opt/android-ndk /opt/armgcc/bin
+	set -x PATH $PATH $ANDROID_SDK_ROOT/tools $ANDROID_SDK_ROOT/platform-tools $ANDROID_SDK_ROOT/build-tools/20.0.0/ /opt/android-ndk /opt/armgcc/bin
 end
 
 function fish_right_prompt

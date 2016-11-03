@@ -7,6 +7,7 @@
 (require 'yaml-mode)
 (require 'qml-mode)
 (require 'fish-mode)
+(require 'cmake-mode)
 
 (load "gdb-ok.elc")
 (load "sabbrevs.elc")
@@ -29,15 +30,14 @@
 (setq column-number-mode t)
 (setq company-backends '(company-cde company-capf company-files company-nxml
 				     company-css company-cmake))
-(setq company-async-timeout 3)
+(setq company-async-timeout 5)
 (setq compilation-scroll-output t)
 (setq use-dialog-box nil)
 (setq ido-enable-flex-matching t)
 (setq ido-everywhere t)
 (setq w32-get-true-file-atttributes nil)
 (setq gud-key-prefix "\C-x\C-g")
-(setq cde-debug t)
-(setq cde-check 1.5)
+(setq cde-check 2)
 
 ;; init
 (display-time)
@@ -50,6 +50,7 @@
 (add-to-list 'auto-mode-alist '("\\.yaml\\'" . yaml-mode))
 (add-to-list 'auto-mode-alist '("\\.qml\\'" . qml-mode))
 (add-to-list 'auto-mode-alist '("\\.fish\\'" . fish-mode))
+
 
 ;; cp1251 support
 (define-coding-system-alias 'windows-1251 'cp1251)
