@@ -3,15 +3,8 @@ set -x XDG_RUNTIME_DIR /run/user/17
 set -x EDITOR "emacsclient -t"
 set -x LANG en_US.UTF-8
 
-if [ ! "$DISPLAY" ]
-	set -x XKB_DEFAULT_LAYOUT us
-	set -x XKB_DEFAULT_OPTIONS grp:toggle
-	set -x GDK_BACKEND wayland
-	sway
-end
-
 if not contains /opt/android-ndk $PATH
-	set -x PATH $PATH $ANDROID_SDK_ROOT/tools $ANDROID_SDK_ROOT/platform-tools $ANDROID_SDK_ROOT/build-tools/20.0.0/ /opt/android-ndk /opt/armgcc/bin
+	set -x PATH $PATH /opt/bin $ANDROID_SDK_ROOT/tools $ANDROID_SDK_ROOT/platform-tools $ANDROID_SDK_ROOT/build-tools/20.0.0/ /opt/android-ndk /opt/armgcc/bin /opt/cuda/bin
 end
 
 function fish_right_prompt
@@ -28,3 +21,10 @@ end
 alias em 'emacsclient -t'
 alias su 'su -'
 alias ll 'ls -la'
+
+if [ ! "$DISPLAY" ]
+	set -x XKB_DEFAULT_LAYOUT us
+	set -x XKB_DEFAULT_OPTIONS grp:toggle
+	set -x GDK_BACKEND wayland
+	sway
+end

@@ -1,16 +1,16 @@
 ;; copyright oleg keri (c) 2009-2016
 ;; ezhi99@gmail.com
 (add-to-list 'load-path "~/.emacs.d/lisp")
-(require 'company)
 (require 'google-c-style)
 (require 'cde)
 (require 'yaml-mode)
 (require 'qml-mode)
 (require 'fish-mode)
-(require 'cmake-mode)
+;(require 'cmake-mode)
 
 (load "gdb-ok.elc")
 (load "sabbrevs.elc")
+(load "rust.elc")
 
 ;; vars
 (defalias 'yes-or-no-p 'y-or-n-p)
@@ -29,7 +29,7 @@
 (setq linum-format "%5.d|")
 (setq column-number-mode t)
 (setq company-backends '(company-cde company-capf company-files company-nxml
-				     company-css company-cmake))
+				     company-css company-racer company-cmake))
 (setq company-async-timeout 5)
 (setq compilation-scroll-output t)
 (setq use-dialog-box nil)
@@ -38,6 +38,8 @@
 (setq w32-get-true-file-atttributes nil)
 (setq gud-key-prefix "\C-x\C-g")
 (setq cde-check 2)
+(setq cde-command "cde -C/home/okeri/cache")
+
 
 ;; init
 (display-time)
@@ -173,7 +175,7 @@
 
 (add-hook 'c++-mode-hook
 	  (lambda()
-	    (global-set-key [f7] 'cde-compile)
+	    (local-set-key [f7] 'cde-compile)
 	    (local-set-key [?\C-x ?\C-l] 'cde-update-project)
 	    (local-set-key [?\C-x ?\C-a] 'cde-symbol-back)
 	    (local-set-key [?\C-x ?\C-r] 'cde-symbol-ref)
@@ -196,7 +198,6 @@
 	    "Treat Java 1.5 @-style annotations as comments."
 	    (setq c-comment-start-regexp "(@|/(/|[*][*]?))")
 	    (modify-syntax-entry ?@ "< b" java-mode-syntax-table)))
-
 
 ;; faces
 (custom-set-faces
