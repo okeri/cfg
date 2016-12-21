@@ -6,7 +6,7 @@
 (require 'yaml-mode)
 (require 'qml-mode)
 (require 'fish-mode)
-;(require 'cmake-mode)
+(require 'cmake-mode)
 
 (load "gdb-ok.elc")
 (load "sabbrevs.elc")
@@ -26,10 +26,10 @@
 (setq display-time-24hr-format t)
 (setq display-time-day-and-date t)
 (setq save-abbrevs nil)
-(setq linum-format "%5.d|")
+(setq linum-format "%3.d|")
 (setq column-number-mode t)
 (setq company-backends '(company-cde company-capf company-files company-nxml
-				     company-css company-racer company-cmake))
+				     company-css company-cmake))
 (setq company-async-timeout 5)
 (setq compilation-scroll-output t)
 (setq use-dialog-box nil)
@@ -39,7 +39,6 @@
 (setq gud-key-prefix "\C-x\C-g")
 (setq cde-check 2)
 (setq cde-command "cde -C/home/okeri/cache")
-
 
 ;; init
 (display-time)

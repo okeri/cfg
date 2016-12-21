@@ -147,10 +147,8 @@ bindsym Print exec swaygrab /tmp/`date +%d.%m.%Y-%M.%H.%S.png`
 bindsym ISO_Next_Group exec xkb_toggle && pkill -SIGRTMIN+11 i3blocks
 bindsym XF86Launch1 exec swaylock -i /home/okeri/Documents/lock.png
 
-for_window [class="URxvt"] border none
-for_window [class="Empty Space"] geometry {"x": 575, "y": 50, "width": 450, "height": 800}
+for_window [title="EmptySpace"] floating enable; resize shrink width 1120px; resize shrink height 26px;
 
-exec $term
 exec chromium
-#exec swaymsg 'workspace 2;exec Telegram;workspace 1'
+exec urxvtc
 exec pkill -SIGRTMIN+10 i3blocks

@@ -4,7 +4,7 @@ set -x EDITOR "emacsclient -t"
 set -x LANG en_US.UTF-8
 
 if not contains /opt/android-ndk $PATH
-	set -x PATH $PATH /opt/bin $ANDROID_SDK_ROOT/tools $ANDROID_SDK_ROOT/platform-tools $ANDROID_SDK_ROOT/build-tools/20.0.0/ /opt/android-ndk /opt/armgcc/bin /opt/cuda/bin
+	set -x PATH $PATH /opt/bin $ANDROID_SDK_ROOT/tools $ANDROID_SDK_ROOT/platform-tools $ANDROID_SDK_ROOT/build-tools/25.0.1/ /opt/android-ndk /opt/armgcc/bin /opt/cuda/bin
 end
 
 function fish_right_prompt

@@ -1,6 +1,8 @@
 (require 'company-racer)
 (require 'rust-mode)
+(require 'cargo-process)
 (require 'racer)
+
 
 (setq racer-rust-src-path "/usr/src/rust/src")
 
