@@ -37,7 +37,7 @@
 (setq ido-everywhere t)
 (setq w32-get-true-file-atttributes nil)
 (setq gud-key-prefix "\C-x\C-g")
-(setq cde-check 2)
+(setq cde-check-on-save t)
 (setq cde-command "cde -C/home/okeri/cache")
 
 ;; init
@@ -170,16 +170,13 @@
 	  (lambda()
 	    (setq abbrev-mode t)
 	    (c-set-style "Google")
-	    (local-set-key (kbd "RET") 'newline-and-indent)))
-
-(add-hook 'c++-mode-hook
-	  (lambda()
 	    (local-set-key [f7] 'cde-compile)
 	    (local-set-key [?\C-x ?\C-l] 'cde-update-project)
 	    (local-set-key [?\C-x ?\C-a] 'cde-symbol-back)
 	    (local-set-key [?\C-x ?\C-r] 'cde-symbol-ref)
 	    (local-set-key [?\C-x ?\C-d] 'cde-symbol-def)
 	    (local-set-key [?\C-x ?d] 'cde-header-source)
+	    (local-set-key (kbd "RET") 'newline-and-indent)
 	    (cde-mode)))
 
 (add-hook 'python-mode-hook

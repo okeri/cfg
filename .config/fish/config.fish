@@ -4,8 +4,9 @@ set -x EDITOR "emacsclient -t"
 set -x LANG en_US.UTF-8
 
 if not contains /opt/android-ndk $PATH
-	set -x PATH $PATH /opt/bin $ANDROID_SDK_ROOT/tools $ANDROID_SDK_ROOT/platform-tools $ANDROID_SDK_ROOT/build-tools/25.0.1/ /opt/android-ndk /opt/armgcc/bin /opt/cuda/bin
+	set -x PATH $PATH /opt/bin $ANDROID_SDK_ROOT/tools $ANDROID_SDK_ROOT/platform-tools $ANDROID_SDK_ROOT/build-tools/25.0.1/ /opt/android-ndk /opt/cuda/bin
 end
+
 
 function fish_right_prompt
 	set cmd_status_ $status
@@ -15,7 +16,7 @@ function fish_right_prompt
 		echo -n (set_color red)
 		set cmd_status_ "[$cmd_status_]"
 	end
-	echo -n -s $cmd_status_ (set_color yellow) " $CMD_DURATION" (set_color normal) 'ms'
+	echo -n -s (set_color cyan)(git branch ^/dev/null | grep \* | sed 's/* //')(set_color normal)
 end
 
 alias em 'emacsclient -t'
