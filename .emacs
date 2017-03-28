@@ -37,6 +37,7 @@
 (setq ido-everywhere t)
 (setq w32-get-true-file-atttributes nil)
 (setq gud-key-prefix "\C-x\C-g")
+;(setq cde-debug t)
 (setq cde-check-on-save t)
 (setq cde-command "cde -C/home/okeri/cache")
 

@@ -10,7 +10,8 @@
 					name "\n\n")
 				(end-of-buffer)
 				(insert "\n\n#endif\n")))))
-
+(define-abbrev global-abbrev-table "coutb" "std::cout <<  << std::endl;"
+  '(lambda() (backward-char 14)(error "")))
 (define-abbrev global-abbrev-table "incl" "#include <>"
   '(lambda() (backward-char)(error "")))
 (define-abbrev global-abbrev-table "inc" "#include \"\""
