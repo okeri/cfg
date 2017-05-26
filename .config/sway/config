@@ -121,7 +121,7 @@ bindsym $mod+r mode "resize"
 #
 bar {
     font pango:FontAwesome 10
-    status_command i3blocks
+    status_command rstatus
     position top
     binding_mode_indicator yes
     colors {
@@ -136,19 +136,18 @@ input "2:14:ETPS/2_Elantech_Touchpad" {
       tap enabled
 }
 
-bindsym XF86AudioMute exec vol_toggle && pkill -SIGRTMIN+10 i3blocks
-bindsym XF86AudioRaiseVolume exec amixer set Master 5%+ && pkill -SIGRTMIN+10 i3blocks
-bindsym XF86AudioLowerVolume exec amixer set Master 5%- && pkill -SIGRTMIN+10 i3blocks
+bindsym XF86AudioMute exec vol_toggle && pkill -SIGRTMIN+10 rstatus
+bindsym XF86AudioRaiseVolume exec amixer set Master 5%+ && pkill -SIGRTMIN+10 rstatus
+bindsym XF86AudioLowerVolume exec amixer set Master 5%- && pkill -SIGRTMIN+10 rstatus
 bindsym XF86MonBrightnessUp exec samctl bl up
 bindsym XF86MonBrightnessDown exec samctl bl down
 bindsym XF86KbdBrightnessUp exec samctl kl up
 bindsym XF86KbdBrightnessDown exec samctl kl down
 bindsym Print exec swaygrab /tmp/`date +%d.%m.%Y-%M.%H.%S.png`
-bindsym ISO_Next_Group exec xkb_toggle && pkill -SIGRTMIN+11 i3blocks
+bindsym ISO_Next_Group exec xkb_toggle && pkill -SIGRTMIN+11 rstatus
 bindsym XF86Launch1 exec swaylock -i /home/okeri/Documents/lock.png
 
 for_window [title="EmptySpace"] floating enable; resize shrink width 1120px; resize shrink height 26px;
 
 exec chromium
 exec urxvtc
-exec pkill -SIGRTMIN+10 i3blocks

@@ -39,7 +39,7 @@
 (setq gud-key-prefix "\C-x\C-g")
 ;(setq cde-debug t)
 					;(setq cde-check-on-save t)
-(setq cde-check 1.5)
+(setq cde-check 3)
 (setq cde-command "cde -C/home/okeri/cache")
 
 ;; init
