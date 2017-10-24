@@ -1,5 +1,7 @@
 ;; copyright oleg keri (c) 2009-2016
 ;; ezhi99@gmail.com
+
+
 (add-to-list 'load-path "~/.emacs.d/lisp")
 (require 'google-c-style)
 (require 'cde)
@@ -29,7 +31,7 @@
 (setq linum-format "%3.d|")
 (setq column-number-mode t)
 (setq company-backends '(company-cde company-capf company-files company-nxml
-				     company-css company-cmake))
+				      company-jedi company-css company-cmake company-dabbrev))
 (setq company-async-timeout 5)
 (setq compilation-scroll-output t)
 (setq use-dialog-box nil)
@@ -37,10 +39,11 @@
 (setq ido-everywhere t)
 (setq w32-get-true-file-atttributes nil)
 (setq gud-key-prefix "\C-x\C-g")
+(setq debug-on-error t)
 ;(setq cde-debug t)
-					;(setq cde-check-on-save t)
 (setq cde-check 3)
 (setq cde-command "cde -C/home/okeri/cache")
+(setq non-cde-exts '("cl", "sl", "glsl"))
 
 ;; init
 (display-time)
@@ -49,11 +52,12 @@
 (ido-mode 1)
 (xterm-mouse-mode)
 (c-add-style "Google" google-c-style)
-(add-to-list 'auto-mode-alist '("\\.h\\'" . c++-mode))
+(add-to-list 'auto-mode-alist '("\\.cu\\'" . c-mode))
+(add-to-list 'auto-mode-alist '("\\.cl\\'" . c-mode))
+(add-to-list 'auto-mode-alist '("\\.sl\\'" . c-mode))
 (add-to-list 'auto-mode-alist '("\\.yaml\\'" . yaml-mode))
 (add-to-list 'auto-mode-alist '("\\.qml\\'" . qml-mode))
 (add-to-list 'auto-mode-alist '("\\.fish\\'" . fish-mode))
-
 
 ;; cp1251 support
 (define-coding-system-alias 'windows-1251 'cp1251)
@@ -172,24 +176,24 @@
 	  (lambda()
 	    (setq abbrev-mode t)
 	    (c-set-style "Google")
-	    (local-set-key [f7] 'cde-compile)
+	    (local-set-key (kbd "RET") 'newline-and-indent)
+	    (if (not (member (file-name-extension (buffer-file-name)) non-cde-exts))
+	      (cde-mode))))
+
+(add-hook 'cde-mode-hook
+	  (lambda()
 	    (local-set-key [?\C-x ?\C-l] 'cde-update-project)
 	    (local-set-key [?\C-x ?\C-a] 'cde-symbol-back)
 	    (local-set-key [?\C-x ?\C-r] 'cde-symbol-ref)
 	    (local-set-key [?\C-x ?\C-d] 'cde-symbol-def)
-	    (local-set-key [?\C-x ?d] 'cde-header-source)
-	    (local-set-key (kbd "RET") 'newline-and-indent)
-	    (cde-mode)))
+	    (local-set-key [?\C-x ?d] 'cde-header-source)))
 
 (add-hook 'python-mode-hook
 	  '(lambda()
-	     (require 'anaconda-mode)
-	     (require 'company-anaconda)
-	     (add-to-list 'company-backends 'company-anaconda)
-	     (local-set-key [?\C-x ?\C-a] 'anaconda-mode-go-back)
-	     (local-set-key [?\C-x ?\C-r] 'anaconda-mode-find-references)
-	     (local-set-key [?\C-x ?\C-d] 'anaconda-mode-find-definitions)
-	     (anaconda-mode)))
+	     (require 'company-jedi)
+	     (local-set-key [?\C-x ?\C-a] 'jedi:goto-definition-pop-marker)
+	     (local-set-key [?\C-x ?\C-d] 'jedi:goto-definition)
+	     (jedi:setup)))
 
 (add-hook 'java-mode-hook
 	  (lambda ()
@@ -211,9 +215,9 @@
  '(linum ((t (:weight normal :foreground "grey40"))))
  '(error ((t (:foreground "red"))))
  '(diff-added ((t (:foreground "green"))))
- '(diff-removed ((t (:foreground "red"))))
- '(diff-header ((t (:foreground "grey45"))))
- '(diff-file-header ((t (:bold t :foreground "grey60"))))
  '(diff-context ((t (:foreground "white"))))
+ '(diff-file-header ((t (:bold t :foreground "grey60"))))
+ '(diff-header ((t (:foreground "grey45"))))
+ '(diff-removed ((t (:foreground "red"))))
  '(company-tooltip ((t (:background "grey" :foreground "black"))))
  '(company-tooltip-selection ((t (:background "color-23" :foreground "black")))))
