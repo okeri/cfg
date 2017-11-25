@@ -1,6 +1,19 @@
 config:
+  - cpuload:
+      interval: 3
+      prefix: " "
+      suffix: "%"
+      thresholds:
+        - threshold: 0
+          color: '#FFFFFF'
+        - threshold: 50
+          color: '#FFF600'
+        - threshold: 80
+          color: '#FF0000'
+
   - temperature:
-      sensor: '/sys/class/thermal/thermal_zone0/temp'
+      sensor: '/tmp/cputemp/temp1_input'
+      prefix: " "
       suffix: " °C"
       interval: 3
       thresholds:
@@ -39,12 +52,13 @@ config:
   - volume:
       mixer: 'Master'
       signal: 10
-      prefix: " "
+      suffix: '%'
       invalid: "♪ muted"
       invalid_color: "#FFF600"
+      prefix_extras: [" ", " "]
 
   - wifi:
-      interface: "wlp1s0"
+      interface: "wlp2s0"
       interval: 4
       prefix: " "
       suffix: "%"
@@ -61,9 +75,9 @@ config:
           color: '#00FF00'
 
   - battery:
-      sensor: '/sys/class/power_supply/BAT1'
+      sensor: '/sys/class/power_supply/BAT0'
       interval: 10
-      full: 80
+      full: 100
       invalid: "no battery"
       suffix: '%'
       statuses:
@@ -73,6 +87,13 @@ config:
           prefix: '⚡ '
         full:
           prefix: ' '
+      thresholds:
+        - threshold: 0
+          color: '#FF0000'
+        - threshold: 15
+          color: '#FFF600'
+        - threshold: 30
+          color: '#FFFFFF'
 
   - time:
       format: '%d.%m.%Y %H:%M'

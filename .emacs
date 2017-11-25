@@ -186,7 +186,8 @@
 	    (local-set-key [?\C-x ?\C-a] 'cde-symbol-back)
 	    (local-set-key [?\C-x ?\C-r] 'cde-symbol-ref)
 	    (local-set-key [?\C-x ?\C-d] 'cde-symbol-def)
-	    (local-set-key [?\C-x ?d] 'cde-header-source)))
+	    (local-set-key [?\C-x ?d] 'cde-header-source)
+	    (local-set-key [f7] 'cde-compile)))
 
 (add-hook 'python-mode-hook
 	  '(lambda()

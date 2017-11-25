@@ -11,7 +11,7 @@ set $menu dmenu_run
 
 output * bg /home/okeri/Documents/moon.jpg fill
 floating_modifier $mod normal
-workspace_layout tabbed
+#workspace_layout tabbed
 
 ### Key bindings
     bindsym $mod+Down exec $term
@@ -120,7 +120,7 @@ bindsym $mod+r mode "resize"
 # Status Bar:
 #
 bar {
-    font pango:FontAwesome 10
+    font pango:FontAwesome 11
     status_command rstatus
     position top
     binding_mode_indicator yes
@@ -131,23 +131,21 @@ bar {
     }
 }
 
-
-input "2:14:ETPS/2_Elantech_Touchpad" {
+input "1739:31251:DLL07BE:01_06CB:7A13_To" {
       tap enabled
 }
 
 bindsym XF86AudioMute exec vol_toggle && pkill -SIGRTMIN+10 rstatus
 bindsym XF86AudioRaiseVolume exec amixer set Master 5%+ && pkill -SIGRTMIN+10 rstatus
 bindsym XF86AudioLowerVolume exec amixer set Master 5%- && pkill -SIGRTMIN+10 rstatus
-bindsym XF86MonBrightnessUp exec samctl bl up
-bindsym XF86MonBrightnessDown exec samctl bl down
-bindsym XF86KbdBrightnessUp exec samctl kl up
-bindsym XF86KbdBrightnessDown exec samctl kl down
+bindsym XF86MonBrightnessUp exec dellctl bl up
+bindsym XF86MonBrightnessDown exec dellctl bl down
 bindsym Print exec swaygrab /tmp/`date +%d.%m.%Y-%M.%H.%S.png`
+bindsym XF86Search exec swaylock -i /home/okeri/Documents/lock.png
 bindsym ISO_Next_Group exec xkb_toggle && pkill -SIGRTMIN+11 rstatus
-bindsym XF86Launch1 exec swaylock -i /home/okeri/Documents/lock.png
 
 for_window [title="EmptySpace"] floating enable; resize shrink width 1120px; resize shrink height 26px;
+for_window [title="Leeloo.UI"] floating enable; move down 500px; move right 200px;
 
-exec chromium
+exec firefox
 exec urxvtc
