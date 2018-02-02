@@ -1,5 +1,0 @@
-[target.armv7-unknown-linux-gnueabihf]
-linker = "/opt/armgcc/bin/arm-linux-gnueabihf-g++-4.8"
-
-[build]
-jobs = 5

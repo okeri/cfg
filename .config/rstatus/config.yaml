@@ -13,7 +13,7 @@ config:
 
   - temperature:
       sensor: '/tmp/cputemp/temp1_input'
-      prefix: " "
+      prefix: " "
       suffix: " °C"
       interval: 3
       thresholds:

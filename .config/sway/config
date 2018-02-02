@@ -144,7 +144,7 @@ bindsym Print exec swaygrab /tmp/`date +%d.%m.%Y-%M.%H.%S.png`
 bindsym XF86Search exec swaylock -i /home/okeri/Documents/lock.png
 bindsym ISO_Next_Group exec xkb_toggle && pkill -SIGRTMIN+11 rstatus
 
-for_window [title="EmptySpace"] floating enable; resize shrink width 1120px; resize shrink height 26px;
+for_window [title="EmptySpace"] floating enable; resize shrink width 1340px; resize shrink height 26px;
 for_window [title="Leeloo.UI"] floating enable; move down 500px; move right 200px;
 
 exec firefox

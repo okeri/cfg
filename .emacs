@@ -6,6 +6,7 @@
 (require 'google-c-style)
 (require 'cde)
 (require 'yaml-mode)
+(require 'php-mode)
 (require 'qml-mode)
 (require 'fish-mode)
 (require 'cmake-mode)
@@ -43,7 +44,7 @@
 ;(setq cde-debug t)
 (setq cde-check 3)
 (setq cde-command "cde -C/home/okeri/cache")
-(setq non-cde-exts '("cl", "sl", "glsl"))
+(setq non-cde-exts '("cl" "sl" "glsl" "php"))
 
 ;; init
 (display-time)
@@ -52,12 +53,11 @@
 (ido-mode 1)
 (xterm-mouse-mode)
 (c-add-style "Google" google-c-style)
+
 (add-to-list 'auto-mode-alist '("\\.cu\\'" . c-mode))
 (add-to-list 'auto-mode-alist '("\\.cl\\'" . c-mode))
 (add-to-list 'auto-mode-alist '("\\.sl\\'" . c-mode))
-(add-to-list 'auto-mode-alist '("\\.yaml\\'" . yaml-mode))
 (add-to-list 'auto-mode-alist '("\\.qml\\'" . qml-mode))
-(add-to-list 'auto-mode-alist '("\\.fish\\'" . fish-mode))
 
 ;; cp1251 support
 (define-coding-system-alias 'windows-1251 'cp1251)
@@ -178,7 +178,7 @@
 	    (c-set-style "Google")
 	    (local-set-key (kbd "RET") 'newline-and-indent)
 	    (if (not (member (file-name-extension (buffer-file-name)) non-cde-exts))
-	      (cde-mode))))
+		(cde-mode))))
 
 (add-hook 'cde-mode-hook
 	  (lambda()
