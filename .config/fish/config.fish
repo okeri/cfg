@@ -36,6 +36,6 @@ alias em 'emacsclient -t'
 alias emacs 'emacsclient -t'
 alias su 'su -'
 
-if [ ! "$WAYLAND_DISPLAY" ]
+if [ ! "$DISPLAY" ]
 	env XKB_DEFAULT_LAYOUT=us XKB_DEFAULT_MODEL=pc98 XKB_DEFAULT_OPTIONS=grp:toggle sway
 end

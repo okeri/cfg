@@ -147,5 +147,5 @@ bindsym ISO_Next_Group exec xkb_toggle && pkill -SIGRTMIN+11 rstatus
 for_window [title="EmptySpace"] floating enable; resize shrink width 1340px; resize shrink height 26px;
 for_window [title="Leeloo.UI"] floating enable; move down 500px; move right 200px;
 
-exec firefox
+exec chromium
 exec urxvtc
