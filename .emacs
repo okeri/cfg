@@ -88,6 +88,7 @@
 (global-set-key [?\C-c left] 'uncomment-region)
 (global-set-key [?\C-c right] 'comment-region)
 (global-set-key [?\C-c ?d] 'vc-diff)
+(global-set-key [?\C-c ?w] 'vc-annotate)
 (global-set-key [?\C-c ?c] 'eshell)
 (global-set-key [?\C-c ?\C-j] 'eval-print-last-sexp)
 (global-set-key [?\C-c ?\t] 'untabify)

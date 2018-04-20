@@ -12,7 +12,7 @@ config:
           color: '#FF0000'
 
   - temperature:
-      sensor: '/tmp/cputemp/temp1_input'
+      sensor: '/tmp/cputemp'
       prefix: " "
       suffix: " °C"
       interval: 3
@@ -58,7 +58,7 @@ config:
       prefix_extras: [" ", " "]
 
   - wifi:
-      interface: "wlp2s0"
+      interface: "wlp107s0"
       interval: 4
       prefix: " "
       suffix: "%"
@@ -75,7 +75,7 @@ config:
           color: '#00FF00'
 
   - battery:
-      sensor: '/sys/class/power_supply/BAT0'
+      sensor: '/sys/class/power_supply/BAT1'
       interval: 10
       full: 100
       invalid: "no battery"
