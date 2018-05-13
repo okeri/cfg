@@ -1,7 +1,7 @@
 config:
   - cpuload:
       interval: 3
-      prefix: " "
+      prefix: " "
       suffix: "%"
       thresholds:
         - threshold: 0
@@ -36,10 +36,24 @@ config:
         - threshold: 70
           color: '#FF0000'
 
+
   - filesystem:
       path: '/tmp'
       interval: 5
       prefix: ' '
+      suffix: '%'
+      thresholds:
+        - threshold: 0
+          color: '#FFFFFF'
+        - threshold: 40
+          color: '#FFF600'
+        - threshold: 70
+          color: '#FF0000'
+
+  - filesystem:
+      path: '/'
+      interval: 5
+      prefix: ' '
       suffix: '%'
       thresholds:
         - threshold: 0

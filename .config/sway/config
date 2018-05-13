@@ -141,7 +141,7 @@ bindsym XF86AudioLowerVolume exec amixer set Master 5%- && pkill -SIGRTMIN+10 rs
 bindsym XF86MonBrightnessUp exec brctl bl up
 bindsym XF86MonBrightnessDown exec brctl bl down
 bindsym Print exec swaygrab /tmp/`date +%d.%m.%Y-%M.%H.%S.png`
-bindsym XF86Lock exec swaylock -i /home/okeri/Documents/lock.png
+bindsym $mod+l exec swaylock -i /home/okeri/Documents/lock.png
 bindsym ISO_Next_Group exec xkb_toggle && pkill -SIGRTMIN+11 rstatus
 
 for_window [title="EmptySpace"] floating enable; resize shrink width 1340px; resize shrink height 26px;
@@ -149,3 +149,4 @@ for_window [title="Leeloo.UI"] floating enable; move down 500px; move right 200p
 
 exec firefox
 exec urxvtc
+exec swaymsg layout tabbed
