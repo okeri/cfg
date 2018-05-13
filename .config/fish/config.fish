@@ -43,3 +43,16 @@ end
 
 function fish_greeting
 end
+
+function mail_kernel_patch
+	set -l patch $argv[1]
+	set -e argv[1]
+	./scripts/checkpatch.pl $patch
+	if [ $status -eq 0 ]
+		git send-email --cc-cmd="./scripts/get_maintainer.pl --norolestats $patch" $argv $patch
+		return 0
+	else
+		echo patch contains errors. Please fix it first
+		return 1
+	end
+end

@@ -36,6 +36,9 @@
 (setq compilation-scroll-output t)
 (setq use-dialog-box nil)
 (setq ido-enable-flex-matching t)
+(setq vc-annotate-background "black")
+(setq vc-annotate-background-mode nil)
+
 (setq ido-everywhere t)
 (setq w32-get-true-file-atttributes nil)
 (setq gud-key-prefix "\C-x\C-g")
@@ -180,6 +183,11 @@
 	    (if (not (member (file-name-extension (buffer-file-name)) non-cde-exts))
 		(cde-mode))))
 
+(add-hook 'c-mode-hook
+	  (lambda()
+	    (setq-local indent-tabs-mode t)
+	    (c-set-style "linux")))
+
 (add-hook 'cde-mode-hook
 	  (lambda()
 	    (local-set-key [?\C-x ?\C-l] 'cde-update-project)
@@ -204,6 +212,10 @@
 
 ;; faces
 (custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
  '(company-tooltip ((t (:background "grey" :foreground "black"))))
  '(company-tooltip-selection ((t (:background "color-23" :foreground "black"))))
  '(diff-added ((t (:foreground "green"))))
