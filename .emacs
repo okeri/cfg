@@ -227,7 +227,7 @@
  '(font-lock-comment-face ((t (:foreground "yellow"))))
  '(font-lock-constant-face ((t (:foreground "color-135"))))
  '(font-lock-doc-face ((t (:bold t :foreground "color-166"))))
- '(font-lock-function-name-face ((t (:bold t :foreground "Blue"))))
+ '(font-lock-function-name-face ((t (:bold t :foreground "color-39"))))
  '(font-lock-keyword-face ((t (:foreground "cyan"))))
  '(font-lock-preprocessor-face ((t (:foreground "color-39"))))
  '(font-lock-string-face ((t (:foreground "color-39"))))
