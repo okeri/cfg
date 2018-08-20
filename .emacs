@@ -28,7 +28,6 @@
 (setq display-time-24hr-format t)
 (setq display-time-day-and-date t)
 (setq save-abbrevs nil)
-(setq linum-format "%3.d|")
 (setq column-number-mode t)
 (setq company-backends '(company-cde company-capf company-files company-nxml
 				      company-jedi company-css company-cmake company-dabbrev))
@@ -42,9 +41,10 @@
 (setq ido-everywhere t)
 (setq w32-get-true-file-atttributes nil)
 (setq gud-key-prefix "\C-x\C-g")
-(setq debug-on-error t)
+;(setq debug-on-error t)
 ;(setq cde-debug t)
 (setq cde-check 3)
+(setq cde-showdef-delay 1)
 (setq cde-command "cde -C/home/okeri/cache")
 (setq non-cde-exts '("cl" "sl" "glsl" "php"))
 
@@ -169,11 +169,13 @@
       (message "write triggers enabled"))))
 
 ;; hooks and etc...
-(add-hook 'prog-mode-hook
-	  (lambda()
-	    (linum-mode 1)
-	    (company-mode-on)
-	    (add-to-list 'write-file-functions 'delete-trailing-whitespace)))
+(defun stdprog()
+  (company-mode-on)
+  (display-line-numbers-mode)
+  (add-to-list 'write-file-functions 'delete-trailing-whitespace))
+
+(add-hook 'prog-mode-hook 'stdprog)
+(add-hook 'qml-mode-hook 'stdprog)
 
 (add-hook 'c-mode-common-hook
 	  (lambda()
@@ -233,5 +235,4 @@
  '(font-lock-string-face ((t (:foreground "color-39"))))
  '(font-lock-type-face ((t (:foreground "green"))))
  '(font-lock-variable-name-face ((t (:weight normal :foreground "color-180"))))
- '(linum ((t (:weight normal :foreground "grey40"))))
  '(minibuffer-prompt ((t (:foreground "color-39")))))
