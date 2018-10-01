@@ -13,6 +13,7 @@
 (load "gdb-ok.elc")
 (load "sabbrevs.elc")
 (load "rust.elc")
+(load "clang-format.elc")
 
 ;; vars
 (defalias 'yes-or-no-p 'y-or-n-p)
@@ -41,12 +42,13 @@
 (setq ido-everywhere t)
 (setq w32-get-true-file-atttributes nil)
 (setq gud-key-prefix "\C-x\C-g")
-;(setq debug-on-error t)
+(setq debug-on-error t)
 ;(setq cde-debug t)
 (setq cde-check 3)
 (setq cde-showdef-delay 1)
 (setq cde-command "cde -C/home/okeri/cache")
 (setq non-cde-exts '("cl" "sl" "glsl" "php"))
+(setq c-syntactic-indentation t)
 
 ;; init
 (display-time)
@@ -92,6 +94,7 @@
 (global-set-key [?\C-c right] 'comment-region)
 (global-set-key [?\C-c ?d] 'vc-diff)
 (global-set-key [?\C-c ?w] 'vc-annotate)
+(global-set-key [?\C-c ?l] 'vc-print-log)
 (global-set-key [?\C-c ?c] 'eshell)
 (global-set-key [?\C-c ?\C-j] 'eval-print-last-sexp)
 (global-set-key [?\C-c ?\t] 'untabify)
@@ -177,11 +180,13 @@
 (add-hook 'prog-mode-hook 'stdprog)
 (add-hook 'qml-mode-hook 'stdprog)
 
+
 (add-hook 'c-mode-common-hook
 	  (lambda()
 	    (setq abbrev-mode t)
+	    (local-set-key [(control j)] 'clang-format-region)
 	    (c-set-style "Google")
-	    (local-set-key (kbd "RET") 'newline-and-indent)
+	    (local-set-key (kbd "RET") (lambda() (interactive) (c-indent-line-or-region) (newline)))
 	    (if (not (member (file-name-extension (buffer-file-name)) non-cde-exts))
 		(cde-mode))))
 
@@ -190,6 +195,11 @@
 	    (setq-local indent-tabs-mode t)
 	    (c-set-style "linux")))
 
+(add-hook 'c-special-indent-hook
+	  (lambda()
+;	    (interactive)
+	    (clang-format-region (line-beginning-position) (line-end-position))
+	    ))
 (add-hook 'cde-mode-hook
 	  (lambda()
 	    (local-set-key [?\C-x ?\C-l] 'cde-update-project)
