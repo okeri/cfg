@@ -1,4 +1,4 @@
-;; copyright oleg keri (c) 2009-2016
+;; copyright Oleg Keri (c) 2009-2016
 ;; ezhi99@gmail.com
 
 
@@ -42,13 +42,12 @@
 (setq ido-everywhere t)
 (setq w32-get-true-file-atttributes nil)
 (setq gud-key-prefix "\C-x\C-g")
-(setq debug-on-error t)
+;(setq debug-on-error t)
 ;(setq cde-debug t)
 (setq cde-check 3)
 (setq cde-showdef-delay 1)
 (setq cde-command "cde -C/home/okeri/cache")
 (setq non-cde-exts '("cl" "sl" "glsl" "php"))
-(setq c-syntactic-indentation t)
 
 ;; init
 (display-time)
@@ -84,7 +83,6 @@
 (global-set-key [f8] 'next-error)
 (global-set-key [\C-f8] 'previous-error)
 (global-set-key [f9] 'isearch-toggle-case-fold)
-(global-set-key [\C-f9] 'toggle_write_triggers)
 (global-set-key [f10] 'menu-bar-open)
 (global-set-key [f11] 'switchcp1251)
 (global-set-key [f12] 'kill-emacs)
@@ -161,45 +159,33 @@
     (revert-buffer t t)
     (message "Encoding changed")))
 
-(defun toggle_write_triggers()
-  (interactive)
-  (if (member 'delete-trailing-whitespace write-file-functions)
-      (prog1
-	  (setq write-file-functions (delete 'delete-trailing-whitespace write-file-functions))
-	(message "write triggers disabled"))
-    (prog1
-	(add-to-list 'write-file-functions 'delete-trailing-whitespace)
-      (message "write triggers enabled"))))
-
 ;; hooks and etc...
 (defun stdprog()
   (company-mode-on)
-  (display-line-numbers-mode)
-  (add-to-list 'write-file-functions 'delete-trailing-whitespace))
+  (display-line-numbers-mode))
 
 (add-hook 'prog-mode-hook 'stdprog)
 (add-hook 'qml-mode-hook 'stdprog)
-
 
 (add-hook 'c-mode-common-hook
 	  (lambda()
 	    (setq abbrev-mode t)
 	    (local-set-key [(control j)] 'clang-format-region)
 	    (c-set-style "Google")
-	    (local-set-key (kbd "RET") (lambda() (interactive) (c-indent-line-or-region) (newline)))
+;	    (fset 'c-indent-region 'clang-format-region)
+	    (local-set-key (kbd "TAB") 'clang-format-region)
 	    (if (not (member (file-name-extension (buffer-file-name)) non-cde-exts))
 		(cde-mode))))
+(add-hook 'before-save-hook
+	  (lambda()
+	    (when (derived-mode-p 'c-mode 'c++-mode 'java-mode 'qml-mode)
+	      (clang-format-buffer))))
 
 (add-hook 'c-mode-hook
 	  (lambda()
 	    (setq-local indent-tabs-mode t)
 	    (c-set-style "linux")))
 
-(add-hook 'c-special-indent-hook
-	  (lambda()
-;	    (interactive)
-	    (clang-format-region (line-beginning-position) (line-end-position))
-	    ))
 (add-hook 'cde-mode-hook
 	  (lambda()
 	    (local-set-key [?\C-x ?\C-l] 'cde-update-project)
