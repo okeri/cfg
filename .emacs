@@ -9,11 +9,17 @@
 (require 'qml-mode)
 (require 'fish-mode)
 (require 'cmake-mode)
-
-(load "gdb-ok.elc")
-(load "sabbrevs.elc")
-(load "rust.elc")
-(load "clang-format.elc")
+(require 'swiper)
+(require 'ivy)
+(require 'counsel)
+(require 'sabbrevs)
+(require 'clang-format)
+(require 'gdb-ok)
+(require 'company)
+(require 'company-racer)
+(require 'rust-mode)
+(require 'cargo-process)
+(require 'racer)
 
 ;; vars
 (defalias 'yes-or-no-p 'y-or-n-p)
@@ -30,16 +36,15 @@
 (setq display-time-day-and-date t)
 (setq save-abbrevs nil)
 (setq column-number-mode t)
+(setq racer-rust-src-path "/usr/src/rust/src")
 (setq company-backends '(company-cde company-capf company-files company-nxml
 				      company-jedi company-css company-cmake company-dabbrev))
 (setq company-async-timeout 5)
 (setq compilation-scroll-output t)
 (setq use-dialog-box nil)
-(setq ido-enable-flex-matching t)
 (setq vc-annotate-background "black")
 (setq vc-annotate-background-mode nil)
 
-(setq ido-everywhere t)
 (setq w32-get-true-file-atttributes nil)
 (setq gud-key-prefix "\C-x\C-g")
 ;(setq debug-on-error t)
@@ -49,14 +54,19 @@
 (setq cde-command "cde -C/home/okeri/cache")
 (setq non-cde-exts '("cl" "sl" "glsl" "php"))
 
+(setq ivy-use-virtual-buffers t)
+(setq enable-recursive-minibuffers t)
+
 ;; init
 (display-time)
 (normal-erase-is-backspace-mode 0)
 (show-paren-mode 1)
-(ido-mode 1)
 (xterm-mouse-mode)
+(ivy-mode)
+(counsel-mode)
 (c-add-style "Google" google-c-style)
 
+(add-to-list 'auto-mode-alist '("\\.rs\\'" . rust-mode))
 (add-to-list 'auto-mode-alist '("\\.cu\\'" . c-mode))
 (add-to-list 'auto-mode-alist '("\\.cl\\'" . c-mode))
 (add-to-list 'auto-mode-alist '("\\.sl\\'" . c-mode))
@@ -82,7 +92,6 @@
 (global-set-key [f7] 'compile)
 (global-set-key [f8] 'next-error)
 (global-set-key [\C-f8] 'previous-error)
-(global-set-key [f9] 'isearch-toggle-case-fold)
 (global-set-key [f10] 'menu-bar-open)
 (global-set-key [f11] 'switchcp1251)
 (global-set-key [f12] 'kill-emacs)
@@ -99,6 +108,8 @@
 (global-set-key [?\C-x ?x] 'previous-multiframe-window)
 (global-set-key [?\C-x ?\C-x] 'next-multiframe-window)
 (global-set-key [\C-left] 'previous-multiframe-window)
+(global-set-key [?\C-x ?c] 'counsel-imenu)
+(global-set-key [?\C-s] 'swiper)
 (global-set-key [\C-right] 'next-multiframe-window)
 (global-set-key [?\C-x ?f] 'ibuffer)
 (global-set-key [?\C-x ?g] 'ibuffer-other-window)
@@ -178,13 +189,8 @@
 		(cde-mode))))
 (add-hook 'before-save-hook
 	  (lambda()
-	    (when (derived-mode-p 'c-mode 'c++-mode 'java-mode 'qml-mode)
+	    (when (derived-mode-p 'c-mode 'c++-mode 'java-mode)
 	      (clang-format-buffer))))
-
-(add-hook 'c-mode-hook
-	  (lambda()
-	    (setq-local indent-tabs-mode t)
-	    (c-set-style "linux")))
 
 (add-hook 'cde-mode-hook
 	  (lambda()
@@ -207,6 +213,15 @@
 	    "Treat Java 1.5 @-style annotations as comments."
 	    (setq c-comment-start-regexp "(@|/(/|[*][*]?))")
 	    (modify-syntax-entry ?@ "< b" java-mode-syntax-table)))
+
+(add-hook 'rust-mode-hook
+	  (lambda()
+	    (local-set-key [\C-f7] 'compile)
+	    (local-set-key [f7] 'cargo-process-build)
+	    (local-set-key [?\C-x ?\C-r] 'racer-describe)
+	    (local-set-key [?\C-x ?\C-d] 'racer-find-definition)
+	    (local-set-key [?\C-x ?d] 'racer--find-file)
+	    (racer-mode)))
 
 ;; faces
 (custom-set-faces
@@ -232,3 +247,4 @@
  '(font-lock-type-face ((t (:foreground "green"))))
  '(font-lock-variable-name-face ((t (:weight normal :foreground "color-180"))))
  '(minibuffer-prompt ((t (:foreground "color-39")))))
+(put 'downcase-region 'disabled nil)

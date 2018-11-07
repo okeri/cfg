@@ -42,3 +42,4 @@
   '(lambda()
      (c-indent-region (- (point) 52) (point) t)
      (search-backward ")")(error "")))
+(provide 'sabbrevs)

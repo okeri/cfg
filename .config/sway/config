@@ -5,13 +5,12 @@ set $down n
 set $up p
 set $right f
 
-
 set $term urxvtc
 set $menu dmenu_run
 
 output * bg /home/okeri/Documents/moon.jpg fill
 floating_modifier $mod normal
-#workspace_layout tabbed
+workspace_layout tabbed
 
 ### Key bindings
     bindsym $mod+Down exec $term
@@ -30,8 +29,6 @@ floating_modifier $mod normal
     bindsym $mod+$right focus right
     # or use $mod+[up|down|left|right]
     bindsym $mod+Left focus left
-#    bindsym $mod+Down focus down
-#    bindsym $mod+Up focus up
     bindsym $mod+Right focus right
 
     # _move_ the focused window with the same, but add Shift
@@ -131,7 +128,7 @@ bar {
     }
 }
 
-input "1739:32651:SYNA2B31:00_06CB:7F8B_To" {
+input "1739:32651:SYNA2B31:00_06CB:7F8B_Touchpad" {
       tap enabled
 }
 
@@ -145,8 +142,6 @@ bindsym $mod+l exec swaylock -i /home/okeri/Documents/lock.png
 bindsym ISO_Next_Group exec xkb_toggle && pkill -SIGRTMIN+11 rstatus
 
 for_window [title="EmptySpace"] floating enable; resize shrink width 1340px; resize shrink height 26px;
-for_window [title="Leeloo.UI"] floating enable; move down 500px; move right 200px;
 
 exec firefox
 exec urxvtc
-exec swaymsg layout tabbed
