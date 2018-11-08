@@ -1,6 +1,4 @@
-;; copyright Oleg Keri (c) 2009-2016
 ;; ezhi99@gmail.com
-
 
 (add-to-list 'load-path "~/.emacs.d/lisp")
 (require 'google-c-style)
@@ -36,6 +34,7 @@
 (setq display-time-day-and-date t)
 (setq save-abbrevs nil)
 (setq column-number-mode t)
+(setq format-on-save t)
 (setq racer-rust-src-path "/usr/src/rust/src")
 (setq company-backends '(company-cde company-capf company-files company-nxml
 				      company-jedi company-css company-cmake company-dabbrev))
@@ -92,6 +91,7 @@
 (global-set-key [f7] 'compile)
 (global-set-key [f8] 'next-error)
 (global-set-key [\C-f8] 'previous-error)
+(global-set-key [f9] 'toggle-format-on-save)
 (global-set-key [f10] 'menu-bar-open)
 (global-set-key [f11] 'switchcp1251)
 (global-set-key [f12] 'kill-emacs)
@@ -170,6 +170,16 @@
     (revert-buffer t t)
     (message "Encoding changed")))
 
+(defun toggle-format-on-save()
+  (interactive)
+  (if format-on-save
+      (prog1
+	  (setq format-on-save nil)
+	(message "clang-format on save disabled"))
+    (prog1
+	(setq format-on-save t)
+      (message "clang-format on save enabled"))))
+
 ;; hooks and etc...
 (defun stdprog()
   (company-mode-on)
@@ -183,13 +193,12 @@
 	    (setq abbrev-mode t)
 	    (local-set-key [(control j)] 'clang-format-region)
 	    (c-set-style "Google")
-;	    (fset 'c-indent-region 'clang-format-region)
 	    (local-set-key (kbd "TAB") 'clang-format-region)
 	    (if (not (member (file-name-extension (buffer-file-name)) non-cde-exts))
 		(cde-mode))))
 (add-hook 'before-save-hook
 	  (lambda()
-	    (when (derived-mode-p 'c-mode 'c++-mode 'java-mode)
+	    (when (and format-on-save (derived-mode-p 'c-mode 'c++-mode 'java-mode))
 	      (clang-format-buffer))))
 
 (add-hook 'cde-mode-hook
@@ -224,6 +233,8 @@
 	    (racer-mode)))
 
 ;; faces
+(set-face-attribute 'highlight nil :background "color-236")
+(set-face-attribute 'region nil :background "color-236")
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -247,4 +258,5 @@
  '(font-lock-type-face ((t (:foreground "green"))))
  '(font-lock-variable-name-face ((t (:weight normal :foreground "color-180"))))
  '(minibuffer-prompt ((t (:foreground "color-39")))))
+
 (put 'downcase-region 'disabled nil)

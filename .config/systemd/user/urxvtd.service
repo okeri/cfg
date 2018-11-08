@@ -5,6 +5,7 @@ Description=rxvt-unicode server
 Type=forking
 ExecStart=/usr/bin/urxvtd -q -f
 Restart=always
+Environment=LANG=en_US.utf8
 
 [Install]
 WantedBy=default.target
