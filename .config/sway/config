@@ -6,7 +6,7 @@ set $up p
 set $right f
 
 set $term urxvtc
-set $menu dmenu_run
+set $menu dmenu_run -l 12
 
 output * bg /home/okeri/Documents/moon.jpg fill
 output eDP-1 pos 0 0 res 1920x1080
@@ -144,7 +144,7 @@ bindsym Print exec grim /tmp/`date +%d.%m.%Y-%M.%H.%S.png`
 bindsym $mod+l exec swaylock -i /home/okeri/Documents/lock.png
 bindsym ISO_Next_Group exec xkb_toggle && pkill -SIGRTMIN+11 rstatus
 
-for_window [title="EmptySpace"] floating enable; resize shrink width 1340px; resize shrink height 26px;
+for_window [title="^EmptySpace$"] floating enable; resize shrink width 1140px; resize shrink height 26px;
 
 exec firefox
 exec urxvtc
