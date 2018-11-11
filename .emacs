@@ -8,7 +8,7 @@
 (require 'fish-mode)
 (require 'cmake-mode)
 (require 'swiper)
-(require 'ivy)
+(require 'ivy-rich)
 (require 'counsel)
 (require 'sabbrevs)
 (require 'clang-format)
@@ -23,46 +23,77 @@
 (defalias 'yes-or-no-p 'y-or-n-p)
 
 ;; settings
-(setq fill-column 80)
-(setq indent-tabs-mode nil)
-(setq comment-style 'indent)
-(setq inhibit-startup-message t)
-(setq make-backup-files nil)
-(setq auto-save-list-file-name nil)
-(setq auto-save-default nil)
-(setq display-time-24hr-format t)
-(setq display-time-day-and-date t)
-(setq save-abbrevs nil)
-(setq column-number-mode t)
-(setq format-on-save t)
-(setq racer-rust-src-path "/usr/src/rust/src")
-(setq company-backends '(company-cde company-capf company-files company-nxml
-				      company-jedi company-css company-cmake company-dabbrev))
-(setq company-async-timeout 5)
-(setq compilation-scroll-output t)
-(setq use-dialog-box nil)
-(setq vc-annotate-background "black")
-(setq vc-annotate-background-mode nil)
+(setq fill-column 80
+      indent-tabs-mode nil
+      comment-style 'indent
+      inhibit-startup-message t
+      make-backup-files nil
+      auto-save-list-file-name nil
+      auto-save-default nil
+      display-time-24hr-format t
+      display-time-day-and-date t
+      save-abbrevs nil
+      column-number-mode t
+      format-on-save t
+      company-backends '(company-cde company-capf company-files company-nxml
+				     company-jedi company-css company-cmake company-dabbrev)
+      
+      company-async-timeout 5
+      compilation-scroll-output t
+      use-dialog-box nil
+      vc-annotate-background "black"
+      vc-annotate-background-mode nil
 
-(setq w32-get-true-file-atttributes nil)
-(setq gud-key-prefix "\C-x\C-g")
+      w32-get-true-file-atttributes nil
+      gud-key-prefix "\C-x\C-g"
+      cde-check 3
+      cde-showdef-delay 1
+      cde-command "cde -C/home/okeri/cache"
+      non-cde-exts '("cl" "sl" "glsl" "php")
+      racer-rust-src-path "/usr/src/rust/src"
+      recentf-max-menu-items 20
+      ivy-use-virtual-buffers t
+      enable-recursive-minibuffers t
+      ivy-format-function 'ivy-format-function-line
+      ivy-rich--display-transformers-list
+      '(ivy-switch-buffer
+	(:columns
+	 ((ivy-rich-candidate (:width 0.1))
+	  (ivy-rich-switch-buffer-size (:width 0.06))
+	  (ivy-rich-switch-buffer-major-mode (:width 0.1 :face warning))
+	  (ivy-rich-path (:width (lambda (x) (ivy-rich-switch-buffer-shorten-path x (ivy-rich-minibuffer-width 0.7))))))
+	 :predicate
+	 (lambda (cand) (get-buffer cand)))
+	counsel-M-x
+	(:columns
+	 ((counsel-M-x-transformer (:width 40))
+	  (ivy-rich-counsel-function-docstring (:face font-lock-doc-face))))
+	counsel-describe-function
+	(:columns
+	 ((counsel-describe-function-transformer (:width 40))
+	  (ivy-rich-counsel-function-docstring (:face font-lock-doc-face))))
+	counsel-describe-variable
+	(:columns
+	 ((counsel-describe-variable-transformer (:width 40))
+	  (ivy-rich-counsel-variable-docstring (:face font-lock-doc-face))))
+	counsel-recentf
+	(:columns
+	 ((ivy-rich-candidate (:width 0.8))
+	  (ivy-rich-file-last-modified-time (:face font-lock-comment-face))))))
+
 ;(setq debug-on-error t)
 ;(setq cde-debug t)
-(setq cde-check 3)
-(setq cde-showdef-delay 1)
-(setq cde-command "cde -C/home/okeri/cache")
-(setq non-cde-exts '("cl" "sl" "glsl" "php"))
-
-(setq ivy-use-virtual-buffers t)
-(setq enable-recursive-minibuffers t)
 
 ;; init
 (display-time)
 (normal-erase-is-backspace-mode 0)
 (show-paren-mode 1)
+(menu-bar-mode 0)
 (xterm-mouse-mode)
-(ivy-mode)
-(counsel-mode)
+(ivy-mode 1)
+(ivy-rich-mode 1)
+(counsel-mode 1)
+
 (c-add-style "Google" google-c-style)
 
 (add-to-list 'auto-mode-alist '("\\.rs\\'" . rust-mode))
@@ -109,7 +140,8 @@
 (global-set-key [?\C-x ?\C-x] 'next-multiframe-window)
 (global-set-key [\C-left] 'previous-multiframe-window)
 (global-set-key [?\C-x ?c] 'counsel-imenu)
-(global-set-key [?\C-s] 'swiper)
+(global-set-key [?\C-r] 'swiper)
+;(global-set-key [?\C-s] 'swiper)
 (global-set-key [\C-right] 'next-multiframe-window)
 (global-set-key [?\C-x ?f] 'ivy-switch-buffer)
 (global-set-key [?\C-x ?g] 'ivy-switch-buffer-other-window)
@@ -169,6 +201,12 @@
   (let ((coding-system-for-read 'cp1251))
     (revert-buffer t t)
     (message "Encoding changed")))
+
+(defun ivy-rich-path (candidate)
+  (let* ((buffer (get-buffer candidate))
+	 (filename (when buffer
+		     (buffer-local-value 'default-directory buffer))))
+    (if filename filename "" )))
 
 (defun toggle-format-on-save()
   (interactive)
