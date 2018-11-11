@@ -111,8 +111,8 @@
 (global-set-key [?\C-x ?c] 'counsel-imenu)
 (global-set-key [?\C-s] 'swiper)
 (global-set-key [\C-right] 'next-multiframe-window)
-(global-set-key [?\C-x ?f] 'ibuffer)
-(global-set-key [?\C-x ?g] 'ibuffer-other-window)
+(global-set-key [?\C-x ?f] 'ivy-switch-buffer)
+(global-set-key [?\C-x ?g] 'ivy-switch-buffer-other-window)
 (global-set-key [(meta /)] 'company-manual-begin)
 (global-set-key [(control meta _)] 'company-files)
 (global-set-key [(control j)] 'indent-region)
@@ -179,6 +179,15 @@
     (prog1
 	(setq format-on-save t)
       (message "clang-format on save enabled"))))
+
+(with-eval-after-load 'counsel
+  (let ((done (where-is-internal #'ivy-done     ivy-minibuffer-map t))
+	(alt  (where-is-internal #'ivy-alt-done ivy-minibuffer-map t)))
+    (define-key counsel-find-file-map done #'ivy-alt-done)
+    (define-key counsel-find-file-map alt  #'ivy-done)))
+
+(with-eval-after-load 'ivy
+  (define-key ivy-switch-buffer-map [?\C-d] #'ivy-switch-buffer-kill))
 
 ;; hooks and etc...
 (defun stdprog()
