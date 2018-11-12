@@ -140,6 +140,8 @@
 (global-set-key [?\C-x ?\C-x] 'next-multiframe-window)
 (global-set-key [\C-left] 'previous-multiframe-window)
 (global-set-key [?\C-x ?c] 'counsel-imenu)
+(global-set-key [?\C-x ?e] 'counsel-git-grep)
+(global-set-key [?\C-x ?\C-e] 'counsel-ag)
 (global-set-key [?\C-r] 'swiper)
 ;(global-set-key [?\C-s] 'swiper)
 (global-set-key [\C-right] 'next-multiframe-window)
@@ -150,7 +152,7 @@
 (global-set-key [(control j)] 'indent-region)
 (global-set-key [mouse-4] 'scroll-down)
 (global-set-key [mouse-5] 'scroll-up)
-(global-unset-key [?\C-x ?\C-e])
+
 
 ;; gdb init function
 (defun gdb-start()
