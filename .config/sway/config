@@ -144,7 +144,7 @@ bindsym Print exec grim /tmp/`date +%d.%m.%Y-%M.%H.%S.png`
 bindsym $mod+l exec swaylock -i /home/okeri/Documents/lock.png
 bindsym ISO_Next_Group exec xkb_toggle && pkill -SIGRTMIN+11 rstatus
 
-for_window [title="^EmptySpace$"] floating enable; resize width 450px; resize shrink height 26px;
+for_window [title="^EmptySpace$"] floating enable; resize width 450px; resize height 800px;
 
 exec firefox
 exec urxvtc
