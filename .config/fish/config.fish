@@ -2,11 +2,8 @@ set -x ANDROID_SDK_ROOT /opt/android-sdk
 set -x XDG_RUNTIME_DIR /run/user/17
 set -x EDITOR "emacsclient -t"
 set -x LANG en_US.UTF-8
-#set -x SWAYGRAB_FFMPEG_OPTS_DECODER '-c:v h264_nvenc -preset slow'
-set -x LEELOO_TESTDATA /home/okeri/proj/pkg-leeloo/testdata
-set -x LEELOO_MAIN_QML /home/okeri/proj/pkg-leeloo/modules/ui/source/qml/Main.qml
-set -x ARCH_AARCH64_COMPONENTS_ROOT /opt/aarch64-cross
 set -x MOZ_USE_XINPUT2 1
+set -x GDK_BACKEND wayland
 
 #$ANDROID_SDK_ROOT/tools $ANDROID_SDK_ROOT/platform-tools $ANDROID_SDK_ROOT/build-tools/25.0.1/ /opt/android-ndk
 if not contains /opt/android-ndk $PATH

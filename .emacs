@@ -2,7 +2,7 @@
 
 (add-to-list 'load-path "~/.emacs.d/lisp")
 (require 'google-c-style)
-(require 'cde)
+(require 'cde-ref-ivy)
 (require 'yaml-mode)
 (require 'qml-mode)
 (require 'fish-mode)
@@ -18,6 +18,7 @@
 (require 'rust-mode)
 (require 'cargo-process)
 (require 'racer)
+
 
 ;; vars
 (defalias 'yes-or-no-p 'y-or-n-p)
@@ -43,7 +44,7 @@
       use-dialog-box nil
       vc-annotate-background "black"
       vc-annotate-background-mode nil
-
+      display-line-numbers-width-start 4
       w32-get-true-file-atttributes nil
       gud-key-prefix "\C-x\C-g"
       cde-check 3

@@ -5,8 +5,11 @@ set $down n
 set $up p
 set $right f
 
-set $term urxvtc
+set $term termite
 set $menu dmenu_run
+set $ws1 1: work
+set $ws2 2: web
+
 
 output * bg /home/okeri/Documents/moon.jpg fill
 output eDP-1 pos 0 0 res 1920x1080
@@ -14,6 +17,9 @@ output DP-1 pos 1920 0 res 1920x1080
 
 floating_modifier $mod normal
 workspace_layout tabbed
+workspace $ws1 output eDP-1
+workspace $ws2 output dP-1
+
 
 ### Key bindings
     bindsym $mod+Down exec $term
@@ -48,8 +54,8 @@ workspace_layout tabbed
 # Workspaces:
 #
     # switch to workspace
-    bindsym $mod+1 workspace 1
-    bindsym $mod+2 workspace 2
+    bindsym $mod+1 workspace $ws1
+    bindsym $mod+2 workspace $ws2
     bindsym $mod+3 workspace 3
     bindsym $mod+4 workspace 4
     bindsym $mod+5 workspace 5
@@ -58,8 +64,8 @@ workspace_layout tabbed
     bindsym $mod+8 workspace 8
 
     # move focused container to workspace
-    bindsym $mod+Shift+1 move container to workspace 1
-    bindsym $mod+Shift+2 move container to workspace 2
+    bindsym $mod+Shift+1 move container to workspace $ws1
+    bindsym $mod+Shift+2 move container to workspace $ws2
     bindsym $mod+Shift+3 move container to workspace 3
     bindsym $mod+Shift+4 move container to workspace 4
     bindsym $mod+Shift+5 move container to workspace 5
@@ -135,6 +141,11 @@ input "1739:32651:SYNA2B31:00_06CB:7F8B_Touchpad" {
       tap enabled
 }
 
+input "1:1:AT_Translated_Set_2_keyboard" {
+      xkb_layout us,ru
+      xkb_options grp:toggle
+}
+
 bindsym XF86AudioMute exec vol_toggle && pkill -SIGRTMIN+10 rstatus
 bindsym XF86AudioRaiseVolume exec amixer set Master 5%+ && pkill -SIGRTMIN+10 rstatus
 bindsym XF86AudioLowerVolume exec amixer set Master 5%- && pkill -SIGRTMIN+10 rstatus
@@ -142,9 +153,12 @@ bindsym XF86MonBrightnessUp exec brctl bl up
 bindsym XF86MonBrightnessDown exec brctl bl down
 bindsym Print exec grim /tmp/`date +%d.%m.%Y-%M.%H.%S.png`
 bindsym $mod+l exec swaylock -i /home/okeri/Documents/lock.png
-bindsym ISO_Next_Group exec xkb_toggle && pkill -SIGRTMIN+11 rstatus
 
-for_window [title="^EmptySpace$"] floating enable; resize width 450px; resize height 800px;
+for_window [title="^EmptySpace$"] floating enable; resize width 450px; resize height 800px; 
 
+workspace $ws2
 exec firefox
+workspace $ws1
 exec urxvtc
+
+
