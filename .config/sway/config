@@ -83,14 +83,14 @@ workspace $ws2 output dP-1
     # respectively.
     bindsym $mod+h splith
     bindsym $mod+v splitv
-    bindsym $mod+b border toggle
+#    bindsym $mod+b border toggle
     # Switch the current container between different layout styles
     bindsym $mod+s layout stacking
     bindsym $mod+w layout tabbed
     bindsym $mod+e layout toggle split
 
     # Make the current focus fullscreen
-    bindsym $mod+f fullscreen
+ #   bindsym $mod+f fullscreen
 
     # Toggle the current focus between tiling and floating mode
     bindsym $mod+Shift+space floating toggle
@@ -155,10 +155,10 @@ bindsym Print exec grim /tmp/`date +%d.%m.%Y-%M.%H.%S.png`
 bindsym $mod+l exec swaylock -i /home/okeri/Documents/lock.png
 
 for_window [title="^EmptySpace$"] floating enable; resize width 450px; resize height 800px; 
-
+for_window [app_id="firefox" title="^$"] floating enable; move right 700px; move up 300px;
 workspace $ws2
 exec firefox
 workspace $ws1
-exec urxvtc
+exec $term
 
 

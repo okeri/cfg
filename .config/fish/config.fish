@@ -7,7 +7,7 @@ set -x GDK_BACKEND wayland
 
 #$ANDROID_SDK_ROOT/tools $ANDROID_SDK_ROOT/platform-tools $ANDROID_SDK_ROOT/build-tools/25.0.1/ /opt/android-ndk
 if not contains /opt/android-ndk $PATH
-	set -x PATH $PATH /opt/bin ~/.cargo/bin
+	set -x PATH /opt/bin ~/.cargo/bin $PATH
 end
 
 function fish_right_prompt

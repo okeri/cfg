@@ -1,7 +1,7 @@
 [options]
 clickable_url = true
 dynamic_title = true
-font = DejaVu Sans Mono 10
+font = DejaVu Sans Mono 11
 fullscreen = true
 scrollback_lines = 4096
 scrollbar = off

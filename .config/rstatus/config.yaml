@@ -1,4 +1,8 @@
 config:
+  - custom:
+      command: '/opt/bin/weather'
+      interval: 7200
+
   - cpuload:
       interval: 3
       prefix: " "
@@ -113,7 +117,4 @@ config:
       format: '%d.%m.%Y %H:%M'
       interval: 1
 
-  # - custom:
-  #     command: '/opt/bin/deprecated/i3mem'
-  #     interval: 5
-  # - test:
+

@@ -6,6 +6,7 @@
 (require 'yaml-mode)
 (require 'qml-mode)
 (require 'fish-mode)
+(require 'meson-mode)
 (require 'cmake-mode)
 (require 'swiper)
 (require 'ivy-rich)
@@ -97,6 +98,7 @@
 
 (c-add-style "Google" google-c-style)
 
+(add-to-list 'auto-mode-alist '("\\meson.build\\'" . meson-mode))
 (add-to-list 'auto-mode-alist '("\\.rs\\'" . rust-mode))
 (add-to-list 'auto-mode-alist '("\\.cu\\'" . c-mode))
 (add-to-list 'auto-mode-alist '("\\.cl\\'" . c-mode))
@@ -285,11 +287,13 @@
 ;; faces
 (set-face-attribute 'highlight nil :background "color-236")
 (set-face-attribute 'region nil :background "color-236")
+
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(org-table ((t (:foreground "cyan"))))
  '(company-tooltip ((t (:background "grey" :foreground "black"))))
  '(company-tooltip-selection ((t (:background "color-23" :foreground "black"))))
  '(diff-added ((t (:foreground "green"))))
