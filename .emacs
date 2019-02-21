@@ -1,24 +1,32 @@
 ;; ezhi99@gmail.com
 
 (add-to-list 'load-path "~/.emacs.d/lisp")
-(require 'google-c-style)
-(require 'cde-ref-ivy)
-(require 'yaml-mode)
-(require 'qml-mode)
-(require 'fish-mode)
-(require 'meson-mode)
-(require 'cmake-mode)
+
+;; common
 (require 'swiper)
 (require 'ivy-rich)
 (require 'counsel)
-(require 'sabbrevs)
-(require 'clang-format)
 (require 'gdb-ok)
 (require 'company)
+
+;; c and c++
+(require 'google-c-style)
+(require 'cde-ref-ivy)
+(require 'sabbrevs)
+(require 'clang-format)
+(require 'ya-cppref)
+
+;; rust
 (require 'company-racer)
 (require 'rust-mode)
 (require 'cargo-process)
 (require 'racer)
+
+;; misc
+(require 'yaml-mode)
+(require 'fish-mode)
+(require 'meson-mode)
+(require 'cmake-mode)
 
 
 ;; vars
@@ -53,17 +61,21 @@
       cde-command "cde -C/home/okeri/cache"
       non-cde-exts '("cl" "sl" "glsl" "php")
       racer-rust-src-path "/usr/src/rust/src"
-      recentf-max-menu-items 20
+      recentf-max-menu-items 64
+      ya-cppref-path-to-doc-root "/usr/share/cpp/reference/"
+      ivy-height 16
+      ivy-fixed-height-minibuffer t
       ivy-use-virtual-buffers t
+      ivy-virtual-abbreviate 'full
       enable-recursive-minibuffers t
       ivy-format-function 'ivy-format-function-line
       ivy-rich--display-transformers-list
       '(ivy-switch-buffer
 	(:columns
-	 ((ivy-rich-candidate (:width 0.1))
-	  (ivy-rich-switch-buffer-size (:width 0.06))
+	 ((ivy-rich-candidate (:width 0.2))
+	  (ivy-rich-switch-buffer-size (:width 0.1))
 	  (ivy-rich-switch-buffer-major-mode (:width 0.1 :face warning))
-	  (ivy-rich-path (:width (lambda (x) (ivy-rich-switch-buffer-shorten-path x (ivy-rich-minibuffer-width 0.7))))))
+	  (ivy-rich-path (:width (lambda (x) (ivy-rich-switch-buffer-shorten-path x (ivy-rich-minibuffer-width 0.6))))))
 	 :predicate
 	 (lambda (cand) (get-buffer cand)))
 	counsel-M-x
@@ -145,8 +157,8 @@
 (global-set-key [?\C-x ?c] 'counsel-imenu)
 (global-set-key [?\C-x ?e] 'counsel-git-grep)
 (global-set-key [?\C-x ?\C-e] 'counsel-ag)
-(global-set-key [?\C-r] 'swiper)
-;(global-set-key [?\C-s] 'swiper)
+(global-set-key [?\C-r] 'swiper-at-point)
+(global-set-key [?\C-s] 'swiper)
 (global-set-key [\C-right] 'next-multiframe-window)
 (global-set-key [?\C-x ?f] 'ivy-switch-buffer)
 (global-set-key [?\C-x ?g] 'ivy-switch-buffer-other-window)
@@ -233,6 +245,10 @@
   (define-key ivy-switch-buffer-map [?\C-d] #'ivy-switch-buffer-kill))
 
 ;; hooks and etc...
+(defun swiper-at-point()
+  (interactive)
+  (swiper--ivy (swiper--candidates) (thing-at-point 'symbol)))
+
 (defun stdprog()
   (company-mode-on)
   (display-line-numbers-mode))
