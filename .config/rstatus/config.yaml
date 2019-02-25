@@ -1,8 +1,4 @@
 config:
-  - custom:
-      command: '/opt/bin/weather'
-      interval: 7200
-
   - cpuload:
       interval: 3
       prefix: " "
@@ -74,6 +70,12 @@ config:
       invalid: "♪ muted"
       invalid_color: "#FFF600"
       prefix_extras: [" ", " "]
+
+  - custom:
+      command: '/opt/bin/weather'
+      invalid: 'no data'
+      interval: 3600
+      retry: 10
 
   - wifi:
       interface: "wlp107s0"
