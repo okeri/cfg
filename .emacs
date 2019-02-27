@@ -231,15 +231,25 @@
   (company-mode)
   (display-line-numbers-mode))
 
+(defun format-region(start end)
+   (interactive
+   (if (use-region-p)
+       (list (region-beginning) (region-end))
+     (list (point) (point))))
+   (setq inhibit-message t)
+   (clang-format-region start end)
+   (back-to-indentation)
+   (setq inhibit-message nil))
+
 (add-hook 'prog-mode-hook 'stdprog)
 (add-hook 'qml-mode-hook 'stdprog)
 
 (add-hook 'c-mode-common-hook
 	  (lambda()
-	    (fset 'c-indent-region 'clang-format-region)
+	    (fset 'c-indent-region 'format-region)
 	    (setq abbrev-mode t)
-	    (local-set-key [(control j)] 'clang-format-region)
-	    (local-set-key (kbd "TAB") 'clang-format-region)
+	    (local-set-key [(control j)] 'format-region)
+	    (local-set-key (kbd "TAB") 'format-region)
 	    (if (not (member (file-name-extension (buffer-file-name)) non-cde-exts))
 		(cde-mode))))
 
