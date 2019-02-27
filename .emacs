@@ -1,33 +1,13 @@
 ;; ezhi99@gmail.com
 
+(require 'package)
+(add-to-list 'package-archives (cons "melpa" "https://melpa.org/packages/") t)
+(package-initialize)
+
 (add-to-list 'load-path "~/.emacs.d/lisp")
-
-;; common
-(require 'swiper)
-(require 'ivy-rich)
-(require 'counsel)
 (require 'gdb-ok)
-(require 'company)
-
-;; c and c++
-(require 'google-c-style)
 (require 'cde-ref-ivy)
 (require 'sabbrevs)
-(require 'clang-format)
-(require 'ya-cppref)
-
-;; rust
-(require 'company-racer)
-(require 'rust-mode)
-(require 'cargo-process)
-(require 'racer)
-
-;; misc
-(require 'yaml-mode)
-(require 'fish-mode)
-(require 'meson-mode)
-(require 'cmake-mode)
-
 
 ;; vars
 (defalias 'yes-or-no-p 'y-or-n-p)
@@ -47,7 +27,7 @@
       format-on-save t
       company-backends '(company-cde company-capf company-files company-nxml
 				     company-jedi company-css company-cmake company-dabbrev)
-      
+
       company-async-timeout 5
       compilation-scroll-output t
       use-dialog-box nil
@@ -107,8 +87,6 @@
 (ivy-mode 1)
 (ivy-rich-mode 1)
 (counsel-mode 1)
-
-(c-add-style "Google" google-c-style)
 
 (add-to-list 'auto-mode-alist '("\\meson.build\\'" . meson-mode))
 (add-to-list 'auto-mode-alist '("\\.rs\\'" . rust-mode))
@@ -250,7 +228,7 @@
   (swiper--ivy (swiper--candidates) (thing-at-point 'symbol)))
 
 (defun stdprog()
-  (company-mode-on)
+  (company-mode)
   (display-line-numbers-mode))
 
 (add-hook 'prog-mode-hook 'stdprog)
@@ -258,12 +236,13 @@
 
 (add-hook 'c-mode-common-hook
 	  (lambda()
+	    (fset 'c-indent-region 'clang-format-region)
 	    (setq abbrev-mode t)
 	    (local-set-key [(control j)] 'clang-format-region)
-	    (c-set-style "Google")
 	    (local-set-key (kbd "TAB") 'clang-format-region)
 	    (if (not (member (file-name-extension (buffer-file-name)) non-cde-exts))
 		(cde-mode))))
+
 (add-hook 'before-save-hook
 	  (lambda()
 	    (when (and format-on-save (derived-mode-p 'c-mode 'c++-mode 'java-mode))
@@ -277,13 +256,6 @@
 	    (local-set-key [?\C-x ?\C-d] 'cde-symbol-def)
 	    (local-set-key [?\C-x ?d] 'cde-header-source)
 	    (local-set-key [f7] 'cde-compile)))
-
-(add-hook 'python-mode-hook
-	  '(lambda()
-	     (require 'company-jedi)
-	     (local-set-key [?\C-x ?\C-a] 'jedi:goto-definition-pop-marker)
-	     (local-set-key [?\C-x ?\C-d] 'jedi:goto-definition)
-	     (jedi:setup)))
 
 (add-hook 'java-mode-hook
 	  (lambda ()
@@ -300,6 +272,13 @@
 	    (local-set-key [?\C-x ?d] 'racer--find-file)
 	    (racer-mode)))
 
+(add-hook 'python-mode-hook
+	  (lambda()
+	    (local-set-key [?\C-x ?\C-a] 'jedi:goto-definition-pop-marker)
+	    (local-set-key [?\C-x ?\C-d] 'jedi:goto-definition)
+	    (jedi:setup)))
+
+
 ;; faces
 (set-face-attribute 'highlight nil :background "color-236")
 (set-face-attribute 'region nil :background "color-236")
@@ -309,7 +288,6 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(org-table ((t (:foreground "cyan"))))
  '(company-tooltip ((t (:background "grey" :foreground "black"))))
  '(company-tooltip-selection ((t (:background "color-23" :foreground "black"))))
  '(diff-added ((t (:foreground "green"))))
@@ -327,6 +305,15 @@
  '(font-lock-string-face ((t (:foreground "color-39"))))
  '(font-lock-type-face ((t (:foreground "green"))))
  '(font-lock-variable-name-face ((t (:weight normal :foreground "color-180"))))
- '(minibuffer-prompt ((t (:foreground "color-39")))))
+ '(minibuffer-prompt ((t (:foreground "color-39"))))
+ '(org-table ((t (:foreground "cyan")))))
 
 (put 'downcase-region 'disabled nil)
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(package-selected-packages
+   (quote
+    (company-racer racer rust-mode yaml-mode python-environment meson-mode ivy-rich fish-mode counsel company-lsp company-jedi cmake-mode clang-format))))
