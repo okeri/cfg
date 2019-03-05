@@ -25,7 +25,7 @@
       save-abbrevs nil
       column-number-mode t
       format-on-save t
-      company-backends '(company-cde company-capf company-files company-nxml
+      company-backends '(company-cde company-racer company-capf company-files company-nxml
 				     company-jedi company-css company-cmake company-dabbrev)
 
       company-async-timeout 5
@@ -326,4 +326,4 @@
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
    (quote
-    (company-racer racer rust-mode yaml-mode python-environment meson-mode ivy-rich fish-mode counsel company-lsp company-jedi cmake-mode clang-format))))
+    (cargo company-racer racer rust-mode yaml-mode python-environment meson-mode ivy-rich fish-mode counsel company-lsp company-jedi cmake-mode clang-format))))
