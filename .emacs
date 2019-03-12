@@ -41,7 +41,7 @@
       cde-command "cde -C/home/okeri/cache"
       non-cde-exts '("cl" "sl" "glsl" "php")
       racer-rust-src-path "/usr/src/rust/src"
-      recentf-max-menu-items 64
+      recentf-max-saved-items 64
       ya-cppref-path-to-doc-root "/usr/share/cpp/reference/"
       ivy-height 16
       ivy-fixed-height-minibuffer t
@@ -84,6 +84,7 @@
 (show-paren-mode 1)
 (menu-bar-mode 0)
 (xterm-mouse-mode)
+(recentf-mode 1)
 (ivy-mode 1)
 (ivy-rich-mode 1)
 (counsel-mode 1)
@@ -208,10 +209,10 @@
   (if format-on-save
       (prog1
 	  (setq format-on-save nil)
-	(message "clang-format on save disabled"))
+	(message "format on save disabled"))
     (prog1
 	(setq format-on-save t)
-      (message "clang-format on save enabled"))))
+      (message "format on save enabled"))))
 
 (with-eval-after-load 'counsel
   (let ((done (where-is-internal #'ivy-done     ivy-minibuffer-map t))
@@ -255,8 +256,11 @@
 
 (add-hook 'before-save-hook
 	  (lambda()
-	    (when (and format-on-save (derived-mode-p 'c-mode 'c++-mode 'java-mode))
-	      (clang-format-buffer))))
+	    (when format-on-save
+	      (when (derived-mode-p 'c-mode 'c++-mode 'java-mode)
+		(clang-format-buffer))
+	      (when (derived-mode-p 'python-mode)
+		(delete-trailing-whitespace)))))
 
 (add-hook 'cde-mode-hook
 	  (lambda()
