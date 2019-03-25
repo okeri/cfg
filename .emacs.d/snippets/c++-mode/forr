@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name: range based for
+# key: forr
+# --
+for (const auto& ${1:value} : ${2:container}) {
+$0
+}

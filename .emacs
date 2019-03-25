@@ -6,8 +6,6 @@
 
 (add-to-list 'load-path "~/.emacs.d/lisp")
 (require 'gdb-ok)
-(require 'cde-ref-ivy)
-(require 'sabbrevs)
 
 ;; vars
 (defalias 'yes-or-no-p 'y-or-n-p)
@@ -25,10 +23,19 @@
       save-abbrevs nil
       column-number-mode t
       format-on-save t
-      company-backends '(company-cde company-racer company-capf company-files company-nxml
-				     company-jedi company-css company-cmake company-dabbrev)
+      company-backends '(company-capf company-files company-nxml company-css
+				      company-cmake)
 
-      company-async-timeout 5
+      company-async-timeout 3
+      lsp-enable-links nil
+      lsp-eldoc-enable-hover nil
+      lsp-eldoc-enable-signature-help nil
+      lsp-eldoc-prefer-signature-help nil
+      lsp-enable-folding nil
+      lsp-imenu-container-name-separator "::"
+      lsp-enable-file-watchers nil
+      lsp-prefer-flymake t
+      flymake-diagnostic-functions (list 'lsp--flymake-backend)
       compilation-scroll-output t
       use-dialog-box nil
       vc-annotate-background "black"
@@ -36,11 +43,6 @@
       display-line-numbers-width-start 4
       w32-get-true-file-atttributes nil
       gud-key-prefix "\C-x\C-g"
-      cde-check 3
-      cde-showdef-delay 1
-      cde-command "cde -C/home/okeri/cache"
-      non-cde-exts '("cl" "sl" "glsl" "php")
-      racer-rust-src-path "/usr/src/rust/src"
       recentf-max-saved-items 64
       ya-cppref-path-to-doc-root "/usr/share/cpp/reference/"
       ivy-height 16
@@ -75,9 +77,6 @@
 	 ((ivy-rich-candidate (:width 0.8))
 	  (ivy-rich-file-last-modified-time (:face font-lock-comment-face))))))
 
-;(setq debug-on-error t)
-;(setq cde-debug t)
-
 ;; init
 (display-time)
 (normal-erase-is-backspace-mode 0)
@@ -96,21 +95,6 @@
 (add-to-list 'auto-mode-alist '("\\.sl\\'" . c-mode))
 (add-to-list 'auto-mode-alist '("\\.qml\\'" . qml-mode))
 
-;; cp1251 support
-(define-coding-system-alias 'windows-1251 'cp1251)
-(define-coding-system-alias 'win-1251 'cp1251)
-(set-input-mode nil nil 'We-will-use-eighth-bit-of-input-byte)
-(set-language-info-alist
- "Cyrillic-CP1251" `((charset cyrillic-iso8859-5)
-		     (coding-system cp1251)
-		     (coding-priority cp1251)
-		     (input-method . "cyrillic-jcuken")
-		     (features cyril-util)
-		     (unibyte-display . cp1251)
-		     (sample-text . "Russian (Русский) Здравствуйте!")
-		     (documentation . "Support for Cyrillic CP1251."))
- '("Cyrillic"))
-
 ;; bindings
 (global-set-key [\C-f1] 'gdb-start)
 (global-set-key [f7] 'compile)
@@ -118,7 +102,6 @@
 (global-set-key [\C-f8] 'previous-error)
 (global-set-key [f9] 'toggle-format-on-save)
 (global-set-key [f10] 'menu-bar-open)
-(global-set-key [f11] 'switchcp1251)
 (global-set-key [f12] 'kill-emacs)
 (global-set-key [\C-/] 'undo)
 (global-set-key [\C-_] 'undo)
@@ -190,13 +173,62 @@
 (defun message-box(st &optional crap)
   (dframe-message st))
 
-;; translate encoding
-(defun switchcp1251 ()
-  "functions switches encoding to cp1251"
+(defun my-lsp-dispay()
+  "Alternative UI to lsp-ui :)"
+  (when (bound-and-true-p lsp-mode)
+    (let ((diags (lsp--cur-line-diagnotics)))
+      (if (= (length diags) 0)
+	  (let ((contents (-some->> (lsp--text-document-position-params)
+				    (lsp--make-request "textDocument/hover")
+				    (lsp--send-request)
+				    (gethash "contents"))))
+	    (when (and (hash-table-p contents) (not (hash-table-empty-p contents)))
+	      (let ((value (gethash "value" contents)))
+		(message (substring value (+ 2 (string-match "$" value)))))))
+	(message (gethash "message" (aref diags 0)))))))
+
+(defun my-compile()
+  "Suggest to compile of project directory"
   (interactive)
-  (let ((coding-system-for-read 'cp1251))
-    (revert-buffer t t)
-    (message "Encoding changed")))
+  (when (or (not (boundp 'compile-history))
+	    (= (length compile-history) 0))
+    (setq compile-history '("make -k ")))
+  (let ((curr (concat "make -k -C " (car (project-roots (project-current t))))))
+    (unless (catch 'found
+	      (dolist (v compile-history)
+		(when (string-prefix-p curr v)
+		  (throw 'found t)))
+	      nil)
+      (push curr compile-history)))
+  (when (> (length compile-history) 0)
+    (setq compile-command (car compile-history)))
+  (execute-extended-command nil "compile"))
+
+(defun my-header-source()
+  ;; TODO: think about strategy
+  )
+
+(defun swiper-at-point()
+  (interactive)
+  (swiper--ivy (swiper--candidates) (thing-at-point 'symbol)))
+
+(defun stdprog()
+  (company-mode)
+  (display-line-numbers-mode))
+
+(defun setup-lsp()
+  (lsp)
+  (local-set-key [?\C-x ?\C-r] 'lsp-rename)
+  (local-set-key [?\C-x ?\C-d] 'lsp-find-definition)
+  (local-set-key [?\C-x ?\C-a] 'xref-pop-marker-stack))
+
+(defun format-region(start end)
+  (interactive
+   (if (use-region-p)
+       (list (region-beginning) (region-end))
+     (list (point) (point))))
+  (lsp-format-region start end)
+  (back-to-indentation))
 
 (defun ivy-rich-path (candidate)
   (let* ((buffer (get-buffer candidate))
@@ -223,53 +255,31 @@
 (with-eval-after-load 'ivy
   (define-key ivy-switch-buffer-map [?\C-d] #'ivy-switch-buffer-kill))
 
+(with-eval-after-load 'yasnippet
+  (yas-load-directory (car yas-snippet-dirs) t))
+
+
 ;; hooks and etc...
-(defun swiper-at-point()
-  (interactive)
-  (swiper--ivy (swiper--candidates) (thing-at-point 'symbol)))
-
-(defun stdprog()
-  (company-mode)
-  (display-line-numbers-mode))
-
-(defun format-region(start end)
-   (interactive
-   (if (use-region-p)
-       (list (region-beginning) (region-end))
-     (list (point) (point))))
-   (setq inhibit-message t)
-   (clang-format-region start end)
-   (back-to-indentation)
-   (setq inhibit-message nil))
-
+(add-hook 'flymake-goto-error-hook 'my-lsp-display)
+(add-hook 'lsp-eldoc-hook 'my-lsp-dispay)
 (add-hook 'prog-mode-hook 'stdprog)
 (add-hook 'qml-mode-hook 'stdprog)
 
 (add-hook 'c-mode-common-hook
 	  (lambda()
-	    (fset 'c-indent-region 'format-region)
-	    (setq abbrev-mode t)
-	    (local-set-key [(control j)] 'format-region)
+	    (fset 'c-indent-region 'lsp-format-region)
 	    (local-set-key (kbd "TAB") 'format-region)
-	    (if (not (member (file-name-extension (buffer-file-name)) non-cde-exts))
-		(cde-mode))))
+	    (local-set-key [f7] 'my-compile)
+	    (local-set-key [?\C-x ?d] 'my-header-source)
+	    (setup-lsp)))
 
 (add-hook 'before-save-hook
 	  (lambda()
 	    (when format-on-save
 	      (when (derived-mode-p 'c-mode 'c++-mode 'java-mode)
-		(clang-format-buffer))
+		(lsp-format-buffer))
 	      (when (derived-mode-p 'python-mode)
 		(delete-trailing-whitespace)))))
-
-(add-hook 'cde-mode-hook
-	  (lambda()
-	    (local-set-key [?\C-x ?\C-l] 'cde-update-project)
-	    (local-set-key [?\C-x ?\C-a] 'cde-symbol-back)
-	    (local-set-key [?\C-x ?\C-r] 'cde-symbol-ref)
-	    (local-set-key [?\C-x ?\C-d] 'cde-symbol-def)
-	    (local-set-key [?\C-x ?d] 'cde-header-source)
-	    (local-set-key [f7] 'cde-compile)))
 
 (add-hook 'java-mode-hook
 	  (lambda ()
@@ -281,21 +291,14 @@
 	  (lambda()
 	    (local-set-key [\C-f7] 'compile)
 	    (local-set-key [f7] 'cargo-process-build)
-	    (local-set-key [?\C-x ?\C-r] 'racer-describe)
-	    (local-set-key [?\C-x ?\C-d] 'racer-find-definition)
-	    (local-set-key [?\C-x ?d] 'racer--find-file)
-	    (racer-mode)))
+	    (setup-lsp)))
 
-(add-hook 'python-mode-hook
-	  (lambda()
-	    (local-set-key [?\C-x ?\C-a] 'jedi:goto-definition-pop-marker)
-	    (local-set-key [?\C-x ?\C-d] 'jedi:goto-definition)
-	    (jedi:setup)))
+(add-hook 'python-mode-hook 'setup-lsp)
 
-
+ 
 ;; faces
-(set-face-attribute 'highlight nil :background "color-236")
-(set-face-attribute 'region nil :background "color-236")
+(set-face-attribute 'highlight nil :background "#303030")
+(set-face-attribute 'region nil :background "#303030")
 
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
@@ -303,31 +306,24 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(company-tooltip ((t (:background "grey" :foreground "black"))))
- '(company-tooltip-selection ((t (:background "color-23" :foreground "black"))))
- '(diff-added ((t (:foreground "green"))))
+ '(company-tooltip-selection ((t (:background "#005f5f" :foreground "black"))))
+ '(diff-added ((t (:foreground "#00cd00"))))
  '(diff-context ((t (:foreground "white"))))
  '(diff-file-header ((t (:bold t :foreground "grey60"))))
  '(diff-header ((t (:foreground "grey45"))))
- '(diff-removed ((t (:foreground "red"))))
- '(error ((t (:foreground "red"))))
- '(font-lock-comment-face ((t (:foreground "yellow"))))
- '(font-lock-constant-face ((t (:foreground "color-135"))))
- '(font-lock-doc-face ((t (:bold t :foreground "color-166"))))
- '(font-lock-function-name-face ((t (:bold t :foreground "color-39"))))
- '(font-lock-keyword-face ((t (:foreground "cyan"))))
- '(font-lock-preprocessor-face ((t (:foreground "color-39"))))
- '(font-lock-string-face ((t (:foreground "color-39"))))
- '(font-lock-type-face ((t (:foreground "green"))))
+ '(diff-removed ((t (:foreground "#cd0000"))))
+ '(error ((t (:foreground "#cd0000"))))
+ '(font-lock-comment-face ((t (:foreground "#cdcd00"))))
+ '(font-lock-constant-face ((t (:foreground "#af5fff"))))
+ '(font-lock-doc-face ((t (:bold t :foreground "#d75f00"))))
+ '(font-lock-function-name-face ((t (:bold t :foreground "#00afff"))))
+ '(font-lock-keyword-face ((t (:foreground "#00cdcd"))))
+ '(font-lock-preprocessor-face ((t (:foreground "#00afff"))))
+ '(font-lock-string-face ((t (:foreground "#00afff"))))
+ '(font-lock-type-face ((t (:foreground "#00cd00"))))
  '(font-lock-variable-name-face ((t (:weight normal :foreground "color-180"))))
- '(minibuffer-prompt ((t (:foreground "color-39"))))
- '(org-table ((t (:foreground "cyan")))))
+ '(lsp-ui-doc-background ((t (:background "#00005f"))))
+ '(minibuffer-prompt ((t (:foreground "#00afff"))))
+ '(org-table ((t (:foreground "#00cdcd")))))
 
 (put 'downcase-region 'disabled nil)
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(package-selected-packages
-   (quote
-    (cargo company-racer racer rust-mode yaml-mode python-environment meson-mode ivy-rich fish-mode counsel company-lsp company-jedi cmake-mode clang-format))))

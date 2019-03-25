@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name: for iterator
+# key: for
+# --
+for (auto ${1:iterator} = ${2:container}.begin(); $1 != $2.end(); ++$1) {
+$0
+}
