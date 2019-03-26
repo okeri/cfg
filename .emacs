@@ -27,6 +27,7 @@
 				      company-cmake)
 
       company-async-timeout 3
+      project-find-functions '(project-try-ccj project-try-vc)
       lsp-enable-links nil
       lsp-eldoc-enable-hover nil
       lsp-eldoc-enable-signature-help nil
@@ -35,7 +36,6 @@
       lsp-imenu-container-name-separator "::"
       lsp-enable-file-watchers nil
       lsp-prefer-flymake t
-      flymake-diagnostic-functions (list 'lsp--flymake-backend)
       compilation-scroll-output t
       use-dialog-box nil
       vc-annotate-background "black"
@@ -173,19 +173,32 @@
 (defun message-box(st &optional crap)
   (dframe-message st))
 
-(defun my-lsp-dispay()
+(defun project-try-template (dir id)
+  (let ((f (locate-dominating-file dir id)))
+    (when f (cons 'vc (file-name-directory f)))))
+
+(defun project-try-ccj(dir)
+  (project-try-template dir "compile_commands.json"))
+
+(defun my-lsp-dispay() 
   "Alternative UI to lsp-ui :)"
-  (when (bound-and-true-p lsp-mode)
+  (when (bound-and-true-p lsp-mode) 
     (let ((diags (lsp--cur-line-diagnotics)))
       (if (= (length diags) 0)
-	  (let ((contents (-some->> (lsp--text-document-position-params)
-				    (lsp--make-request "textDocument/hover")
-				    (lsp--send-request)
-				    (gethash "contents"))))
-	    (when (and (hash-table-p contents) (not (hash-table-empty-p contents)))
-	      (let ((value (gethash "value" contents)))
-		(message (substring value (+ 2 (string-match "$" value)))))))
-	(message (gethash "message" (aref diags 0)))))))
+	  (when (lsp--capability "hoverProvider")
+	    (lsp--send-request-async
+	     (lsp--make-request "textDocument/hover"
+				(lsp--text-document-position-params))
+	     (lambda (info)
+	       (when info 
+  		 (let ((contents (gethash "contents" info)))
+  		   (when (and (hash-table-p contents) (not (hash-table-empty-p contents)))
+  		     (let* ((value (gethash "value" contents))
+			    (npos (+ 2 (string-match "$" value))))
+		       (if (>= npos (length value))
+			   (message value)
+			 (message (substring value npos))))))))))
+  	(message (gethash "message" (aref diags 0)))))))
 
 (defun my-compile()
   "Suggest to compile of project directory"
@@ -258,6 +271,9 @@
 (with-eval-after-load 'yasnippet
   (yas-load-directory (car yas-snippet-dirs) t))
 
+;; override flymake legacy hook
+(with-eval-after-load 'flymake-proc
+  (setq flymake-diagnostic-functions '(lsp--flymake-backend)))
 
 ;; hooks and etc...
 (add-hook 'flymake-goto-error-hook 'my-lsp-display)
