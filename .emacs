@@ -18,8 +18,6 @@
       make-backup-files nil
       auto-save-list-file-name nil
       auto-save-default nil
-      display-time-24hr-format t
-      display-time-day-and-date t
       save-abbrevs nil
       column-number-mode t
       format-on-save t
@@ -34,7 +32,6 @@
       lsp-eldoc-prefer-signature-help nil
       lsp-enable-folding nil
       lsp-imenu-container-name-separator "::"
-      lsp-enable-file-watchers nil
       lsp-prefer-flymake t
       compilation-scroll-output t
       use-dialog-box nil
@@ -78,7 +75,6 @@
 	  (ivy-rich-file-last-modified-time (:face font-lock-comment-face))))))
 
 ;; init
-(display-time)
 (normal-erase-is-backspace-mode 0)
 (show-paren-mode 1)
 (menu-bar-mode 0)
@@ -98,8 +94,8 @@
 ;; bindings
 (global-set-key [\C-f1] 'gdb-start)
 (global-set-key [f7] 'compile)
-(global-set-key [f8] 'next-error)
-(global-set-key [\C-f8] 'previous-error)
+(global-set-key [f8] 'my-next-error)
+(global-set-key [\C-f8] 'my-prev-error)
 (global-set-key [f9] 'toggle-format-on-save)
 (global-set-key [f10] 'menu-bar-open)
 (global-set-key [f12] 'kill-emacs)
@@ -111,7 +107,6 @@
 (global-set-key [?\C-c ?w] 'vc-annotate)
 (global-set-key [?\C-c ?l] 'vc-print-log)
 (global-set-key [?\C-c ?c] 'eshell)
-(global-set-key [?\C-c ?\C-j] 'eval-print-last-sexp)
 (global-set-key [?\C-c ?\t] 'untabify)
 (global-set-key [?\C-x ?x] 'previous-multiframe-window)
 (global-set-key [?\C-x ?\C-x] 'next-multiframe-window)
@@ -125,8 +120,8 @@
 (global-set-key [?\C-x ?f] 'ivy-switch-buffer)
 (global-set-key [?\C-x ?g] 'ivy-switch-buffer-other-window)
 (global-set-key [(meta /)] 'company-manual-begin)
+(global-set-key [?\C-j] 'eval-print-last-sexp)
 (global-set-key [(control meta _)] 'company-files)
-(global-set-key [(control j)] 'indent-region)
 (global-set-key [mouse-4] 'scroll-down)
 (global-set-key [mouse-5] 'scroll-up)
 
@@ -181,7 +176,7 @@
   (project-try-template dir "compile_commands.json"))
 
 (defun my-lsp-dispay() 
-  "Alternative UI to lsp-ui :)"
+  "Alternative (minimalistic) UI to lsp-ui :)"
   (when (bound-and-true-p lsp-mode) 
     (let ((diags (lsp--cur-line-diagnotics)))
       (if (= (length diags) 0)
@@ -218,16 +213,34 @@
   (execute-extended-command nil "compile"))
 
 (defun my-header-source()
+  (interactive)
   ;; TODO: think about strategy
   )
+
+(defun my-next-error()
+  (interactive)
+  (if (bound-and-true-p flymake-mode)
+      (prog1
+	  (flymake-goto-next-error)
+	(my-lsp-dispay))
+    (next-error)))
+
+(defun my-prev-error()
+  (interactive)
+  (if (bound-and-true-p flymake-mode)
+      (prog1
+	  (flymake-goto-prev-error)
+	(my-lsp-dispay))
+    (previous-error)))
 
 (defun swiper-at-point()
   (interactive)
   (swiper--ivy (swiper--candidates) (thing-at-point 'symbol)))
 
 (defun stdprog()
-  (company-mode)
-  (display-line-numbers-mode))
+  (setq mode-line-format '("%e" mode-line-modified  mode-line-buffer-identification " " (vc-mode vc-mode) " " mode-line-modes mode-line-misc-info mode-line-end-spaces))
+  (display-line-numbers-mode)
+  (company-mode))
 
 (defun setup-lsp()
   (lsp)
@@ -276,7 +289,6 @@
   (setq flymake-diagnostic-functions '(lsp--flymake-backend)))
 
 ;; hooks and etc...
-(add-hook 'flymake-goto-error-hook 'my-lsp-display)
 (add-hook 'lsp-eldoc-hook 'my-lsp-dispay)
 (add-hook 'prog-mode-hook 'stdprog)
 (add-hook 'qml-mode-hook 'stdprog)
@@ -287,6 +299,7 @@
 	    (local-set-key (kbd "TAB") 'format-region)
 	    (local-set-key [f7] 'my-compile)
 	    (local-set-key [?\C-x ?d] 'my-header-source)
+	    (abbrev-mode 0)
 	    (setup-lsp)))
 
 (add-hook 'before-save-hook
@@ -310,7 +323,9 @@
 	    (setup-lsp)))
 
 (add-hook 'python-mode-hook 'setup-lsp)
-
+(add-hook 'emacs-lisp-mode-hook
+	  (lambda()
+	    (local-set-key [?\C-x ?\C-d] 'find-function-at-point)))
  
 ;; faces
 (set-face-attribute 'highlight nil :background "#303030")
