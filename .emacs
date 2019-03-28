@@ -217,9 +217,13 @@
   ;; TODO: think about strategy
   )
 
+(defun my-lsp-diags-present()
+  (and (bound-and-true-p lsp-mode)
+       (gethash (buffer-file-name) (lsp-diagnostics))))
+
 (defun my-next-error()
   (interactive)
-  (if (bound-and-true-p flymake-mode)
+  (if (my-lsp-diags-present)
       (prog1
 	  (flymake-goto-next-error)
 	(my-lsp-dispay))
@@ -227,7 +231,7 @@
 
 (defun my-prev-error()
   (interactive)
-  (if (bound-and-true-p flymake-mode)
+  (if (my-lsp-diags-present)
       (prog1
 	  (flymake-goto-prev-error)
 	(my-lsp-dispay))
