@@ -33,6 +33,7 @@
       lsp-enable-folding nil
       lsp-imenu-container-name-separator "::"
       lsp-prefer-flymake t
+      c-syntactic-indentation nil
       compilation-scroll-output t
       use-dialog-box nil
       vc-annotate-background "black"
@@ -201,7 +202,11 @@
   (when (or (not (boundp 'compile-history))
 	    (= (length compile-history) 0))
     (setq compile-history '("make -k ")))
-  (let ((curr (concat "make -k -C " (car (project-roots (project-current t))))))
+  (let* ((root (car (project-roots (project-current t))))
+	 (build (concat root "build"))
+	 (curr (if (file-directory-p build)
+		  (concat "ninja -C " build)
+		 (concat "make -k -C " root))))
     (unless (catch 'found
 	      (dolist (v compile-history)
 		(when (string-prefix-p curr v)
@@ -299,7 +304,6 @@
 
 (add-hook 'c-mode-common-hook
 	  (lambda()
-	    (fset 'c-indent-region 'lsp-format-region)
 	    (local-set-key (kbd "TAB") 'format-region)
 	    (local-set-key [f7] 'my-compile)
 	    (local-set-key [?\C-x ?d] 'my-header-source)
