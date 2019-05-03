@@ -87,9 +87,9 @@ config:
       thresholds:
         - threshold: 0
           color: '#FF0000'
-        - threshold: 40
+        - threshold: 20
           color: '#FFAE00'
-        - threshold: 60
+        - threshold: 50
           color: '#FFF600'
         - threshold: 80
           color: '#00FF00'

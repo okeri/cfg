@@ -10,10 +10,11 @@ set $menu dmenu_run
 set $ws1 1: work
 set $ws2 2: web
 
+set $lock exec swaylock -l -e -i ~/Documents/lock.png
 
-output * bg /home/okeri/Documents/moon.jpg fill
+output * bg ~/Documents/moon.jpg fill
 output eDP-1 pos 0 0 res 1920x1080
-output DP-1 pos 1920 0 res 1920x1080
+output DP-1 pos 1920 0 res 1920x1200
 
 floating_modifier $mod normal
 workspace_layout tabbed
@@ -152,10 +153,15 @@ bindsym XF86AudioLowerVolume exec amixer set Master 5%- && pkill -SIGRTMIN+10 rs
 bindsym XF86MonBrightnessUp exec brctl bl up
 bindsym XF86MonBrightnessDown exec brctl bl down
 bindsym Print exec grim /tmp/`date +%d.%m.%Y-%M.%H.%S.png`
-bindsym $mod+l exec swaylock -i /home/okeri/Documents/lock.png
+bindsym $mod+l $lock
 
 for_window [title="^EmptySpace$"] floating enable; resize width 450px; resize height 800px; 
 for_window [app_id="firefox" title="^$"] floating enable; move right 700px; move up 300px;
+
+exec swayidle -w \
+         timeout 300 'swaymsg "output * dpms off; $lock"' \
+         resume 'swaymsg "output * dpms on"' 
+
 workspace $ws2
 exec firefox
 workspace $ws1
