@@ -31,6 +31,8 @@
       lsp-enable-folding nil
       lsp-imenu-container-name-separator "::"
       lsp-ui-sideline-enable nil
+      lsp-ui-doc-enable nil
+      lsp-ui-peek-enable nil
       lsp-prefer-flymake nil
       c-syntactic-indentation nil
       compilation-scroll-output t
@@ -176,6 +178,25 @@
 (defun project-try-ccj(dir)
   (project-try-template dir "compile_commands.json"))
 
+(defun my-lsp-dispay() 
+  "Alternative (minimalistic) UI to lsp-ui-doc :)"
+  (when (bound-and-true-p lsp-mode)
+    (let ((diags (lsp--cur-line-diagnotics)))
+      (when (and (= (length diags) 0) (lsp--capability "hoverProvider"))
+	(lsp--send-request-async
+	 (lsp--make-request "textDocument/hover"
+			    (lsp--text-document-position-params))
+	 (lambda (info)
+	   (when info 
+	     (let ((contents (gethash "contents" info)))
+	       (when (and (hash-table-p contents) (not (hash-table-empty-p contents)))
+		 (let* ((value (gethash "value" contents))
+			(npos (+ 2 (string-match "$" value))))
+		   (if (>= npos (length value))
+		       (message value)
+		     (message (substring value npos)))))))))))))
+
+
 (defun my-compile()
   "Suggest to compile of project directory"
   (interactive)
@@ -258,6 +279,7 @@
   (setq flymake-diagnostic-functions '(lsp--flymake-backend)))
 
 ;; hooks and etc...
+(add-hook 'lsp-eldoc-hook 'my-lsp-dispay)
 (add-hook 'prog-mode-hook 'stdprog)
 (add-hook 'qml-mode-hook 'stdprog)
 
