@@ -6,7 +6,7 @@
 
 (add-to-list 'load-path "~/.emacs.d/lisp")
 (require 'gdb-ok)
-
+(require 'yasnippet)
 ;; vars
 (defalias 'yes-or-no-p 'y-or-n-p)
 
@@ -30,7 +30,8 @@
       lsp-eldoc-prefer-signature-help nil
       lsp-enable-folding nil
       lsp-imenu-container-name-separator "::"
-      lsp-prefer-flymake t
+      lsp-ui-sideline-enable nil
+      lsp-prefer-flymake nil
       c-syntactic-indentation nil
       compilation-scroll-output t
       use-dialog-box nil
@@ -39,7 +40,7 @@
       display-line-numbers-width-start 4
       w32-get-true-file-atttributes nil
       gud-key-prefix "\C-x\C-g"
-      recentf-max-saved-items 64
+      recentf-max-saved-items 128
       ya-cppref-path-to-doc-root "/usr/share/cpp/reference/"
       ivy-height 16
       ivy-fixed-height-minibuffer t
@@ -94,8 +95,8 @@
 ;; bindings
 (global-set-key [\C-f1] 'gdb-start)
 (global-set-key [f7] 'compile)
-(global-set-key [f8] 'my-next-error)
-(global-set-key [\C-f8] 'my-prev-error)
+(global-set-key [f8] 'next-error)
+(global-set-key [\C-f8] 'prev-error)
 (global-set-key [f9] 'toggle-format-on-save)
 (global-set-key [f10] 'menu-bar-open)
 (global-set-key [f12] 'kill-emacs)
@@ -175,26 +176,6 @@
 (defun project-try-ccj(dir)
   (project-try-template dir "compile_commands.json"))
 
-(defun my-lsp-dispay() 
-  "Alternative (minimalistic) UI to lsp-ui :)"
-  (when (bound-and-true-p lsp-mode) 
-    (let ((diags (lsp--cur-line-diagnotics)))
-      (if (= (length diags) 0)
-	  (when (lsp--capability "hoverProvider")
-	    (lsp--send-request-async
-	     (lsp--make-request "textDocument/hover"
-				(lsp--text-document-position-params))
-	     (lambda (info)
-	       (when info 
-  		 (let ((contents (gethash "contents" info)))
-  		   (when (and (hash-table-p contents) (not (hash-table-empty-p contents)))
-  		     (let* ((value (gethash "value" contents))
-			    (npos (+ 2 (string-match "$" value))))
-		       (if (>= npos (length value))
-			   (message value)
-			 (message (substring value npos))))))))))
-  	(message (gethash "message" (aref diags 0)))))))
-
 (defun my-compile()
   "Suggest to compile of project directory"
   (interactive)
@@ -220,26 +201,6 @@
   (interactive)
   ;; TODO: think about strategy
   )
-
-(defun my-lsp-diags-present()
-  (and (bound-and-true-p lsp-mode)
-       (gethash (buffer-file-name) (lsp-diagnostics))))
-
-(defun my-next-error()
-  (interactive)
-  (if (my-lsp-diags-present)
-      (prog1
-	  (flymake-goto-next-error)
-	(my-lsp-dispay))
-    (next-error)))
-
-(defun my-prev-error()
-  (interactive)
-  (if (my-lsp-diags-present)
-      (prog1
-	  (flymake-goto-prev-error)
-	(my-lsp-dispay))
-    (previous-error)))
 
 (defun swiper-at-point()
   (interactive)
@@ -297,7 +258,6 @@
   (setq flymake-diagnostic-functions '(lsp--flymake-backend)))
 
 ;; hooks and etc...
-(add-hook 'lsp-eldoc-hook 'my-lsp-dispay)
 (add-hook 'prog-mode-hook 'stdprog)
 (add-hook 'qml-mode-hook 'stdprog)
 
@@ -372,4 +332,4 @@
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
    (quote
-    (yasnippet yaml-mode meson-mode ivy-rich fish-mode counsel company-lsp cmake-mode cargo))))
+    (lsp-ui flycheck yasnippet yaml-mode meson-mode ivy-rich fish-mode counsel company-lsp cmake-mode cargo))))
