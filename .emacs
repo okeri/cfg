@@ -234,6 +234,7 @@
 
 (defun setup-lsp()
   (lsp)
+  (local-set-key [?\C-x ?d] 'cff-find-other-file)
   (local-set-key [?\C-x ?\C-r] 'lsp-rename)
   (local-set-key [?\C-x ?\C-d] 'lsp-find-definition)
   (local-set-key [?\C-x ?\C-a] 'xref-pop-marker-stack))
@@ -354,4 +355,4 @@
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
    (quote
-    (lsp-ui flycheck yasnippet yaml-mode meson-mode ivy-rich fish-mode counsel company-lsp cmake-mode cargo))))
+    (cff lsp-ui flycheck yasnippet yaml-mode meson-mode ivy-rich fish-mode counsel company-lsp cmake-mode cargo))))
