@@ -6,15 +6,15 @@ set $up p
 set $right f
 
 set $term termite
-set $menu dmenu_run
+set $menu dmenu_run -m 0
 set $ws1 1: work
 set $ws2 2: web
 
 set $lock exec swaylock -l -e -i ~/Documents/lock.png
 
-output * bg ~/Documents/moon.jpg fill
 output eDP-1 pos 0 0 res 1920x1080
 output DP-1 pos 1920 0 res 1920x1200
+output * bg ~/Documents/moon.jpg fill
 
 floating_modifier $mod normal
 workspace_layout tabbed
@@ -51,6 +51,8 @@ workspace $ws2 output dP-1
     bindsym $mod+Shift+Down move down
     bindsym $mod+Shift+Up move up
     bindsym $mod+Shift+Right move right
+    bindsym $mod+g gaps inner all plus 10
+    bindsym $mod+Shift+g gaps inner all set 0
 #
 # Workspaces:
 #
@@ -129,17 +131,29 @@ bindsym $mod+r mode "resize"
 bar {
     font pango:FontAwesome 11
     status_command rstatus
+    output eDP-1
     position top
     binding_mode_indicator yes
+    separator_symbol 
     colors {
         statusline #ffffff
-        background #323232
+        background #00000000
+	separator #ffff00
         inactive_workspace #32323200 #32323200 #5c5c5c
     }
 }
 
+input "1386:20755:Wacom_HID_5113_Finger" {
+     map_to_output eDP-1
+}
+
+input "1386:20755:Wacom_HID_5113_Pen" {
+     map_to_output eDP-1
+}
+
 input "1739:32651:SYNA2B31:00_06CB:7F8B_Touchpad" {
       tap enabled
+      dwt enabled
 }
 
 input "1:1:AT_Translated_Set_2_keyboard" {
@@ -154,13 +168,14 @@ bindsym XF86MonBrightnessUp exec brctl bl up
 bindsym XF86MonBrightnessDown exec brctl bl down
 bindsym Print exec grim /tmp/`date +%d.%m.%Y-%M.%H.%S.png`
 bindsym $mod+l $lock
+bindsym $mod+k exec rotate
 
 for_window [title="^EmptySpace$"] floating enable; resize width 450px; resize height 800px; 
-for_window [app_id="firefox" title="^$"] floating enable; move right 700px; move up 300px;
+#for_window [app_id="firefox" title="^$"] floating enable; move right 700px; move up 300px;
 
-exec swayidle -w \
-         timeout 300 'swaymsg "output * dpms off; $lock"' \
-         resume 'swaymsg "output * dpms on"' 
+# exec swayidle -w \
+#          timeout 300 'swaymsg "output * dpms off; $lock"' \
+#          resume 'swaymsg "output * dpms on"' 
 
 workspace $ws2
 exec firefox

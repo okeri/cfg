@@ -5,9 +5,11 @@ set -x LANG en_US.UTF-8
 set -x MOZ_USE_XINPUT2 1
 set -x GDK_BACKEND wayland
 
-#$ANDROID_SDK_ROOT/tools $ANDROID_SDK_ROOT/platform-tools $ANDROID_SDK_ROOT/build-tools/25.0.1/ /opt/android-ndk
+set -x CALIB_ROOT ~/proj/calibrator
+
+#$ANDROID_SDK_ROOT/tools $ANDROID_SDK_ROOT/platform-tools $ANDROID_SDK_ROOT/build-tools/25.0.1/ 
 if not contains /opt/android-ndk $PATH
-	set -x PATH /opt/bin ~/.cargo/bin $PATH
+	set -x PATH /opt/bin ~/.cargo/bin /opt/android-ndk /opt/xilinx/Vivado/2019.1/bin $PATH
 end
 
 function fish_right_prompt

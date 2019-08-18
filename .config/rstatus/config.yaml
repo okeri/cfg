@@ -1,11 +1,11 @@
 config:
   - cpuload:
       interval: 3
-      prefix: " "
-      suffix: "%"
+      prefix: ' '
+      suffix: '%'
       thresholds:
         - threshold: 0
-          color: '#FFFFFF'
+          color: '#AAAAAA'
         - threshold: 50
           color: '#FFF600'
         - threshold: 80
@@ -13,12 +13,12 @@ config:
 
   - temperature:
       sensor: '/tmp/cputemp'
-      prefix: " "
-      suffix: " °C"
+      prefix: ' '
+      suffix: ' °C'
       interval: 3
       thresholds:
         - threshold: 0
-          color: '#FFFFFF'
+          color: '#AAAAAA'
         - threshold: 60
           color: '#FFF600'
         - threshold: 70
@@ -30,7 +30,7 @@ config:
       interval: 5
       thresholds:
         - threshold: 0
-          color: '#FFFFFF'
+          color: '#AAAAAA'
         - threshold: 40
           color: '#FFF600'
         - threshold: 70
@@ -44,7 +44,7 @@ config:
       suffix: '%'
       thresholds:
         - threshold: 0
-          color: '#FFFFFF'
+          color: '#AAAAAA'
         - threshold: 40
           color: '#FFF600'
         - threshold: 70
@@ -57,7 +57,7 @@ config:
       suffix: '%'
       thresholds:
         - threshold: 0
-          color: '#FFFFFF'
+          color: '#AAAAAA'
         - threshold: 40
           color: '#FFF600'
         - threshold: 70
@@ -67,23 +67,24 @@ config:
       mixer: 'Master'
       signal: 10
       suffix: '%'
-      invalid: "♪ muted"
-      invalid_color: "#FFF600"
-      prefix_extras: [" ", " "]
+      invalid: '♪ muted'
+      invalid_color: '#FFF600'
+      prefix_extras: [' ', ' ']
+      color: '#CCCCCC'
 
   - custom:
       command: '/opt/bin/weather'
       invalid: 'no data'
       interval: 3600
       retry: 10
-
+      
   - wifi:
-      interface: "wlp107s0"
+      interface: 'wlp107s0'
       interval: 4
-      prefix: " "
-      suffix: "%"
-      invalid: "off"
-      invalid_color: "#FF0000"
+      prefix: ' '
+      suffix: '%'
+      invalid: 'off'
+      invalid_color: '#FF0000'
       thresholds:
         - threshold: 0
           color: '#FF0000'
@@ -98,7 +99,8 @@ config:
       sensor: '/sys/class/power_supply/BAT1'
       interval: 10
       full: 100
-      invalid: "no battery"
+      invalid: 'no battery'
+          
       suffix: '%'
       statuses:
         offline:
@@ -113,10 +115,11 @@ config:
         - threshold: 15
           color: '#FFF600'
         - threshold: 30
-          color: '#FFFFFF'
+          color: '#AAAAAA'
 
   - time:
-      format: '%d.%m.%Y %H:%M'
-      interval: 1
+      format: '%d.%m.%Y  %H:%M'
+      interval: 1 
+      color: '#CCCCCC'
 
 
