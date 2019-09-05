@@ -6,7 +6,7 @@
 
 (add-to-list 'load-path "~/.emacs.d/lisp")
 (require 'gdb-ok)
-(require 'yasnippet)
+(require 'yasnippet nil t)
 ;; vars
 (defalias 'yes-or-no-p 'y-or-n-p)
 
@@ -42,7 +42,7 @@
       display-line-numbers-width-start 4
       w32-get-true-file-atttributes nil
       gud-key-prefix "\C-x\C-g"
-      recentf-max-saved-items 128
+      recentf-max-saved-items 256
       ya-cppref-path-to-doc-root "/usr/share/cpp/reference/"
       ivy-height 16
       ivy-fixed-height-minibuffer t
@@ -50,6 +50,12 @@
       ivy-virtual-abbreviate 'full
       enable-recursive-minibuffers t
       ivy-format-function 'ivy-format-function-line
+      cff-source-regexps '(("\\.c$" . (lambda (base) (concat base ".c")))
+			   ("\\.cc$" . (lambda (base) (concat base ".cc")))
+			   ("\\.cxx$" . (lambda (base) (concat base ".cxx")))
+			   ("\\.cpp$" . (lambda (base) (concat base ".cpp")))
+			   ("\\.cu$" . (lambda (base) (concat base ".cu"))))
+
       ivy-rich-display-transformers-list
       '(ivy-switch-buffer
         (:columns
@@ -93,6 +99,7 @@
 (add-to-list 'auto-mode-alist '("\\.cl\\'" . c-mode))
 (add-to-list 'auto-mode-alist '("\\.sl\\'" . c-mode))
 (add-to-list 'auto-mode-alist '("\\.qml\\'" . qml-mode))
+
 
 ;; bindings
 (global-set-key [\C-f1] 'gdb-start)
