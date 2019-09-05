@@ -1,12 +1,13 @@
 ;; https://github.com/okeri/cfg
 
 (require 'package)
-(add-to-list 'package-archives (cons "melpa" "https://melpa.org/packages/") t)
+(add-to-list 'package-archives (cons "melpa" "https://melpa.org/packages/"))
+(setq gnutls-algorithm-priority "NORMAL:-VERS-TLS1.3"
+      package-selected-packages
+      '(cff lsp-ui flycheck yasnippet yaml-mode meson-mode ivy-rich fish-mode
+	    counsel company-lsp cmake-mode cargo))
+
 (package-initialize)
-(setq package-selected-packages
-      (quote
-       (cff lsp-ui flycheck yasnippet yaml-mode meson-mode ivy-rich fish-mode
-	    counsel company-lsp cmake-mode cargo)))
 (unless package-archive-contents
   (package-refresh-contents))
 
