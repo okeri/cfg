@@ -1,12 +1,23 @@
-;; ezhi99@gmail.com
+;; https://github.com/okeri/cfg
 
 (require 'package)
 (add-to-list 'package-archives (cons "melpa" "https://melpa.org/packages/") t)
 (package-initialize)
+(setq package-selected-packages
+      (quote
+       (cff lsp-ui flycheck yasnippet yaml-mode meson-mode ivy-rich fish-mode
+	    counsel company-lsp cmake-mode cargo)))
+(unless package-archive-contents
+  (package-refresh-contents))
+
+(dolist (package package-selected-packages)
+  (unless (package-installed-p package)
+    (package-install package)))
 
 (add-to-list 'load-path "~/.emacs.d/lisp")
 (require 'gdb-ok)
 (require 'yasnippet nil t)
+
 ;; vars
 (defalias 'yes-or-no-p 'y-or-n-p)
 
@@ -81,7 +92,13 @@
         counsel-recentf
         (:columns
          ((ivy-rich-candidate (:width 0.8))
-          (ivy-rich-file-last-modified-time (:face font-lock-comment-face))))))
+          (ivy-rich-file-last-modified-time (:face font-lock-comment-face)))))
+
+      auto-mode-alist (append auto-mode-alist '(("\\.rs\\'" . rust-mode)
+						("\\.cu\\'" . c++-mode)
+						("\\.cl\\'" . c-mode)
+						("\\.sl\\'" . c-mode)
+						("\\.qml\\'" . qml-mode))))
 
 ;; init
 (normal-erase-is-backspace-mode 0)
@@ -92,13 +109,7 @@
 (ivy-mode 1)
 (ivy-rich-mode 1)
 (counsel-mode 1)
-
-(add-to-list 'auto-mode-alist '("\\meson.build\\'" . meson-mode))
-(add-to-list 'auto-mode-alist '("\\.rs\\'" . rust-mode))
-(add-to-list 'auto-mode-alist '("\\.cu\\'" . c-mode))
-(add-to-list 'auto-mode-alist '("\\.cl\\'" . c-mode))
-(add-to-list 'auto-mode-alist '("\\.sl\\'" . c-mode))
-(add-to-list 'auto-mode-alist '("\\.qml\\'" . qml-mode))
+(put 'downcase-region 'disabled nil)
 
 
 ;; bindings
@@ -353,13 +364,3 @@
  '(lsp-ui-doc-background ((t (:background "#00005f"))))
  '(minibuffer-prompt ((t (:foreground "#00afff"))))
  '(org-table ((t (:foreground "#00cdcd")))))
-
-(put 'downcase-region 'disabled nil)
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(package-selected-packages
-   (quote
-    (cff lsp-ui flycheck yasnippet yaml-mode meson-mode ivy-rich fish-mode counsel company-lsp cmake-mode cargo))))
