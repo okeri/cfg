@@ -13,7 +13,8 @@ set $ws2 2: web
 set $lock exec swaylock -l -e -i ~/Documents/lock.png
 
 output eDP-1 pos 0 0 res 1920x1080
-output DP-1 pos 1920 0 res 1920x1200
+output DP-1 pos -1920 0 res 1920x1200
+output DP-2 pos -1920 0 res 1920x1200
 output * bg ~/Documents/moon.jpg fill
 
 floating_modifier $mod normal
