@@ -20,7 +20,7 @@ output * bg ~/Documents/moon.jpg fill
 floating_modifier $mod normal
 workspace_layout tabbed
 workspace $ws1 output eDP-1
-workspace $ws2 output dP-1
+workspace $ws2 output DP-1
 
 
 ### Key bindings
