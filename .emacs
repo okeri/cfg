@@ -3,15 +3,15 @@
 (require 'package)
 (add-to-list 'package-archives (cons "melpa" "https://melpa.org/packages/"))
 (setq gnutls-algorithm-priority "NORMAL:-VERS-TLS1.3"
-      package-selected-packages
-      '(cff lsp-ui flycheck yasnippet yaml-mode meson-mode ivy-rich fish-mode
+      packages
+      '(cff lsp-ui flycheck yasnippet yaml-mode ivy-rich fish-mode
 	    counsel company-lsp cmake-mode cargo))
 
 (package-initialize)
 (unless package-archive-contents
   (package-refresh-contents))
 
-(dolist (package package-selected-packages)
+(dolist (package packages)
   (unless (package-installed-p package)
     (package-install package)))
 
@@ -336,15 +336,12 @@
 	  (lambda()
 	    (local-set-key [?\C-x ?\C-d] 'find-function-at-point)))
  
-;; faces
-(set-face-attribute 'highlight nil :background "#303030")
-(set-face-attribute 'region nil :background "#303030")
-
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
+;; theme
+(deftheme okeri)
+(provide-theme 'okeri)
+(custom-theme-set-faces 'okeri
+ '(highlight ((t (:background "#303030"))))
+ '(region ((t (:background "#303030"))))
  '(company-tooltip ((t (:background "grey" :foreground "black"))))
  '(company-tooltip-selection ((t (:background "#005f5f" :foreground "black"))))
  '(diff-added ((t (:foreground "#00cd00"))))
@@ -360,7 +357,7 @@
  '(font-lock-keyword-face ((t (:foreground "#00cdcd"))))
  '(font-lock-preprocessor-face ((t (:foreground "#00afff"))))
  '(font-lock-string-face ((t (:foreground "#00afff"))))
- '(font-lock-type-face ((t (:foreground "#00cd00"))))
+ '(font-lock-type-face ((t (:foreground "#2acd2a"))))
  '(font-lock-variable-name-face ((t (:weight normal :foreground "color-180"))))
  '(lsp-ui-doc-background ((t (:background "#00005f"))))
  '(minibuffer-prompt ((t (:foreground "#00afff"))))
