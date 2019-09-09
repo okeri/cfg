@@ -2,8 +2,7 @@
 
 (require 'package)
 (add-to-list 'package-archives (cons "melpa" "https://melpa.org/packages/"))
-(setq gnutls-algorithm-priority "NORMAL:-VERS-TLS1.3"
-      packages
+(setq packages
       '(cff lsp-ui flycheck yasnippet yaml-mode ivy-rich fish-mode
 	    counsel company-lsp cmake-mode cargo))
 
@@ -33,6 +32,7 @@
       save-abbrevs nil
       column-number-mode t
       format-on-save t
+      custom-file "/dev/null"
       company-backends '(company-capf company-files company-nxml company-cmake)
       company-async-timeout 3
       project-find-functions '(project-try-ccj project-try-vc)
