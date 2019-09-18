@@ -123,6 +123,7 @@
 (global-set-key [f12] 'kill-emacs)
 (global-set-key [\C-/] 'undo)
 (global-set-key [\C-_] 'undo)
+(global-set-key [?\C-q] 'wl-clipboard)
 (global-set-key [?\C-c left] 'uncomment-region)
 (global-set-key [?\C-c right] 'comment-region)
 (global-set-key [?\C-c ?d] 'vc-diff)
@@ -143,7 +144,6 @@
 (global-set-key [?\C-x ?g] 'ivy-switch-buffer-other-window)
 (global-set-key [(meta /)] 'company-manual-begin)
 (global-set-key [?\C-j] 'eval-print-last-sexp)
-(global-set-key [(control meta _)] 'company-files)
 (global-set-key [mouse-4] 'scroll-down)
 (global-set-key [mouse-5] 'scroll-up)
 
@@ -187,6 +187,21 @@
 
 
 ;; extensions
+(defun wl-clipboard()
+  (interactive)
+  (when (region-active-p)
+    (setq wl-copy-process
+	  (make-process
+	   :name "wl-copy"
+	   :buffer nil
+	   :command '("wl-copy" "-f" "-n")
+	   :connection-type 'pipe))
+    (process-send-string wl-copy-process
+			 (buffer-substring (region-beginning)
+					   (region-end)))
+    (process-send-eof wl-copy-process)
+    (deactivate-mark)))
+
 (defun message-box(st &optional crap)
   (dframe-message st))
 
@@ -236,11 +251,6 @@
   (when (> (length compile-history) 0)
     (setq compile-command (car compile-history)))
   (execute-extended-command nil "compile"))
-
-(defun my-header-source()
-  (interactive)
-  ;; TODO: think about strategy
-  )
 
 (defun swiper-at-point()
   (interactive)
@@ -293,10 +303,6 @@
 
 (with-eval-after-load 'yasnippet
   (yas-load-directory (car yas-snippet-dirs) t))
-
-;; override flymake legacy hook
-(with-eval-after-load 'flymake-proc
-  (setq flymake-diagnostic-functions '(lsp--flymake-backend)))
 
 ;; hooks and etc...
 (add-hook 'lsp-eldoc-hook 'my-lsp-dispay)
