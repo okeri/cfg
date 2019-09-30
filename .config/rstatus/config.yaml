@@ -1,72 +1,78 @@
-config:
   - cpuload:
       interval: 3
-      prefix: ' '
+      retry: 1
+      prefix: ''
+      prefix_color: '#4080a0'
+      separator_width: 12
       suffix: '%'
+      color: '#CCCCCC'
+      threshold_fix: true
       thresholds:
-        - threshold: 0
-          color: '#AAAAAA'
-        - threshold: 50
-          color: '#FFF600'
-        - threshold: 80
-          color: '#FF0000'
+        0: '#CCCCCC'
+        50: '#FFF600'
+        80: '#FF0000'
 
   - temperature:
       sensor: '/tmp/cputemp'
-      prefix: ' '
+      prefix: ''
+      prefix_color: '#4080a0'
+      separator_width: 12
       suffix: ' °C'
       interval: 3
+      color: '#CCCCCC'
+      threshold_fix: true
       thresholds:
-        - threshold: 0
-          color: '#AAAAAA'
-        - threshold: 60
-          color: '#FFF600'
-        - threshold: 70
-          color: '#FF0000'
+        0: '#CCCCCC'
+        60: '#FFF600'
+        70: '#FF0000'
 
   - memory:
-      prefix: ' '
+      prefix: ''
+      prefix_color: '#4080a0'
+      separator_width: 12
       suffix: '%'
       interval: 5
+      color: '#CCCCCC'
+      threshold_fix: true
       thresholds:
-        - threshold: 0
-          color: '#AAAAAA'
-        - threshold: 40
-          color: '#FFF600'
-        - threshold: 70
-          color: '#FF0000'
-
+        0: '#CCCCCC'
+        40: '#FFF600'
+        70: '#FF0000'
 
   - filesystem:
       path: '/tmp'
       interval: 5
-      prefix: ' '
+      prefix: ''
+      prefix_color: '#4080a0'
+      separator_width: 12
       suffix: '%'
+      color: '#CCCCCC'
+      threshold_fix: true
       thresholds:
-        - threshold: 0
-          color: '#AAAAAA'
-        - threshold: 40
-          color: '#FFF600'
-        - threshold: 70
-          color: '#FF0000'
+        0: '#CCCCCC'
+        40: '#FFF600'
+        70: '#FF0000'
 
   - filesystem:
       path: '/'
-      interval: 5
-      prefix: ' '
+      interval: 30
+      prefix: ''
+      prefix_color: '#4080a0'
+      separator_width: 12
       suffix: '%'
+      color: '#CCCCCC'
+      threshold_fix: true
       thresholds:
-        - threshold: 0
-          color: '#AAAAAA'
-        - threshold: 40
-          color: '#FFF600'
-        - threshold: 70
-          color: '#FF0000'
+        0: '#CCCCCC'
+        40: '#FFF600'
+        70: '#FF0000'
 
   - volume:
       mixer: 'Master'
       signal: 10
       suffix: '%'
+      prefix_color: '#4080a0'
+      separator_width: 12
       invalid: '♪ muted'
       invalid_color: '#FFF600'
       prefix_extras: [' ', ' ']
@@ -75,51 +81,62 @@ config:
   - custom:
       command: '/opt/bin/weather'
       invalid: 'no data'
+      invalid_color: '#CCCCCC'
+      separator_width: 12
       interval: 3600
       retry: 10
       
   - wifi:
       interface: 'wlp107s0'
-      interval: 4
+      interval: 5
       prefix: ' '
       suffix: '%'
+      separator_width: 12
       invalid: 'off'
       invalid_color: '#FF0000'
       thresholds:
-        - threshold: 0
-          color: '#FF0000'
-        - threshold: 20
-          color: '#FFAE00'
-        - threshold: 50
-          color: '#FFF600'
-        - threshold: 80
-          color: '#00FF00'
+        0: '#FF0000'
+        20: '#FFAE00'
+        50: '#FFF600'
+        80: '#00FF00'
 
   - battery:
       sensor: '/sys/class/power_supply/BAT1'
       interval: 10
-      full: 100
       invalid: 'no battery'
-          
-      suffix: '%'
+      prefix_color: '#4080a0'
+      separator_width: 12
       statuses:
         offline:
           prefix: ' '
+          suffix: '%'
         online:
-          prefix: '⚡ '
+          prefix: '⚡'
+          suffix: '%'
         full:
           prefix: ' '
+          suffix: '%'
+      color: '#FFFFFF'
+      threshold_fix: true
       thresholds:
-        - threshold: 0
-          color: '#FF0000'
-        - threshold: 15
-          color: '#FFF600'
-        - threshold: 30
-          color: '#AAAAAA'
+        0: '#FF0000'
+        15: '#FFF600'
+        30: '#FFFFFF'
 
   - time:
-      format: '%d.%m.%Y  %H:%M'
-      interval: 1 
+      prefix: ' '
+      prefix_color: '#4080a0'
+      separator_width: 12
+      format: '%d.%m.%Y'
+      interval: 60
+      color: '#CCCCCC'
+
+  - time:
+      prefix: ''
+      prefix_color: '#4080a0'
+      separator_width: 12
+      format: '%H:%M'
+      interval: 1
       color: '#CCCCCC'
 
 

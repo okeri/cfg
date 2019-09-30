@@ -24,12 +24,23 @@ workspace $ws2 output DP-1
 
 
 ### Key bindings
-    bindsym $mod+Down exec $term
-    bindsym $mod+q kill
-    bindsym $mod+Up kill
-    bindsym $mod+d exec $menu
-    bindsym $mod+Shift+c reload
-    bindsym $mod+Shift+e exit
+bindsym --to-code {
+     $mod+Down exec $term
+     $mod+q kill
+     $mod+Up kill
+     $mod+d exec $menu
+     $mod+Shift+c reload
+     $mod+Shift+e exit
+     XF86AudioMute exec vol_toggle && pkill -SIGRTMIN+10 rstatus
+     XF86AudioRaiseVolume exec amixer set Master 5%+ && pkill -SIGRTMIN+10 rstatus
+     XF86AudioLowerVolume exec amixer set Master 5%- && pkill -SIGRTMIN+10 rstatus
+     XF86MonBrightnessUp exec brctl bl up
+     XF86MonBrightnessDown exec brctl bl down
+     Print exec grim /tmp/`date +%d.%m.%Y-%M.%H.%S.png`
+     $mod+l $lock
+     $mod+k exec rotate
+}
+
 #
 # Moving around:
 #
@@ -135,11 +146,14 @@ bar {
     output eDP-1
     position top
     binding_mode_indicator yes
-    separator_symbol 
+    strip_workspace_numbers yes
+    height 24
+    separator_symbol ''
+    #
     colors {
         statusline #ffffff
         background #00000000
-	separator #ffff00
+	separator #cccccc
         inactive_workspace #32323200 #32323200 #5c5c5c
     }
 }
@@ -161,15 +175,6 @@ input "1:1:AT_Translated_Set_2_keyboard" {
       xkb_layout us,ru
       xkb_options grp:toggle
 }
-
-bindsym XF86AudioMute exec vol_toggle && pkill -SIGRTMIN+10 rstatus
-bindsym XF86AudioRaiseVolume exec amixer set Master 5%+ && pkill -SIGRTMIN+10 rstatus
-bindsym XF86AudioLowerVolume exec amixer set Master 5%- && pkill -SIGRTMIN+10 rstatus
-bindsym XF86MonBrightnessUp exec brctl bl up
-bindsym XF86MonBrightnessDown exec brctl bl down
-bindsym Print exec grim /tmp/`date +%d.%m.%Y-%M.%H.%S.png`
-bindsym $mod+l $lock
-bindsym $mod+k exec rotate
 
 for_window [title="^EmptySpace$"] floating enable; resize width 450px; resize height 800px; 
 #for_window [app_id="firefox" title="^$"] floating enable; move right 700px; move up 300px;
