@@ -176,13 +176,15 @@ input "1:1:AT_Translated_Set_2_keyboard" {
       xkb_options grp:toggle
 }
 
-for_window [title="^EmptySpace$"] floating enable; resize width 450px; resize height 800px; 
-#for_window [app_id="firefox" title="^$"] floating enable; move right 700px; move up 300px;
+for_window [title="^EmptySpace$"] floating enable; resize set 450px 800px; 
+for_window [app_id="firefox"] inhibit_idle fullscreen
+for_window [title="MPlayer"] inhibit_idle visible
 
-# exec swayidle -w \
-#          timeout 300 'swaymsg "output * dpms off; $lock"' \
-#          resume 'swaymsg "output * dpms on"' 
+exec swayidle -w \
+         timeout 180 'swaymsg "output * dpms off; $lock"' \
+         resume 'swaymsg "output * dpms on"' 
 
+exec mako
 workspace $ws2
 exec firefox
 workspace $ws1

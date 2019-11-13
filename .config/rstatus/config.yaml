@@ -75,7 +75,7 @@
       separator_width: 12
       invalid: '♪ muted'
       invalid_color: '#FFF600'
-      prefix_extras: [' ', ' ']
+      prefix_extras: ['', '']
       color: '#CCCCCC'
 
   - custom:
@@ -124,10 +124,10 @@
         30: '#FFFFFF'
 
   - time:
-      prefix: ' '
+      prefix: ''
       prefix_color: '#4080a0'
       separator_width: 12
-      format: '%d.%m.%Y'
+      format: '%a, %d.%m.%Y'
       interval: 60
       color: '#CCCCCC'
 
@@ -135,7 +135,7 @@
       prefix: ''
       prefix_color: '#4080a0'
       separator_width: 12
-      format: '%H:%M'
+      format: '%I:%M %P'
       interval: 1
       color: '#CCCCCC'
 

@@ -137,7 +137,7 @@
 (global-set-key [?\C-x ?c] 'counsel-imenu)
 (global-set-key [?\C-x ?e] 'counsel-git-grep)
 (global-set-key [?\C-x ?\C-e] 'counsel-ag)
-(global-set-key [?\C-r] 'swiper-at-point)
+(global-set-key [?\C-r] 'swiper-thing-at-point)
 (global-set-key [?\C-s] 'swiper)
 (global-set-key [\C-right] 'next-multiframe-window)
 (global-set-key [?\C-x ?f] 'ivy-switch-buffer)
@@ -251,10 +251,6 @@
   (when (> (length compile-history) 0)
     (setq compile-command (car compile-history)))
   (execute-extended-command nil "compile"))
-
-(defun swiper-at-point()
-  (interactive)
-  (swiper--ivy (swiper--candidates) (thing-at-point 'symbol)))
 
 (defun stdprog()
   (setq mode-line-format '("%e" mode-line-modified  mode-line-buffer-identification " " (vc-mode vc-mode) " " mode-line-modes mode-line-misc-info mode-line-end-spaces))
