@@ -46,6 +46,7 @@
       lsp-ui-doc-enable nil
       lsp-ui-peek-enable nil
       lsp-prefer-flymake nil
+      lsp-clients-clangd-args '("--header-insertion=never" "--completion-style=detailed" "--pch-storage=memory" "--clang-tidy-checks=*")
       c-syntactic-indentation nil
       compilation-scroll-output t
       use-dialog-box nil
