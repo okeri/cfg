@@ -85,17 +85,17 @@
       command: '/opt/bin/weather'
       invalid: 'no data'
       invalid_color: '#CCCCCC'
-      separator_width: 12
-      interval: 3600
+      separator_width: 8
+      interval: 600
 
   - network:
       interval: 5
-      prefix: ' '
+      prefix: ''
       suffix: '%'
       ethernet: ''
       color: '#00CC00'
       separator_width: 12
-      invalid: ' '
+      invalid: ''
       invalid_color: '#FF0000'
       threshold_fix: true
       thresholds:
