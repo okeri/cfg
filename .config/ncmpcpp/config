@@ -1,0 +1,44 @@
+mpd_host = 127.0.0.1
+mpd_music_dir = /var/lib/mpd/music
+
+# setup
+startup_screen = playlist
+screen_switcher_mode = playlist, media_library
+message_delay_time = 1
+external_editor = "emacsclient -t"
+browser_display_mode = columns
+colors_enabled = "yes"
+cyclic_scrolling = "yes"
+seek_time = 5
+ignore_leading_the = yes
+playlist_disable_highlight_delay = 3
+header_visibility = no
+statusbar_visibility = yes
+display_volume_level = yes
+display_remaining_time = no
+main_window_color = 245
+
+# ui
+song_status_format = {{%a - }{%t}}|{%f}
+song_library_format = {%t}|{%f}
+now_playing_prefix = $b
+now_playing_suffix = $/b$(end)
+current_item_prefix = $r
+current_item_suffix = $/r$(end)
+song_columns_list_format = (24)[117]{a} (50)[174]{t|f:Title} (20)[111]{b} (7f)[160]{l}
+modified_item_prefix = $2 $9
+#alternative_ui_separator_color = 117:b
+
+# bars
+progressbar_look = "■◣ "
+progressbar_elapsed_color = 117:b
+statusbar_color = 245
+statusbar_time_color = 245:b
+
+# visualizer
+visualizer_fifo_path = /tmp/mpd.fifo
+visualizer_type = wave_filled
+visualizer_look = ●▮
+visualizer_in_stereo = no
+visualizer_sync_interval = 30
+

@@ -36,7 +36,7 @@ alias em 'emacsclient -t'
 alias emacs 'emacsclient -t'
 alias su 'su -'
 
-if [ ! "$DISPLAY" ]
+if [ -z "$DISPLAY" ]
     sway
 end
 

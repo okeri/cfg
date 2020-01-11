@@ -68,8 +68,11 @@
         70: '#FF0000'
 
   - volume:
-      mixer: 'Master'
+      mixer: 'PCM'
       signal: 10
+      jack_switch_outputs: true
+      jack_mute_on_unplug: true
+      jack_unmute_on_plug: true
       suffix: '%'
       prefix_color: '#4080a0'
       separator_width: 12
@@ -84,16 +87,17 @@
       invalid_color: '#CCCCCC'
       separator_width: 12
       interval: 3600
-      retry: 10
-      
-  - wifi:
-      interface: 'wlp107s0'
+
+  - network:
       interval: 5
       prefix: ' '
       suffix: '%'
+      ethernet: ''
+      color: '#00CC00'
       separator_width: 12
-      invalid: 'off'
+      invalid: ' '
       invalid_color: '#FF0000'
+      threshold_fix: true
       thresholds:
         0: '#FF0000'
         20: '#FFAE00'

@@ -1,10 +1,11 @@
 ### Variables
 set $mod Mod4
 
-set $term termite
+set $term kitty
 set $menu dmenu_run -m 0
 set $ws1 1: work
 set $ws2 2: web
+set $ws3 3: music
 
 set $lock exec swaylock -l -e -i ~/Documents/lock.png
 
@@ -27,14 +28,16 @@ bindsym --to-code {
      $mod+d exec $menu
      $mod+Shift+c reload
      $mod+Shift+e exit
-     XF86AudioMute exec vol_toggle && pkill -SIGRTMIN+10 rstatus
-     XF86AudioRaiseVolume exec amixer set Master 5%+ && pkill -SIGRTMIN+10 rstatus
-     XF86AudioLowerVolume exec amixer set Master 5%- && pkill -SIGRTMIN+10 rstatus
-     XF86MonBrightnessUp exec brctl bl up
-     XF86MonBrightnessDown exec brctl bl down
      Print exec grim /tmp/`date +%d.%m.%Y-%M.%H.%S.png`
      $mod+l $lock
      $mod+k exec rotate
+
+     # ACPI events
+     XF86AudioMute exec acpi_handler MUTE
+     XF86AudioRaiseVolume exec acpi_handler VOLUP
+     XF86AudioLowerVolume exec acpi_handler VOLDN
+     XF86MonBrightnessUp exec acpi_handler BRTUP
+     XF86MonBrightnessDown exec acpi_handler BRTDN
 }
 
 #
@@ -59,7 +62,7 @@ bindsym --to-code {
     # switch to workspace
     bindsym $mod+1 workspace $ws1
     bindsym $mod+2 workspace $ws2
-    bindsym $mod+3 workspace 3
+    bindsym $mod+3 workspace $ws3
     bindsym $mod+4 workspace 4
     bindsym $mod+5 workspace 5
     bindsym $mod+6 workspace 6
@@ -69,7 +72,7 @@ bindsym --to-code {
     # move focused container to workspace
     bindsym $mod+Shift+1 move container to workspace $ws1
     bindsym $mod+Shift+2 move container to workspace $ws2
-    bindsym $mod+Shift+3 move container to workspace 3
+    bindsym $mod+Shift+3 move container to workspace $ws3
     bindsym $mod+Shift+4 move container to workspace 4
     bindsym $mod+Shift+5 move container to workspace 5
     bindsym $mod+Shift+6 move container to workspace 6
@@ -150,15 +153,17 @@ input "1:1:AT_Translated_Set_2_keyboard" {
       xkb_options grp:toggle
 }
 
+exec mako
+exec iio-sway
+workspace $ws3
+exec $term -e ncmpcpp
 for_window [title="^EmptySpace$"] floating enable; resize set 450px 800px
 for_window [app_id="firefox"] inhibit_idle fullscreen
 for_window [title="MPlayer"] inhibit_idle visible
-
 workspace $ws2
-exec firefox
+exec "firefox"
 workspace $ws1
-exec swayidle -w timeout 180 'swaymsg "$lock;exec systemctl suspend"'
-exec mako
+exec swayidle -w timeout 400 'swaymsg "$lock;exec systemctl suspend"'
 exec $term
 
 
