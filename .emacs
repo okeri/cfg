@@ -222,15 +222,8 @@
 	 (lsp--make-request "textDocument/hover"
 			    (lsp--text-document-position-params))
 	 (lambda (info)
-	   (when info 
-	     (let ((contents (gethash "contents" info)))
-	       (when (and (hash-table-p contents) (not (hash-table-empty-p contents)))
-		 (let* ((value (gethash "value" contents))
-			(npos (+ 2 (string-match "$" value))))
-		   (if (>= npos (length value))
-		       (message value)
-		     (message (substring value npos)))))))))))))
-
+	   (when info
+	     (message (lsp-ui-doc--extract (gethash "contents" info))))))))))
 
 (defun my-compile()
   "Suggest to compile of project directory"
@@ -254,7 +247,6 @@
   (execute-extended-command nil "compile"))
 
 (defun stdprog()
-  (setq mode-line-format '("%e" mode-line-modified  mode-line-buffer-identification " " (vc-mode vc-mode) " " mode-line-modes mode-line-misc-info mode-line-end-spaces))
   (display-line-numbers-mode)
   (company-mode))
 
@@ -339,7 +331,13 @@
 (add-hook 'emacs-lisp-mode-hook
 	  (lambda()
 	    (local-set-key [?\C-x ?\C-d] 'find-function-at-point)))
- 
+
+(add-hook 'window-configuration-change-hook
+	  (lambda ()
+	    (setq mode-line-format
+		  '("%e" mode-line-modified mode-line-buffer-identification " "
+		    (vc-mode vc-mode) " " mode-line-modes mode-line-misc-info
+		    mode-line-end-spaces))))
 ;; theme
 (deftheme okeri)
 (provide-theme 'okeri)
@@ -350,8 +348,8 @@
  '(company-tooltip-selection ((t (:background "#005f5f" :foreground "black"))))
  '(diff-added ((t (:foreground "#00cd00"))))
  '(diff-context ((t (:foreground "white"))))
- '(diff-file-header ((t (:bold t :foreground "grey60"))))
- '(diff-header ((t (:foreground "grey45"))))
+ '(diff-file-header ((t (:bold t :foreground "#585858"))))
+ '(diff-header ((t (:foreground "#6c6c6c"))))
  '(diff-removed ((t (:foreground "#cd0000"))))
  '(error ((t (:foreground "#cd0000"))))
  '(font-lock-comment-face ((t (:foreground "#cdcd00"))))
@@ -362,7 +360,10 @@
  '(font-lock-preprocessor-face ((t (:foreground "#00afff"))))
  '(font-lock-string-face ((t (:foreground "#00afff"))))
  '(font-lock-type-face ((t (:foreground "#2acd2a"))))
- '(font-lock-variable-name-face ((t (:weight normal :foreground "color-180"))))
+ '(font-lock-variable-name-face ((t (:weight normal :foreground "#d7af87"))))
  '(lsp-ui-doc-background ((t (:background "#00005f"))))
  '(minibuffer-prompt ((t (:foreground "#00afff"))))
- '(org-table ((t (:foreground "#00cdcd")))))
+ '(org-table ((t (:foreground "#00cdcd"))))
+ '(mode-line ((t (:background "#1a1a1a" :foreground "#767676" :box (:line-width -1 :style released-button)))))
+ '(mode-line-inactive ((t (:background "#121212" :foreground "#444444" :box (:line-width -1 :color "#121212" :style nil)))))
+ )
