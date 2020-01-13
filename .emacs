@@ -38,8 +38,6 @@
       project-find-functions '(project-try-ccj project-try-vc)
       lsp-enable-links nil
       lsp-eldoc-enable-hover nil
-      lsp-eldoc-enable-signature-help nil
-      lsp-eldoc-prefer-signature-help nil
       lsp-enable-folding nil
       lsp-imenu-container-name-separator "::"
       lsp-ui-sideline-enable nil
@@ -303,7 +301,6 @@
 	  (lambda()
 	    (local-set-key (kbd "TAB") 'format-region)
 	    (local-set-key [f7] 'my-compile)
-	    (local-set-key [?\C-x ?d] 'my-header-source)
 	    (abbrev-mode 0)
 	    (setup-lsp)))
 
