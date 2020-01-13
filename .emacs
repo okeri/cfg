@@ -4,7 +4,7 @@
 (add-to-list 'package-archives (cons "melpa" "https://melpa.org/packages/"))
 (setq packages
       '(cff lsp-ui flycheck yasnippet yaml-mode ivy-rich fish-mode
-	    counsel company-lsp cmake-mode cargo))
+	    counsel company-lsp cmake-mode meson-mode cargo))
 
 (package-initialize)
 (unless package-archive-contents
@@ -46,7 +46,7 @@
       lsp-ui-doc-enable nil
       lsp-ui-peek-enable nil
       lsp-prefer-flymake nil
-      lsp-clients-clangd-args '("--header-insertion=never" "--completion-style=detailed" "--pch-storage=memory" "--clang-tidy-checks=*")
+      lsp-clients-clangd-args '("--header-insertion=never" "--completion-style=detailed" "--pch-storage=memory" "--clang-tidy=1")
       c-syntactic-indentation nil
       compilation-scroll-output t
       use-dialog-box nil
@@ -260,6 +260,7 @@
 
 (defun setup-lsp()
   (lsp)
+  (yas-minor-mode-on)
   (local-set-key [?\C-x ?d] 'cff-find-other-file)
   (local-set-key [?\C-x ?\C-r] 'lsp-rename)
   (local-set-key [?\C-x ?\C-d] 'lsp-find-definition)
