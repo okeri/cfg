@@ -1,6 +1,6 @@
   - cpuload:
       interval: 3
-      retry: 1
+      invalid: ''
       prefix: ''
       prefix_color: '#4080a0'
       separator_width: 12
@@ -92,7 +92,7 @@
       interval: 5
       prefix: ''
       suffix: '%'
-      ethernet: ''
+      ethernet: ''
       color: '#00CC00'
       separator_width: 12
       invalid: ''

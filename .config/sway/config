@@ -3,9 +3,9 @@ set $mod Mod4
 
 set $term kitty
 set $menu dmenu_run -m 0
-set $ws1 1: work
-set $ws2 2: web
-set $ws3 3: music
+set $ws1 "1:    "
+set $ws2 "2:    "
+set $ws3 "3:    "
 
 set $lock exec swaylock -l -e -i ~/Documents/lock.png
 
@@ -119,7 +119,7 @@ bindsym $mod+r mode "resize"
 # Status Bar:
 #
 bar {
-    font "pango:Roboto" 12
+    font "pango:Roboto, Font Awesome 5 Free" 12
     status_command rstatus
     output eDP-1
     position top
@@ -153,17 +153,18 @@ input "1:1:AT_Translated_Set_2_keyboard" {
       xkb_options grp:toggle
 }
 
-exec mako
-exec iio-sway
-workspace $ws3
-exec $term -e ncmpcpp
+assign [app_id="firefox"] $ws2
 for_window [title="^EmptySpace$"] floating enable; resize set 450px 800px
 for_window [app_id="firefox"] inhibit_idle fullscreen
 for_window [title="MPlayer"] inhibit_idle visible
-workspace $ws2
-exec "firefox"
-workspace $ws1
+
+exec mako
+exec iio-sway
 exec swayidle -w timeout 400 'swaymsg "$lock;exec systemctl suspend"'
+workspace "3:    "
+exec $term -e ncmpcpp
+workspace "1:    "
+exec firefox
 exec $term
 
 
