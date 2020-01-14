@@ -119,7 +119,7 @@ bindsym $mod+r mode "resize"
 # Status Bar:
 #
 bar {
-    font "pango:Roboto, Font Awesome 5 Free" 12
+    font "pango:Roboto, FontAwesome" 12
     status_command rstatus
     output eDP-1
     position top
