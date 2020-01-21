@@ -2,7 +2,7 @@
 set $mod Mod4
 
 set $term kitty
-set $menu wofi -S drun -t $term -W 600 -H 300
+set $menu wofi -S drun -t $term -W 600 -H 300 -i
 set $ws1 "1:    "
 set $ws2 "2:    "
 set $ws3 "3:    "
@@ -22,9 +22,8 @@ xwayland disable
 
 ### Key bindings
 bindsym --to-code {
-     $mod+Down exec $term
+     $mod+Return exec $term
      $mod+q kill
-     $mod+Up kill
      $mod+d exec $menu
      $mod+Shift+c reload
      $mod+Shift+e exit
@@ -46,6 +45,8 @@ bindsym --to-code {
     # Move your focus around
     bindsym $mod+Left focus left
     bindsym $mod+Right focus right
+    bindsym $mod+Up focus up
+    bindsym $mod+Down focus down
 
     # ditto, with arrow keys
     bindsym $mod+Shift+Left move left
@@ -153,6 +154,7 @@ input "1:1:AT_Translated_Set_2_keyboard" {
       xkb_options grp:toggle
 }
 
+default_border pixel 1
 for_window [title="^EmptySpace$"] floating enable; resize set 450px 800px
 for_window [app_id="firefox"] inhibit_idle fullscreen
 for_window [title="MPlayer"] inhibit_idle visible
