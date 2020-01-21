@@ -38,7 +38,7 @@ statusbar_time_color = 245:b
 # visualizer
 visualizer_fifo_path = /tmp/mpd.fifo
 visualizer_type = wave_filled
-visualizer_look = ●▮
+visualizer_look = ▋▋
 visualizer_in_stereo = no
-visualizer_sync_interval = 30
-
+visualizer_sync_interval = 50
+visualizer_color = 174

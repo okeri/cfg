@@ -2,7 +2,7 @@
 set $mod Mod4
 
 set $term kitty
-set $menu dmenu_run -m 0
+set $menu wofi -S drun -t $term -W 600 -H 300
 set $ws1 "1:    "
 set $ws2 "2:    "
 set $ws3 "3:    "
@@ -18,7 +18,7 @@ floating_modifier $mod normal
 workspace_layout tabbed
 workspace $ws1 output eDP-1
 workspace $ws2 output DP-1
-
+xwayland disable
 
 ### Key bindings
 bindsym --to-code {
@@ -153,7 +153,6 @@ input "1:1:AT_Translated_Set_2_keyboard" {
       xkb_options grp:toggle
 }
 
-assign [app_id="firefox"] $ws2
 for_window [title="^EmptySpace$"] floating enable; resize set 450px 800px
 for_window [app_id="firefox"] inhibit_idle fullscreen
 for_window [title="MPlayer"] inhibit_idle visible
@@ -162,9 +161,8 @@ exec mako
 exec iio-sway
 exec swayidle -w timeout 400 'swaymsg "$lock;exec systemctl suspend"'
 workspace "3:    "
-exec $term -e ncmpcpp
-workspace "1:    "
+exec $term -e ncmpcpp -S visualizer
+workspace "2:    "
 exec firefox
+workspace "1:    "
 exec $term
-
-

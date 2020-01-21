@@ -3,8 +3,7 @@ set -x XDG_RUNTIME_DIR /run/user/17
 set -x EDITOR "emacsclient -t"
 set -x LANG en_US.UTF-8
 set -x MOZ_USE_XINPUT2 1
-set -x GDK_BACKEND wayland
-
+set -x MOZ_ENABLE_WAYLAND 1
 set -x CALIB_ROOT ~/proj/calibrator
 
 #$ANDROID_SDK_ROOT/tools $ANDROID_SDK_ROOT/platform-tools $ANDROID_SDK_ROOT/build-tools/25.0.1/ 
@@ -36,7 +35,7 @@ alias em 'emacsclient -t'
 alias emacs 'emacsclient -t'
 alias su 'su -'
 
-if [ -z "$DISPLAY" ]
+if [ -z "$SWAYSOCK" ]
     sway
 end
 

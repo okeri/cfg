@@ -82,11 +82,11 @@
       color: '#CCCCCC'
 
   - custom:
+      signal: 9
       command: '/opt/bin/weather'
-      invalid: 'no data'
+      invalid: 'n/a'
       invalid_color: '#CCCCCC'
-      separator_width: 8
-      interval: 600
+      separator_width: 12
 
   - network:
       interval: 5

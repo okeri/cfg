@@ -1,0 +1,25 @@
+window {
+    margin: 5px;
+    border: 2px solid #2c5073;
+    background-color: #101010;
+    opacity: 0.9;
+    font-family: "Liberation Mono"
+}
+
+#input {
+    margin: 5px;
+    background-color: #101010;
+    border: 2px solid #2c5073;
+    color: cyan;
+}
+
+#inner-box {
+    margin: 5px;
+    color: #c75f00;
+}
+
+flowboxchild:selected {
+    background-color: #101010;
+    font-weight: bold;
+    color: #ca6405;
+}
