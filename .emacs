@@ -23,6 +23,10 @@
 
 ;; settings
 (setq fill-column 80
+
+      ;; w/a for https://github.com/alacritty/alacritty/issues/3091
+      xterm-query-timeout nil
+
       indent-tabs-mode nil
       comment-style 'indent
       inhibit-startup-message t
@@ -133,12 +137,12 @@
 (global-set-key [?\C-x ?x] 'previous-multiframe-window)
 (global-set-key [?\C-x ?\C-x] 'next-multiframe-window)
 (global-set-key [\C-left] 'previous-multiframe-window)
+(global-set-key [\C-right] 'next-multiframe-window)
 (global-set-key [?\C-x ?c] 'counsel-imenu)
 (global-set-key [?\C-x ?e] 'counsel-git-grep)
 (global-set-key [?\C-x ?\C-e] 'counsel-ag)
 (global-set-key [?\C-r] 'swiper-thing-at-point)
 (global-set-key [?\C-s] 'swiper)
-(global-set-key [\C-right] 'next-multiframe-window)
 (global-set-key [?\C-x ?f] 'ivy-switch-buffer)
 (global-set-key [?\C-x ?g] 'ivy-switch-buffer-other-window)
 (global-set-key [(meta /)] 'company-manual-begin)
@@ -361,6 +365,7 @@
  '(lsp-ui-doc-background ((t (:background "#00005f"))))
  '(minibuffer-prompt ((t (:foreground "#00afff"))))
  '(org-table ((t (:foreground "#00cdcd"))))
+ '(line-number ((t (:foreground "#626262"))))
  '(mode-line ((t (:background "#1a1a1a" :foreground "#767676" :box (:line-width -1 :style released-button)))))
  '(mode-line-inactive ((t (:background "#121212" :foreground "#444444" :box (:line-width -1 :color "#121212" :style nil)))))
  )
