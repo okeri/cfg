@@ -115,7 +115,7 @@
           prefix: ' '
           suffix: '%'
         online:
-          prefix: '⚡'
+          prefix: ' '
           suffix: '%'
         full:
           prefix: ' '

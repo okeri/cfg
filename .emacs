@@ -4,7 +4,7 @@
 (add-to-list 'package-archives (cons "melpa" "https://melpa.org/packages/"))
 (setq packages
       '(cff lsp-ui flycheck yasnippet yaml-mode ivy-rich fish-mode
-	    counsel company-lsp cmake-mode meson-mode cargo))
+	    counsel company-lsp cmake-mode meson-mode cargo pinentry))
 
 (package-initialize)
 (unless package-archive-contents
@@ -25,6 +25,7 @@
 (setq fill-column 80
 
       ;; w/a for https://github.com/alacritty/alacritty/issues/3091
+      ;; do not use for kitty
       xterm-query-timeout nil
 
       indent-tabs-mode nil
@@ -39,6 +40,7 @@
       custom-file "/dev/null"
       company-backends '(company-capf company-files company-nxml company-cmake)
       company-async-timeout 3
+      epa-pinentry-mode 'loopback
       project-find-functions '(project-try-ccj project-try-vc)
       lsp-enable-links nil
       lsp-eldoc-enable-hover nil
@@ -114,7 +116,7 @@
 (ivy-rich-mode 1)
 (counsel-mode 1)
 (put 'downcase-region 'disabled nil)
-
+(pinentry-start)
 
 ;; bindings
 (global-set-key [\C-f1] 'gdb-start)

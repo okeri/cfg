@@ -1,8 +1,8 @@
 ### Variables
 set $mod Mod4
 
-set $term kitty
-set $menu wofi -S drun -t $term -W 600 -H 300 -i
+set $term alacritty
+set $menu wofi -S run -t $term -W 600 -H 300 -i
 set $ws1 "1:    "
 set $ws2 "2:    "
 set $ws3 "3:    "
@@ -163,7 +163,7 @@ exec mako
 exec iio-sway
 exec swayidle -w timeout 400 'swaymsg "$lock;exec systemctl suspend"'
 workspace "3:    "
-exec $term -e ncmpcpp -S visualizer
+exec $term -e ncmpcpp
 workspace "2:    "
 exec firefox
 workspace "1:    "
