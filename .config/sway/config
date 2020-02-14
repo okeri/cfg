@@ -1,7 +1,7 @@
 ### Variables
 set $mod Mod4
 
-set $term alacritty
+set $term kitty
 set $menu wofi -S run -t $term -W 600 -H 300 -i
 set $ws1 "1:    "
 set $ws2 "2:    "
@@ -136,11 +136,11 @@ bar {
     }
 }
 
-input "1386:20755:Wacom_HID_5113_Finger" {
+input "1386:20755:WCOM5113:00_056A:5113_Touchscreen" {
      map_to_output eDP-1
 }
 
-input "1386:20755:Wacom_HID_5113_Pen" {
+input "1386:20755:WCOM5113:00_056A:5113C" {
      map_to_output eDP-1
 }
 

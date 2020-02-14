@@ -23,11 +23,6 @@
 
 ;; settings
 (setq fill-column 80
-
-      ;; w/a for https://github.com/alacritty/alacritty/issues/3091
-      ;; do not use for kitty
-      xterm-query-timeout nil
-
       indent-tabs-mode nil
       comment-style 'indent
       inhibit-startup-message t
