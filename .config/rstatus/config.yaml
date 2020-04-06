@@ -130,8 +130,8 @@
   - time:
       prefix: ''
       prefix_color: '#4080a0'
-      separator_width: 12
-      format: '%a, %d.%m.%Y'
+      separator_width: 8
+      format: '%a, %B, %d'
       interval: 60
       color: '#CCCCCC'
 
