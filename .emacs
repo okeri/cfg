@@ -36,7 +36,7 @@
       company-backends '(company-capf company-files company-nxml company-cmake)
       company-async-timeout 3
       epa-pinentry-mode 'loopback
-      project-find-functions '(project-try-ccj project-try-vc)
+      project-find-functions '(project-try-ccj project-try-build-ccj project-try-vc)
       lsp-enable-links nil
       lsp-eldoc-enable-hover nil
       lsp-enable-folding nil
@@ -45,7 +45,7 @@
       lsp-ui-doc-enable nil
       lsp-ui-peek-enable nil
       lsp-prefer-flymake nil
-      lsp-clients-clangd-args '("--header-insertion=never" "--completion-style=detailed" "--pch-storage=memory" "--clang-tidy=1")
+      lsp-clients-clangd-args '("--header-insertion=never" "--completion-style=detailed" "--pch-storage=memory" "--clang-tidy=1" (concat "--compile-commands-dir=" (ccj-path)))
       c-syntactic-indentation nil
       compilation-scroll-output t
       use-dialog-box nil
@@ -211,6 +211,14 @@
 
 (defun project-try-ccj(dir)
   (project-try-template dir "compile_commands.json"))
+
+(defun project-try-build-ccj(dir)
+  (project-try-template dir "build/compile_commands.json"))
+
+(defun ccj-path()
+  (let ((root (car (project-roots (project-current t))))
+	(if (locate-dominating-file root "build/compile_commands.json")
+	    (concat root "build") root))))
 
 (defun my-lsp-dispay() 
   "Alternative (minimalistic) UI to lsp-ui-doc :)"
