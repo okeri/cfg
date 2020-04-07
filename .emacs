@@ -45,7 +45,7 @@
       lsp-ui-doc-enable nil
       lsp-ui-peek-enable nil
       lsp-prefer-flymake nil
-      lsp-clients-clangd-args '("--header-insertion=never" "--completion-style=detailed" "--pch-storage=memory" "--clang-tidy=1" (concat "--compile-commands-dir=" (ccj-path)))
+      clangd-args '("--header-insertion=never" "--completion-style=detailed" "--pch-storage=memory" "--clang-tidy=1")
       c-syntactic-indentation nil
       compilation-scroll-output t
       use-dialog-box nil
@@ -216,9 +216,9 @@
   (project-try-template dir "build/compile_commands.json"))
 
 (defun ccj-path()
-  (let ((root (car (project-roots (project-current t))))
-	(if (locate-dominating-file root "build/compile_commands.json")
-	    (concat root "build") root))))
+  (let ((root (car (project-roots (project-current t)))))
+    (if (locate-dominating-file root "build/compile_commands.json")
+	(file-truename (concat root "build")) root)))
 
 (defun my-lsp-dispay() 
   "Alternative (minimalistic) UI to lsp-ui-doc :)"
@@ -258,6 +258,8 @@
   (company-mode))
 
 (defun setup-lsp()
+  (setq lsp-clients-clangd-args clangd-args)
+  (add-to-list 'lsp-clients-clangd-args  (concat "--compile-commands-dir=" (ccj-path)))
   (lsp)
   (yas-minor-mode-on)
   (local-set-key [?\C-x ?d] 'cff-find-other-file)
