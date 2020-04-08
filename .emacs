@@ -239,7 +239,7 @@
 	    (= (length compile-history) 0))
     (setq compile-history '("make -k ")))
   (let* ((root (car (project-roots (project-current t))))
-	 (build (concat root "build"))
+	 (build (file-truename (concat root "build")))
 	 (curr (if (file-directory-p build)
 		  (concat "ninja -C " build)
 		 (concat "make -k -C " root))))
