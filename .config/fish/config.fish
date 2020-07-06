@@ -19,13 +19,6 @@ function fish_right_prompt
 	echo -n -s (set_color cyan)(git rev-parse --abbrev-ref HEAD ^ /dev/null)(set_color normal)
 end
 
-function mc -d "Midnight Commander"
-	set old_shell $SHELL
-	set SHELL /bin/bash
-	command /bin/mc
-	set SHELL $old_shell
-end
-
 function cd
 	builtin cd $argv
 	ls

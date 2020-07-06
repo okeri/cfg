@@ -69,10 +69,9 @@
 
   - volume:
       mixer: 'PCM'
-      signal: 10
-      jack_switch_outputs: true
-      jack_mute_on_unplug: true
-      jack_unmute_on_plug: true
+      alsa_jack_switch_outputs: true
+      alsa_jack_mute_on_unplug: true
+      alsa_jack_unmute_on_plug: true
       suffix: '%'
       prefix_color: '#4080a0'
       separator_width: 12

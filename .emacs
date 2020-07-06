@@ -1,5 +1,4 @@
 ;; https://github.com/okeri/cfg
-
 (require 'package)
 (add-to-list 'package-archives (cons "melpa" "https://melpa.org/packages/"))
 (setq packages
@@ -23,6 +22,7 @@
 
 ;; settings
 (setq fill-column 80
+      xterm-query-timeout nil
       indent-tabs-mode nil
       comment-style 'indent
       inhibit-startup-message t
