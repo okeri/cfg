@@ -17,14 +17,14 @@ output * bg ~/Documents/moon.jpg fill
 floating_modifier $mod normal
 workspace_layout tabbed
 workspace $ws1 output eDP-1
-workspace $ws2 output DP-1
+workspace $ws2 output DP-2
 xwayland disable
 
 ### Key bindings
 bindsym --to-code {
      $mod+Return exec $term
      $mod+q kill
-     $mod+Shift+Cd exec $menu
+     $mod+Shift+d exec $menu
      $mod+d exec sws.sh -d "wofi -d"
      $mod+Shift+c reload
      $mod+Shift+e exit
