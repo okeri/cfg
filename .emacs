@@ -348,7 +348,6 @@
 		    mode-line-end-spaces))))
 ;; theme
 (deftheme okeri)
-(provide-theme 'okeri)
 (custom-theme-set-faces 'okeri
  '(highlight ((t (:background "#303030"))))
  '(region ((t (:background "#303030"))))
@@ -376,3 +375,5 @@
  '(mode-line ((t (:background "#1a1a1a" :foreground "#767676" :box (:line-width -1 :style released-button)))))
  '(mode-line-inactive ((t (:background "#121212" :foreground "#444444" :box (:line-width -1 :color "#121212" :style nil)))))
  )
+
+(enable-theme 'okeri)

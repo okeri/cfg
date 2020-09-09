@@ -24,8 +24,8 @@ xwayland disable
 bindsym --to-code {
      $mod+Return exec $term
      $mod+q kill
-     $mod+Shift+d exec $menu
-     $mod+d exec sws.sh -d "wofi -d"
+     $mod+d exec $menu
+     $mod+Shift+d exec sws.sh -d "wofi -d"
      $mod+Shift+c reload
      $mod+Shift+e exit
      Print exec grim /tmp/`date +%d.%m.%Y-%M.%H.%S.png`
@@ -157,7 +157,7 @@ input "1:1:AT_Translated_Set_2_keyboard" {
 
 default_border pixel 1
 for_window [title="^EmptySpace$"] floating enable; resize set 450px 800px
-for_window [app_id="firefox"] inhibit_idle fullscreen
+for_window [app_id="firefox"] inhibit_idle fullscreen visible
 for_window [app_id="mpv"] inhibit_idle visible
 
 exec mako

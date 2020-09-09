@@ -28,7 +28,7 @@ alias em 'emacsclient -t'
 alias emacs 'emacsclient -t'
 alias su 'su -'
 
-if test -z "$SWAYSOCK" -a /dev/tty1 = (tty)
+if test -z "$SWAYSOCK" -a /dev/tty1 = (tty) 
     sway
 end
 
