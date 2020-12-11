@@ -3,7 +3,7 @@
 (add-to-list 'package-archives (cons "melpa" "https://melpa.org/packages/"))
 (setq packages
       '(cff lsp-ui flycheck yasnippet yaml-mode ivy-rich fish-mode
-	    counsel company-lsp cmake-mode meson-mode cargo pinentry))
+	    counsel company-lsp cmake-mode meson-mode cargo pinentry popup google-translate))
 
 (package-initialize)
 (unless package-archive-contents
@@ -54,7 +54,7 @@
       display-line-numbers-width-start 4
       w32-get-true-file-atttributes nil
       gud-key-prefix "\C-x\C-g"
-      recentf-max-saved-items 256
+      recentf-max-saved-items 128
       ya-cppref-path-to-doc-root "/usr/share/cpp/reference/"
       ivy-height 16
       ivy-fixed-height-minibuffer t
@@ -94,7 +94,8 @@
         (:columns
          ((ivy-rich-candidate (:width 0.8))
           (ivy-rich-file-last-modified-time (:face font-lock-comment-face)))))
-
+      google-translate-default-target-language "ru"
+      google-translate-default-source-language "de"
       auto-mode-alist (append auto-mode-alist '(("\\.rs\\'" . rust-mode)
 						("\\.cu\\'" . c++-mode)
 						("\\.cl\\'" . c-mode)
@@ -133,6 +134,8 @@
 (global-set-key [?\C-c ?\t] 'untabify)
 (global-set-key [?\C-x ?x] 'previous-multiframe-window)
 (global-set-key [?\C-x ?\C-x] 'next-multiframe-window)
+(global-set-key [?\C-c ?\C-g] 'google-translate-at-point)
+(global-set-key [?\C-c ?g] 'google-translate-at-point-reverse)
 (global-set-key [\C-left] 'previous-multiframe-window)
 (global-set-key [\C-right] 'next-multiframe-window)
 (global-set-key [?\C-x ?c] 'counsel-imenu)
@@ -302,6 +305,12 @@
 
 (with-eval-after-load 'yasnippet
   (yas-load-directory (car yas-snippet-dirs) t))
+
+(with-eval-after-load 'google-translate-tk
+  (defun google-translate--search-tkk ()
+    "Search TKK."
+    (list 430675 2721866130)))
+
 
 ;; hooks and etc...
 (add-hook 'lsp-eldoc-hook 'my-lsp-dispay)
