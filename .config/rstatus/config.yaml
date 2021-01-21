@@ -68,7 +68,7 @@
         70: '#FF0000'
 
   - volume:
-      mixer: 'PCM'
+      mixer: 'Master'
       alsa_jack_switch_outputs: true
       alsa_jack_mute_on_unplug: true
       alsa_jack_unmute_on_plug: true
@@ -79,7 +79,7 @@
       invalid_color: '#FFF600'
       prefix_extras: ['', '']
       color: '#CCCCCC'
-
+      
   - custom:
       signal: 9
       command: '/opt/bin/weather'
@@ -125,21 +125,13 @@
         0: '#FF0000'
         15: '#FFF600'
         30: '#FFFFFF'
-
-  - time:
-      prefix: ''
-      prefix_color: '#4080a0'
-      separator_width: 8
-      format: '%a, %B, %d'
-      interval: 60
-      color: '#CCCCCC'
-
+      warning_level: 10
+      warning_action: 'systemctl suspend'
+      
   - time:
       prefix: ''
       prefix_color: '#4080a0'
-      separator_width: 12
-      format: '%I:%M %P'
+      separator_width: 8
+      format: '%a, %B, %d  %H:%M'
       interval: 1
       color: '#CCCCCC'
-
-

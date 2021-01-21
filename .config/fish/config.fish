@@ -1,6 +1,6 @@
 set -x ANDROID_SDK_ROOT /opt/android-sdk
 set -x XDG_RUNTIME_DIR /run/user/17
-set -x EDITOR "emacsclient -t"
+set -gx EDITOR "emacst"
 set -x LANG en_US.UTF-8
 set -x MOZ_USE_XINPUT2 1
 set -x MOZ_ENABLE_WAYLAND 1
