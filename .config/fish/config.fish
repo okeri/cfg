@@ -16,7 +16,8 @@ function fish_right_prompt
 	if test $cmd_status_ -ne 0
 		echo -n (set_color red) "[$cmd_status_] "
 	end
-	echo -n -s (set_color cyan)(git rev-parse --abbrev-ref HEAD ^ /dev/null)(set_color normal)
+	echo (set_color white) $CMD_DURATION\ms
+	echo -n (set_color cyan) (git rev-parse --abbrev-ref HEAD ^ /dev/null)(set_color normal)
 end
 
 function cd
