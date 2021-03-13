@@ -2,8 +2,8 @@
 (require 'package)
 (add-to-list 'package-archives (cons "melpa" "https://melpa.org/packages/"))
 (setq packages
-      '(cff lsp-ui flycheck yasnippet yaml-mode ivy-rich fish-mode
-	    counsel company-lsp cmake-mode meson-mode cargo pinentry popup google-translate))
+      '(cff lsp-ui flycheck yasnippet yaml-mode ivy-rich fish-mode company
+	    counsel cmake-mode meson-mode cargo pinentry popup google-translate))
 
 (package-initialize)
 (unless package-archive-contents
@@ -45,6 +45,11 @@
       lsp-ui-doc-enable nil
       lsp-ui-peek-enable nil
       lsp-prefer-flymake nil
+      lsp-log-io nil
+      lsp-enable-file-watchers nil
+      lsp-idle-delay 0.500
+      read-process-output-max (* 1024 1024)
+      gc-cons-threshold 100000000
       clangd-args '("--header-insertion=never" "--completion-style=detailed" "--pch-storage=memory" "--clang-tidy=1")
       c-syntactic-indentation nil
       compilation-scroll-output t
@@ -233,7 +238,8 @@
 			    (lsp--text-document-position-params))
 	 (lambda (info)
 	   (when info
-	     (message (lsp-ui-doc--extract (gethash "contents" info))))))))))
+	     (message (replace-regexp-in-string "%" "" (lsp-ui-doc--extract
+						(gethash "contents" info)))))))))))
 
 (defun my-compile()
   "Suggest to compile of project directory"
