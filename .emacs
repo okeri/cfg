@@ -3,7 +3,7 @@
 (add-to-list 'package-archives (cons "melpa" "https://melpa.org/packages/"))
 (setq packages
       '(cff lsp-ui flycheck yasnippet yaml-mode ivy-rich fish-mode company
-	    counsel cmake-mode meson-mode cargo pinentry popup google-translate))
+	    counsel cmake-mode cargo pinentry popup google-translate))
 
 (package-initialize)
 (unless package-archive-contents
@@ -15,6 +15,7 @@
 
 (add-to-list 'load-path "~/.emacs.d/lisp")
 (require 'gdb-ok)
+(require 'meson)
 (require 'yasnippet nil t)
 
 ;; vars
@@ -36,7 +37,7 @@
       company-backends '(company-capf company-files company-nxml company-cmake)
       company-async-timeout 3
       epa-pinentry-mode 'loopback
-      project-find-functions '(project-try-ccj project-try-build-ccj project-try-vc)
+      project-find-functions '(project-try-ccj project-try-build-ccj project-try-pvc)
       lsp-enable-links nil
       lsp-eldoc-enable-hover nil
       lsp-enable-folding nil
@@ -79,7 +80,7 @@
          ((ivy-rich-candidate (:width 0.15))
           (ivy-rich-switch-buffer-size (:width 7))
           (ivy-rich-switch-buffer-major-mode (:width 20 :face warning))
-          (ivy-rich-switch-buffer-project (:width 15 :face success))
+          (get-buffer-project (:width 15 :face success))
           (ivy-rich-switch-buffer-path (:width (lambda (x) (ivy-rich-switch-buffer-shorten-path x (ivy-rich-minibuffer-width 0.6))))))
          :predicate
          (lambda (cand) (get-buffer cand)))
@@ -124,8 +125,9 @@
 (global-set-key [f7] 'compile)
 (global-set-key [f8] 'next-error)
 (global-set-key [\C-f8] 'previous-error)
-(global-set-key [f9] 'toggle-format-on-save)
-(global-set-key [f10] 'menu-bar-open)
+(global-set-key [f9] 'flycheck-next-error)
+(global-set-key [\C-f9] 'flycheck-previous-error)
+(global-set-key [f10] 'toggle-format-on-save)
 (global-set-key [f12] 'kill-emacs)
 (global-set-key [\C-/] 'undo)
 (global-set-key [\C-_] 'undo)
@@ -213,9 +215,20 @@
 (defun message-box(st &optional crap)
   (dframe-message st))
 
+(defun project-try-pvc(dir)
+  (let ((project (project-try-vc dir)))
+    (setq-local project project)
+    project))
+
+
 (defun project-try-template (dir id)
-  (let ((f (locate-dominating-file dir id)))
-    (when f (cons 'vc (file-name-directory f)))))
+  (let* ((f (locate-dominating-file dir id))
+	 (project (when f
+		    (string-remove-suffix "/"
+					  (file-name-directory f)))))
+    (when project 
+      (setq-local project project)
+      (cons 'vc  project))))
 
 (defun project-try-ccj(dir)
   (project-try-template dir "compile_commands.json"))
@@ -227,6 +240,13 @@
   (let ((root (car (project-roots (project-current t)))))
     (if (locate-dominating-file root "build/compile_commands.json")
 	(file-truename (concat root "build")) root)))
+
+(defun get-buffer-project (candidate)
+  (let ((buffer (get-buffer candidate)))
+    (when buffer
+      (with-current-buffer buffer
+	(if (boundp 'project) (file-name-nondirectory project) "")
+	  ))))
 
 (defun my-lsp-dispay() 
   "Alternative (minimalistic) UI to lsp-ui-doc :)"
@@ -283,12 +303,6 @@
      (list (point) (point))))
   (lsp-format-region start end)
   (back-to-indentation))
-
-(defun ivy-rich-path (candidate)
-  (let* ((buffer (get-buffer candidate))
-	 (filename (when buffer
-		     (buffer-local-value 'default-directory buffer))))
-    (if filename filename "" )))
 
 (defun toggle-format-on-save()
   (interactive)
@@ -391,7 +405,6 @@
  '(org-table ((t (:foreground "#00cdcd"))))
  '(line-number ((t (:foreground "#626262"))))
  '(mode-line ((t (:background "#1a1a1a" :foreground "#767676" :box (:line-width -1 :style released-button)))))
- '(mode-line-inactive ((t (:background "#121212" :foreground "#444444" :box (:line-width -1 :color "#121212" :style nil)))))
- )
+ '(mode-line-inactive ((t (:background "#121212" :foreground "#444444" :box (:line-width -1 :color "#121212" :style nil))))))
 
 (enable-theme 'okeri)
