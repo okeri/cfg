@@ -14,7 +14,7 @@
     (package-install package)))
 
 (add-to-list 'load-path "~/.emacs.d/lisp")
-(require 'gdb-ok)
+
 (require 'meson)
 (require 'yasnippet nil t)
 
@@ -121,7 +121,6 @@
 (pinentry-start)
 
 ;; bindings
-(global-set-key [\C-f1] 'gdb-start)
 (global-set-key [f7] 'compile)
 (global-set-key [f8] 'next-error)
 (global-set-key [\C-f8] 'previous-error)
@@ -158,44 +157,6 @@
 (global-set-key [mouse-5] 'scroll-up)
 
 
-;; gdb init function
-(defun gdb-start()
-  (interactive)
-  (if (or (not (boundp 'gud-comint-buffer))
-	  (not (get-buffer-process gud-comint-buffer)))
-      (progn
-	(global-set-key [f1] 'gdb-switch)
-	(global-set-key [f2] (lambda() (interactive) (gdb-go t nil)))
-	(global-set-key [f3] (lambda() (interactive) (gdb-go nil nil)))
-	(global-set-key [\C-f2] (lambda() (interactive) (gdb-go t t)))
-	(global-set-key [\C-f3] (lambda() (interactive) (gdb-go nil t)))
-	(global-set-key [f4] 'gdb-toggle-break)
-	(global-set-key [\C-f4] 'gdb-var-clear)
-	(global-set-key [f5] 'gud-cont)
-	(global-set-key [f6] 'gdb-switch2)
-	(global-set-key [\C-f5] 'gud-until)
-	(global-set-key [?\M-\[ ?m] 'gud-watch)
-	(global-set-key "\M-\r" 'gud-watch)
-	(global-set-key [?\C-x ?w] (lambda() (interactive) (gud-watch 1)))
-	(gdb "gdb -i=mi2 -quiet"))
-    (if (y-or-n-p "Are you sure to quit debug ? ")
-	(progn
-	  (gdb-quit)
-	  (global-unset-key [f1])
-	  (global-unset-key [f2])
-	  (global-unset-key [f3])
-	  (global-unset-key [\C-f2])
-	  (global-unset-key [\C-f3])
-	  (global-unset-key [f4])
-	  (global-unset-key [\C-f4])
-	  (global-unset-key [f5])
-	  (global-unset-key [f6])
-	  (global-unset-key [\C-f5])
-	  (global-unset-key [?\M-\[ ?m])
-	  (global-unset-key "\M-\r")
-	  (global-unset-key [?\C-x ?w])))))
-
-
 ;; extensions
 (defun wl-clipboard()
   (interactive)
@@ -215,7 +176,7 @@
 (defun message-box(st &optional crap)
   (dframe-message st))
 
-;; project
+;; project support
 (defun project-try-pvc(dir)
   (let ((proj (project-try-vc dir)))
     (setq-local project (file-truename (directory-file-name (cdr proj))))
@@ -332,7 +293,7 @@
     (prog1
 	(setq format-on-save t)
       (message "format on save enabled"))))
-
+;; hacks
 (with-eval-after-load 'counsel
   (let ((done (where-is-internal #'ivy-done     ivy-minibuffer-map t))
 	(alt  (where-is-internal #'ivy-alt-done ivy-minibuffer-map t)))
