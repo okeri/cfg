@@ -179,7 +179,10 @@
 ;; project support
 (defun project-try-pvc(dir)
   (let ((proj (project-try-vc dir)))
-    (setq-local project (file-truename (directory-file-name (cdr proj))))
+    (setq-local project
+		(if proj
+		    (file-truename (directory-file-name (cdr proj)))
+		  ""))
     proj))
 
 (defun project-try-template (dir spec id)
