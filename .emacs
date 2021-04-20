@@ -37,7 +37,7 @@
       company-backends '(company-capf company-files company-nxml company-cmake)
       company-async-timeout 3
       epa-pinentry-mode 'loopback
-      project-find-functions '(project-try-ccj project-try-build-ccj project-try-pvc)
+      project-find-functions '(project-try-build-ccj project-try-ccj project-try-pvc)
       lsp-enable-links nil
       lsp-eldoc-enable-hover nil
       lsp-enable-folding nil
@@ -60,7 +60,7 @@
       display-line-numbers-width-start 4
       w32-get-true-file-atttributes nil
       gud-key-prefix "\C-x\C-g"
-      recentf-max-saved-items 128
+      recentf-max-saved-items 256
       ya-cppref-path-to-doc-root "/usr/share/cpp/reference/"
       ivy-height 16
       ivy-fixed-height-minibuffer t
@@ -81,7 +81,7 @@
           (ivy-rich-switch-buffer-size (:width 7))
           (ivy-rich-switch-buffer-major-mode (:width 20 :face warning))
           (get-buffer-project (:width 15 :face success))
-          (ivy-rich-switch-buffer-path (:width (lambda (x) (ivy-rich-switch-buffer-shorten-path x (ivy-rich-minibuffer-width 0.6))))))
+	  (get-buffer-relproj-path (:width 60)))
          :predicate
          (lambda (cand) (get-buffer cand)))
         counsel-M-x
@@ -215,80 +215,86 @@
 (defun message-box(st &optional crap)
   (dframe-message st))
 
+;; project
 (defun project-try-pvc(dir)
-  (let ((project (project-try-vc dir)))
-    (setq-local project project)
-    project))
+  (let ((proj (project-try-vc dir)))
+    (setq-local project (file-truename (directory-file-name (cdr proj))))
+    proj))
 
-
-(defun project-try-template (dir id)
+(defun project-try-template (dir spec id)
   (let* ((f (locate-dominating-file dir id))
-	 (project (when f
-		    (string-remove-suffix "/"
-					  (file-name-directory f)))))
-    (when project 
-      (setq-local project project)
-      (cons 'vc  project))))
+	 (proj (when f (file-name-directory f))))
+    (when proj
+      (setq-local project (file-truename (directory-file-name proj)))
+      (cons spec proj))))
 
 (defun project-try-ccj(dir)
-  (project-try-template dir "compile_commands.json"))
+  (project-try-template dir 'vc "compile_commands.json"))
 
 (defun project-try-build-ccj(dir)
-  (project-try-template dir "build/compile_commands.json"))
+  (let ((proj (project-try-template dir 'vc "build/compile_commands.json")))
+    (when proj
+      (setq-local buildpath (concat (cdr proj) "build")))
+      proj))
 
-(defun ccj-path()
-  (let ((root (car (project-roots (project-current t)))))
-    (if (locate-dominating-file root "build/compile_commands.json")
-	(file-truename (concat root "build")) root)))
+(defun find-build-path()
+    (if (boundp 'buildpath) buildpath
+      (let ((root (car (project-roots (project-current t)))))
+	(if (boundp 'buildpath)
+	    (file-truename buildpath)
+	  root))))
 
 (defun get-buffer-project (candidate)
-  (let ((buffer (get-buffer candidate)))
-    (when buffer
-      (with-current-buffer buffer
-	(if (boundp 'project) (file-name-nondirectory project) "")
-	  ))))
+  (let* ((buffer (get-buffer candidate))
+	(proj (when (local-variable-p 'project buffer)
+		(buffer-local-value 'project buffer))))
+    (if proj (file-name-nondirectory proj) "" )))
 
-(defun my-lsp-dispay() 
-  "Alternative (minimalistic) UI to lsp-ui-doc :)"
-  (when (bound-and-true-p lsp-mode)
-    (let ((diags (lsp--cur-line-diagnotics)))
-      (when (and (= (length diags) 0) (lsp--capability "hoverProvider"))
-	(lsp--send-request-async
-	 (lsp--make-request "textDocument/hover"
-			    (lsp--text-document-position-params))
-	 (lambda (info)
-	   (when info
-	     (message (replace-regexp-in-string "%" "" (lsp-ui-doc--extract
-						(gethash "contents" info)))))))))))
+(defun get-buffer-relproj-path (candidate)
+    (let* ((buffer (get-buffer candidate))
+	   (filename (buffer-local-value 'buffer-file-name buffer))
+	   (proj
+	    (when (local-variable-p 'project buffer)
+	      (buffer-local-value 'project buffer)))
+	   (relpath
+	    (if filename
+		(if (boundp 'proj)
+		    (substring-no-properties filename (+ 1 (length proj)))
+		  (file-name-directory filename))
+	      "")))
+      relpath))
 
 (defun my-compile()
   "Suggest to compile of project directory"
   (interactive)
   (when (or (not (boundp 'compile-history))
 	    (= (length compile-history) 0))
-    (setq compile-history '("make -k ")))
-  (let* ((root (car (project-roots (project-current t))))
-	 (build (file-truename (concat root "build")))
-	 (curr (if (file-directory-p build)
-		  (concat "ninja -C " build)
-		 (concat "make -k -C " root))))
+    (setq-local compile-history '("make -k ")))
+  (when project
+    (let ((curr
+	   (if (and (boundp 'buildpath)
+		    (file-directory-p buildpath))
+	       (concat "ninja -C " buildpath)
+	     (concat "make -k -C " project))))
     (unless (catch 'found
 	      (dolist (v compile-history)
 		(when (string-prefix-p curr v)
 		  (throw 'found t)))
 	      nil)
-      (push curr compile-history)))
+      (push curr compile-history))))
   (when (> (length compile-history) 0)
     (setq compile-command (car compile-history)))
   (execute-extended-command nil "compile"))
 
+;; lsp, code, formatting
 (defun stdprog()
   (display-line-numbers-mode)
-  (company-mode))
+  (company-mode)
+  (find-build-path))
 
 (defun setup-lsp()
   (setq lsp-clients-clangd-args clangd-args)
-  (add-to-list 'lsp-clients-clangd-args  (concat "--compile-commands-dir=" (ccj-path)))
+  (add-to-list 'lsp-clients-clangd-args  (concat "--compile-commands-dir=" (find-build-path)))
   (lsp)
   (yas-minor-mode-on)
   (local-set-key [?\C-x ?d] 'cff-find-other-file)
@@ -303,6 +309,19 @@
      (list (point) (point))))
   (lsp-format-region start end)
   (back-to-indentation))
+
+(defun my-lsp-dispay() 
+  "Alternative (minimalistic) UI to lsp-ui-doc :)"
+  (when (bound-and-true-p lsp-mode)
+    (let ((diags (lsp--cur-line-diagnotics)))
+      (when (and (= (length diags) 0) (lsp--capability "hoverProvider"))
+	(lsp--send-request-async
+	 (lsp--make-request "textDocument/hover"
+			    (lsp--text-document-position-params))
+	 (lambda (info)
+	   (when info
+	     (message (replace-regexp-in-string "%" "" (lsp-ui-doc--extract
+						(gethash "contents" info)))))))))))
 
 (defun toggle-format-on-save()
   (interactive)
