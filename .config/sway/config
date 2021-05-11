@@ -153,7 +153,7 @@ input "1739:32651:SYNA2B31:00_06CB:7F8B_Touchpad" {
 
 input "1:1:AT_Translated_Set_2_keyboard" {
       xkb_layout us,ru
-      xkb_options grp:toggle
+      xkb_options grp:toggle,compose:rctrl
 }
 
 default_border pixel 1

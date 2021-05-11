@@ -37,7 +37,7 @@
       company-backends '(company-capf company-files company-nxml company-cmake)
       company-async-timeout 3
       epa-pinentry-mode 'loopback
-      project-find-functions '(project-try-build-ccj project-try-ccj project-try-pvc)
+      project-find-functions '(project-try-ccj project-try-pvc project-try-makefile)
       lsp-enable-links nil
       lsp-eldoc-enable-hover nil
       lsp-enable-folding nil
@@ -121,7 +121,7 @@
 (pinentry-start)
 
 ;; bindings
-(global-set-key [f7] 'compile)
+(global-set-key [f7] 'my-compile)
 (global-set-key [f8] 'next-error)
 (global-set-key [\C-f8] 'previous-error)
 (global-set-key [f9] 'flycheck-next-error)
@@ -177,6 +177,13 @@
   (dframe-message st))
 
 ;; project support
+(defun project-try-template (dir id)
+  (let* ((f (locate-dominating-file dir id))
+	 (proj (when f (file-name-directory f))))
+    (when proj
+      (setq-local project (file-truename (directory-file-name proj)))
+      (cons proj (concat proj (file-name-directory id))))))
+
 (defun project-try-pvc(dir)
   (let ((proj (project-try-vc dir)))
     (setq-local project
@@ -185,27 +192,27 @@
 		  ""))
     proj))
 
-(defun project-try-template (dir spec id)
-  (let* ((f (locate-dominating-file dir id))
-	 (proj (when f (file-name-directory f))))
-    (when proj
-      (setq-local project (file-truename (directory-file-name proj)))
-      (cons spec proj))))
-
 (defun project-try-ccj(dir)
-  (project-try-template dir 'vc "compile_commands.json"))
-
-(defun project-try-build-ccj(dir)
-  (let ((proj (project-try-template dir 'vc "build/compile_commands.json")))
+  (let ((proj (or (project-try-template dir "compile_commands.json")
+		  (project-try-template dir "build/compile_commands.json"))))
     (when proj
-      (setq-local buildpath (concat (cdr proj) "build")))
-      proj))
+      (setq-local ccjpath (cdr proj))
+      (when (file-exists-p (concat ccjpath "build.ninja"))
+	(setq-local buildpath (cons "ninja" ccjpath)))
+      (cons 'vc (car proj)))))
 
-(defun find-build-path()
-    (if (boundp 'buildpath) buildpath
+(defun project-try-makefile(dir)
+  (let ((proj (or (project-try-template dir "Makefile")
+		  (project-try-template dir "build/Makefile"))))
+    (when proj
+      (setq-local buildpath (cons "make" (cdr proj)))
+      (cons 'vc (car proj)))))
+
+(defun find-compilation-database()
+    (if (boundp 'ccjpath) ccjpath
       (let ((root (car (project-roots (project-current t)))))
-	(if (boundp 'buildpath)
-	    (file-truename buildpath)
+	(if (boundp 'ccjpath)
+	    (file-truename ccjpath)
 	  root))))
 
 (defun get-buffer-project (candidate)
@@ -222,9 +229,9 @@
 	      (buffer-local-value 'project buffer)))
 	   (relpath
 	    (if filename
-		(if (boundp 'proj)
+		(if (and (boundp 'proj) (not (string-empty-p proj)))
 		    (substring-no-properties filename (+ 1 (length proj)))
-		  (file-name-directory filename))
+		  filename)
 	      "")))
       relpath))
 
@@ -234,15 +241,15 @@
   (when (or (not (boundp 'compile-history))
 	    (= (length compile-history) 0))
     (setq-local compile-history '("make -k ")))
-  (when project
+  (when (and (boundp 'project) project)
     (let ((curr
 	   (if (and (boundp 'buildpath)
-		    (file-directory-p buildpath))
-	       (concat "ninja -C " buildpath)
+		    (file-directory-p (cdr buildpath)))
+	       (concat (car buildpath) " -C " (cdr buildpath))
 	     (concat "make -k -C " project))))
     (unless (catch 'found
 	      (dolist (v compile-history)
-		(when (string-prefix-p curr v)
+		(when (string= curr v)
 		  (throw 'found t)))
 	      nil)
       (push curr compile-history))))
@@ -253,12 +260,11 @@
 ;; lsp, code, formatting
 (defun stdprog()
   (display-line-numbers-mode)
-  (company-mode)
-  (find-build-path))
+  (company-mode))
 
 (defun setup-lsp()
   (setq lsp-clients-clangd-args clangd-args)
-  (add-to-list 'lsp-clients-clangd-args  (concat "--compile-commands-dir=" (find-build-path)))
+  (add-to-list 'lsp-clients-clangd-args  (concat "--compile-commands-dir=" (find-compilation-database)))
   (lsp)
   (yas-minor-mode-on)
   (local-set-key [?\C-x ?d] 'cff-find-other-file)
@@ -323,7 +329,6 @@
 (add-hook 'c-mode-common-hook
 	  (lambda()
 	    (local-set-key (kbd "TAB") 'format-region)
-	    (local-set-key [f7] 'my-compile)
 	    (abbrev-mode 0)
 	    (setup-lsp)))
 
@@ -348,6 +353,8 @@
 	    (setup-lsp)))
 
 (add-hook 'python-mode-hook 'setup-lsp)
+(add-hook 'meson-mode-hook 'find-compilation-database)
+(add-hook 'makefile-mode-hook 'find-compilation-database)
 (add-hook 'emacs-lisp-mode-hook
 	  (lambda()
 	    (local-set-key [?\C-x ?\C-d] 'find-function-at-point)))
