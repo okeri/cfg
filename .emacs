@@ -37,7 +37,7 @@
       company-backends '(company-capf company-files company-nxml company-cmake)
       company-async-timeout 3
       epa-pinentry-mode 'loopback
-      project-find-functions '(project-try-ccj project-try-pvc project-try-makefile)
+      project-find-functions '(project-try-ccj project-try-cargo project-try-pvc project-try-makefile)
       lsp-enable-links nil
       lsp-eldoc-enable-hover nil
       lsp-enable-folding nil
@@ -81,7 +81,7 @@
           (ivy-rich-switch-buffer-size (:width 7))
           (ivy-rich-switch-buffer-major-mode (:width 20 :face warning))
           (get-buffer-project (:width 15 :face success))
-	  (get-buffer-relproj-path (:width 60)))
+	  (get-buffer-relproj-path (:width 134)))
          :predicate
          (lambda (cand) (get-buffer cand)))
         counsel-M-x
@@ -208,6 +208,11 @@
       (setq-local buildpath (cons "make" (cdr proj)))
       (cons 'vc (car proj)))))
 
+(defun project-try-cargo(dir)
+  (let ((proj (project-try-template dir "Cargo.toml")))
+    (when proj
+      (cons 'vc (car proj)))))
+
 (defun find-compilation-database()
     (if (boundp 'ccjpath) ccjpath
       (let ((root (car (project-roots (project-current t)))))
@@ -222,18 +227,18 @@
     (if proj (file-name-nondirectory proj) "" )))
 
 (defun get-buffer-relproj-path (candidate)
-    (let* ((buffer (get-buffer candidate))
-	   (filename (buffer-local-value 'buffer-file-name buffer))
-	   (proj
+  (let* ((buffer (get-buffer candidate))
+	 (filename (buffer-local-value 'buffer-file-name buffer))
+	 (proj
 	    (when (local-variable-p 'project buffer)
 	      (buffer-local-value 'project buffer)))
-	   (relpath
-	    (if filename
-		(if (and (boundp 'proj) (not (string-empty-p proj)))
-		    (substring-no-properties filename (+ 1 (length proj)))
-		  filename)
-	      "")))
-      relpath))
+	 (relpath
+	  (if filename
+	      (if (and (boundp 'proj) (not (string-empty-p proj)))
+		  (substring-no-properties filename (+ 1 (length proj)))
+		filename)
+	    "")))
+    relpath))
 
 (defun my-compile()
   "Suggest to compile of project directory"
@@ -260,7 +265,8 @@
 ;; lsp, code, formatting
 (defun stdprog()
   (display-line-numbers-mode)
-  (company-mode))
+  (company-mode)
+  (find-compilation-database))
 
 (defun setup-lsp()
   (setq lsp-clients-clangd-args clangd-args)
@@ -353,8 +359,6 @@
 	    (setup-lsp)))
 
 (add-hook 'python-mode-hook 'setup-lsp)
-(add-hook 'meson-mode-hook 'find-compilation-database)
-(add-hook 'makefile-mode-hook 'find-compilation-database)
 (add-hook 'emacs-lisp-mode-hook
 	  (lambda()
 	    (local-set-key [?\C-x ?\C-d] 'find-function-at-point)))
