@@ -17,7 +17,7 @@ function fish_right_prompt
 		echo -n (set_color red) "[$cmd_status_] "
 	end
 	echo (set_color white) $CMD_DURATION\ms
-	echo -n (set_color cyan) (git rev-parse --abbrev-ref HEAD ^ /dev/null)(set_color normal)
+	echo -n (set_color cyan) (git rev-parse --abbrev-ref HEAD 2> /dev/null)(set_color normal)
 end
 
 function cd
