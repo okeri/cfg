@@ -103,6 +103,13 @@
         50: '#FFF600'
         80: '#00FF00'
 
+  - custom:
+      signal: 8
+      command: '/opt/bin/vpn'
+      invalid: 'n/a'
+      invalid_color: '#CCCCCC'
+      separator_width: 12
+
   - battery:
       sensor: '/sys/class/power_supply/BAT1'
       interval: 10
