@@ -59,6 +59,8 @@
       vc-annotate-background-mode nil
       display-line-numbers-width-start 4
       w32-get-true-file-atttributes nil
+      hide-ifdef-initially t
+      hide-ifdef-shadow t
       gud-key-prefix "\C-x\C-g"
       recentf-max-saved-items 256
       ya-cppref-path-to-doc-root "/usr/share/cpp/reference/"
@@ -336,6 +338,7 @@
 	  (lambda()
 	    (local-set-key (kbd "TAB") 'format-region)
 	    (abbrev-mode 0)
+	    (hide-ifdef-mode)
 	    (setup-lsp)))
 
 (add-hook 'before-save-hook
