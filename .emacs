@@ -14,6 +14,7 @@
     (package-install package)))
 
 (add-to-list 'load-path "~/.emacs.d/lisp")
+(add-to-list 'term-file-aliases '("foot" . "xterm"))
 
 (require 'meson)
 (require 'yasnippet nil t)
@@ -83,7 +84,7 @@
           (ivy-rich-switch-buffer-size (:width 7))
           (ivy-rich-switch-buffer-major-mode (:width 20 :face warning))
           (get-buffer-project (:width 15 :face success))
-	  (get-buffer-relproj-path (:width 134)))
+	  (get-buffer-relproj-path (:width 117)))
          :predicate
          (lambda (cand) (get-buffer cand)))
         counsel-M-x
@@ -372,6 +373,11 @@
 		  '("%e" mode-line-modified mode-line-buffer-identification " "
 		    (vc-mode vc-mode) " " mode-line-modes mode-line-misc-info
 		    mode-line-end-spaces))))
+
+(add-hook 'conf-mode-hook
+	  (lambda ()
+	    (display-line-numbers-mode)))
+
 ;; theme
 (deftheme okeri)
 (custom-theme-set-faces 'okeri
@@ -388,6 +394,8 @@
  '(diff-refine-changed ((t (:background "#202020"))))
  '(diff-refine-removed ((t (:background "#200000"))))
  '(error ((t (:foreground "#cd0000"))))
+ '(success ((t (:bold t :foreground "#228b22"))))
+ '(shadow ((t (:foreground "#6c6c6c"))))
  '(font-lock-comment-face ((t (:foreground "#cdcd00"))))
  '(font-lock-constant-face ((t (:foreground "#af5fff"))))
  '(font-lock-doc-face ((t (:bold t :foreground "#d75f00"))))
@@ -397,6 +405,7 @@
  '(font-lock-string-face ((t (:foreground "#00afff"))))
  '(font-lock-type-face ((t (:foreground "#2acd2a"))))
  '(font-lock-variable-name-face ((t (:weight normal :foreground "#d7af87"))))
+ '(font-lock-builtin-face ((t (:foreground "#5f5f87"))))
  '(lsp-ui-doc-background ((t (:background "#00005f"))))
  '(minibuffer-prompt ((t (:foreground "#00afff"))))
  '(org-table ((t (:foreground "#00cdcd"))))
