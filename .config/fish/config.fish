@@ -1,7 +1,8 @@
-set -x ANDROID_SDK_ROOT /opt/android-sdk
-set -x XDG_RUNTIME_DIR /run/user/17
+set -gx XDG_RUNTIME_DIR /run/user/17
+set -gx LIBSEAT_BACKEND logind
 set -gx EDITOR "emacst"
-set -x LANG en_US.UTF-8
+set -gx LANG en_US.UTF-8
+set -x ANDROID_SDK_ROOT /opt/android-sdk
 set -x MOZ_USE_XINPUT2 1
 set -x MOZ_ENABLE_WAYLAND 1
 set -x CALIB_ROOT ~/proj/calibrator
@@ -29,7 +30,7 @@ alias em 'emacsclient -t'
 alias emacs 'emacsclient -t'
 alias su 'su -'
 
-if test -z "$SWAYSOCK" -a /dev/tty1 = (tty) 
+if test -z "$SWAYSOCK" -a /dev/tty1 = (tty)
     sway
 end
 
