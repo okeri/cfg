@@ -161,7 +161,6 @@ input "1:1:AT_Translated_Set_2_keyboard" {
       xkb_options grp:toggle,compose:rctrl
 }
 
-smart_borders on
 smart_gaps on
 gaps inner 10
 gaps outer 0
@@ -169,7 +168,7 @@ default_border pixel 1
 
 for_window [title="^EmptySpace$"] floating enable; resize set 450px 800px
 for_window [app_id="firefox"] inhibit_idle fullscreen visible
-for_window [app_id="mpv"] inhibit_idle visible
+for_window [app_id="mpv"] fullscreen enable; inhibit_idle visible
 for_window [class="Skype"] inhibit_idle open
 assign [app_id="emacs"] $ws2
 assign [app_id="firefox"] $ws3
@@ -182,4 +181,4 @@ exec --no-startup-id iio-sway
 exec --no-startup-id swayidle -w timeout 300 'swaymsg "$lock"' timeout 1200 'swaymsg exec suspend_discharging' timeout 7200 'swaymsg exec systemctl suspend'
 
 exec firefox
-exec sleep 0.01 && $term -a mocp mocp && $term -a emacs emacst && $term
+exec sleep 0.1 && $term -a mocp mocp && $term -a emacs emacst && $term

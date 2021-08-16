@@ -30,6 +30,9 @@ alias em 'emacsclient -t'
 alias emacs 'emacsclient -t'
 alias su 'su -'
 
+bind "[27;5;13~" execute
+bind "[27;2;13~" execute
+
 if test -z "$SWAYSOCK" -a /dev/tty1 = (tty)
     sway
 end
