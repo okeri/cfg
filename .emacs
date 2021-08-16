@@ -3,7 +3,7 @@
 (add-to-list 'package-archives (cons "melpa" "https://melpa.org/packages/"))
 (setq packages
       '(cff lsp-ui flycheck yasnippet yaml-mode ivy-rich fish-mode company
-	    counsel cmake-mode cargo pinentry popup google-translate))
+	    counsel cmake-mode meson-mode cargo pinentry popup google-translate))
 
 (package-initialize)
 (unless package-archive-contents
@@ -16,7 +16,6 @@
 (add-to-list 'load-path "~/.emacs.d/lisp")
 (add-to-list 'term-file-aliases '("foot" . "xterm"))
 
-(require 'meson)
 (require 'yasnippet nil t)
 
 ;; vars
@@ -84,7 +83,7 @@
           (ivy-rich-switch-buffer-size (:width 7))
           (ivy-rich-switch-buffer-major-mode (:width 20 :face warning))
           (get-buffer-project (:width 15 :face success))
-	  (get-buffer-relproj-path (:width 117)))
+	  (get-buffer-relproj-path (:width 115)))
          :predicate
          (lambda (cand) (get-buffer cand)))
         counsel-M-x
@@ -266,11 +265,6 @@
   (execute-extended-command nil "compile"))
 
 ;; lsp, code, formatting
-(defun stdprog()
-  (display-line-numbers-mode)
-  (company-mode)
-  (find-compilation-database))
-
 (defun setup-lsp()
   (setq lsp-clients-clangd-args clangd-args)
   (add-to-list 'lsp-clients-clangd-args  (concat "--compile-commands-dir=" (find-compilation-database)))
@@ -332,15 +326,38 @@
 
 ;; hooks and etc...
 (add-hook 'lsp-eldoc-hook 'my-lsp-dispay)
-(add-hook 'prog-mode-hook 'stdprog)
-(add-hook 'qml-mode-hook 'stdprog)
+(add-hook 'prog-mode-hook
+	  (lambda()
+	    (display-line-numbers-mode)
+	    (company-mode)))
+
 
 (add-hook 'c-mode-common-hook
 	  (lambda()
+	    (find-compilation-database)
 	    (local-set-key (kbd "TAB") 'format-region)
 	    (abbrev-mode 0)
 	    (hide-ifdef-mode)
 	    (setup-lsp)))
+
+(add-hook 'java-mode-hook
+	  (lambda ()
+	    (setq c-comment-start-regexp "(@|/(/|[*][*]?))")
+	    (modify-syntax-entry ?@ "< b" java-mode-syntax-table)
+	    (setup-lsp)))
+
+(add-hook 'rust-mode-hook
+	  (lambda()
+	    (local-set-key [\C-f7] 'compile)
+	    (local-set-key [f7] 'cargo-process-build)
+	    (setup-lsp)))
+
+(add-hook 'emacs-lisp-mode-hook
+	  (lambda()
+	    (local-set-key [?\C-x ?\C-d] 'find-function-at-point)))
+
+(add-hook 'python-mode-hook 'setup-lsp)
+(add-hook 'meson-mode-hook 'find-compilation-database)
 
 (add-hook 'before-save-hook
 	  (lambda()
@@ -350,23 +367,6 @@
 	      (when (derived-mode-p 'python-mode)
 		(delete-trailing-whitespace)))))
 
-(add-hook 'java-mode-hook
-	  (lambda ()
-	    "Treat Java 1.5 @-style annotations as comments."
-	    (setq c-comment-start-regexp "(@|/(/|[*][*]?))")
-	    (modify-syntax-entry ?@ "< b" java-mode-syntax-table)))
-
-(add-hook 'rust-mode-hook
-	  (lambda()
-	    (local-set-key [\C-f7] 'compile)
-	    (local-set-key [f7] 'cargo-process-build)
-	    (setup-lsp)))
-
-(add-hook 'python-mode-hook 'setup-lsp)
-(add-hook 'emacs-lisp-mode-hook
-	  (lambda()
-	    (local-set-key [?\C-x ?\C-d] 'find-function-at-point)))
-
 (add-hook 'window-configuration-change-hook
 	  (lambda ()
 	    (setq mode-line-format
@@ -374,9 +374,7 @@
 		    (vc-mode vc-mode) " " mode-line-modes mode-line-misc-info
 		    mode-line-end-spaces))))
 
-(add-hook 'conf-mode-hook
-	  (lambda ()
-	    (display-line-numbers-mode)))
+(add-hook 'conf-mode-hook 'display-line-numbers-mode)
 
 ;; theme
 (deftheme okeri)
