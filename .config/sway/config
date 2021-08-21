@@ -43,6 +43,27 @@ bindsym --to-code {
      XF86AudioLowerVolume exec acpi_handler VOLDN
      XF86MonBrightnessUp exec acpi_handler BRTUP
      XF86MonBrightnessDown exec acpi_handler BRTDN
+
+     # gaps
+     $mod+g gaps inner current plus 10
+     $mod+Shift+g gaps inner current set 0
+
+
+     # Layout stuff:
+     $mod+c splith
+     $mod+v splitv
+     $mod+b border toggle
+     $mod+w layout tabbed
+     $mod+e layout toggle split
+     $mod+Shift+space floating toggle
+     $mod+space focus mode_toggle
+     $mod+a focus parent
+
+     # Scratchpad:
+     bindsym $mod+Shift+s move scratchpad
+     bindsym $mod+s scratchpad show
+
+     bindsym $mod+r mode "resize"
 }
 
 #
@@ -60,9 +81,6 @@ bindsym --to-code {
     bindsym $mod+Shift+Up move up
     bindsym $mod+Shift+Right move right	
 
-    # gaps
-    bindsym $mod+g gaps inner current plus 10
-    bindsym $mod+Shift+g gaps inner current set 0
 #
 # Workspaces:
 #
@@ -88,23 +106,6 @@ bindsym --to-code {
 
     # Note: workspaces can have any name you want, not just numbers.
     # We just use 1-10 as the default.
-#
-# Layout stuff:
-#
-    bindsym $mod+c splith
-    bindsym $mod+v splitv
-    bindsym $mod+b border toggle
-    bindsym $mod+w layout tabbed
-    bindsym $mod+e layout toggle split
-    bindsym $mod+Shift+space floating toggle
-    bindsym $mod+space focus mode_toggle
-    bindsym $mod+a focus parent
-
-#
-# Scratchpad:
-#
-    bindsym $mod+Shift+s move scratchpad
-    bindsym $mod+s scratchpad show
 
 #
 # Resizing containers:
@@ -120,7 +121,6 @@ mode "resize" {
     bindsym Escape mode "default"
 }
 
-bindsym $mod+r mode "resize"
 
 #
 # Status Bar:
@@ -170,6 +170,7 @@ for_window [title="^EmptySpace$"] floating enable; resize set 450px 800px
 for_window [app_id="firefox"] inhibit_idle fullscreen visible
 for_window [app_id="mpv"] fullscreen enable; inhibit_idle visible
 for_window [class="Skype"] inhibit_idle open
+for_window [app_id="firefox" title=".*Private.Browsing.*"] move window to workspace $ws5
 assign [app_id="emacs"] $ws2
 assign [app_id="firefox"] $ws3
 assign [app_id="mocp"] $ws4
