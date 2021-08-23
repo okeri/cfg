@@ -42,6 +42,8 @@
       lsp-enable-links nil
       lsp-eldoc-enable-hover nil
       lsp-enable-folding nil
+      lsp-modeline-diagnostics-enable nil
+      lsp-modeline-workspace-status-enable nil
       lsp-imenu-container-name-separator "::"
       lsp-ui-sideline-enable nil
       lsp-ui-doc-enable nil
@@ -355,6 +357,8 @@
                    (format "^ %s[:-]" (vc-backend buffer-file-name))
                    " " vc-mode)))))
 
+(defun my-lsp-headerline--arrow-icon () "" "")
+(advice-add 'lsp-headerline--arrow-icon :override #'my-lsp-headerline--arrow-icon)
 
 ;; hooks and etc...
 (add-hook 'lsp-eldoc-hook 'my-lsp-dispay)
