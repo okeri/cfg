@@ -47,6 +47,7 @@
       lsp-ui-doc-enable nil
       lsp-ui-peek-enable nil
       lsp-prefer-flymake nil
+      flycheck-mode-line '(:eval (my-flycheck-status))
       lsp-log-io nil
       lsp-enable-file-watchers nil
       lsp-idle-delay 0.500
@@ -138,7 +139,8 @@
 (global-set-key [?\C-c ?d] 'vc-diff)
 (global-set-key [?\C-c ?w] 'vc-annotate)
 (global-set-key [?\C-c ?l] 'vc-print-log)
-(global-set-key [?\C-c ?c] 'counsel-imenu)
+(global-set-key [?\C-c ?k] 'vc-region-history)
+(global-set-key [?\C-c ?\C-c] 'counsel-imenu)
 (global-set-key [?\C-c ?\t] 'untabify)
 (global-set-key [?\C-x ?x] 'previous-multiframe-window)
 (global-set-key [?\C-x ?\C-x] 'next-multiframe-window)
@@ -173,11 +175,16 @@
   (dframe-message st))
 
 ;; project support
+(defun set-project-name (path)
+  ;; TODO: look for same names in opening buffers
+  (setq-local project-name (file-name-nondirectory path)))
+
 (defun project-try-template (dir id)
   (let* ((f (locate-dominating-file dir id))
 	 (proj (when f (file-name-directory f))))
     (when proj
       (setq-local project (file-truename (directory-file-name proj)))
+      (set-project-name project)
       (cons proj (concat proj (file-name-directory id))))))
 
 (defun project-try-pvc(dir)
@@ -186,6 +193,7 @@
 		(if proj
 		    (file-truename (directory-file-name (cdr proj)))
 		  ""))
+    (set-project-name project)
     proj))
 
 (defun project-try-ccj(dir)
@@ -217,10 +225,10 @@
 	  root))))
 
 (defun get-buffer-project (candidate)
-  (let* ((buffer (get-buffer candidate))
-	(proj (when (local-variable-p 'project buffer)
-		(buffer-local-value 'project buffer))))
-    (if proj (file-name-nondirectory proj) "" )))
+  (let* ((buffer (get-buffer candidate)))
+	(if (local-variable-p 'project-name buffer)
+	    (buffer-local-value 'project-name buffer) "")))
+
 
 (defun get-buffer-relproj-path (candidate)
   (let* ((buffer (get-buffer candidate))
@@ -230,8 +238,11 @@
 	      (buffer-local-value 'project buffer)))
 	 (relpath
 	  (if filename
-	      (if (and (boundp 'proj) (not (string-empty-p proj)))
-		  (substring-no-properties filename (+ 1 (length proj)))
+	      (if (local-variable-p 'project buffer)
+		  (let ((proj (buffer-local-value 'project buffer)))
+		    (if (not (string-empty-p proj))
+			(substring-no-properties filename (+ 1 (length proj)))
+		      filename))
 		filename)
 	    "")))
     relpath))
@@ -289,6 +300,26 @@
 	   (when info
 	     (message (replace-regexp-in-string "%" "" (lsp-ui-doc--extract
 						(gethash "contents" info)))))))))))
+(defun hl-nonzero(sym hl)
+  (if (eq sym 0) "0"
+    (propertize (int-to-string sym) 'face hl)))
+
+(defun my-flycheck-status (&optional status)
+  (let ((text (pcase (or status flycheck-last-status-change)
+                (`not-checked "")
+                (`no-checker "-")
+                (`running "*")
+                (`errored "!")
+                (`finished
+                 (let-alist (flycheck-count-errors flycheck-current-errors)
+                   (if (or .error .warning)
+		       (format "%s|%s" (hl-nonzero (or .error 0) 'error)
+			       (hl-nonzero (or .warning 0) 'warning))
+                     "ok")))
+                (`interrupted ".")
+                (`suspicious "?"))))
+    (if (string-empty-p text) ""
+      (concat "  check: " text))))
 
 (defun toggle-format-on-save()
   (interactive)
@@ -299,6 +330,7 @@
     (prog1
 	(setq format-on-save t)
       (message "format on save enabled"))))
+
 ;; hacks
 (with-eval-after-load 'counsel
   (let ((done (where-is-internal #'ivy-done     ivy-minibuffer-map t))
@@ -316,6 +348,12 @@
   (defun google-translate--search-tkk ()
     "Search TKK."
     (list 430675 2721866130)))
+
+(defadvice vc-mode-line (after strip-backend () activate)
+  (when (stringp vc-mode)
+      (setq vc-mode (concat " " (replace-regexp-in-string 
+                   (format "^ %s[:-]" (vc-backend buffer-file-name))
+                   " " vc-mode)))))
 
 
 ;; hooks and etc...
@@ -364,8 +402,9 @@
 (add-hook 'window-configuration-change-hook
 	  (lambda ()
 	    (setq mode-line-format
-		  '("%e" mode-line-modified mode-line-buffer-identification " "
-		    (vc-mode vc-mode) " " mode-line-modes mode-line-misc-info
+		  '("%e" mode-line-modified mode-line-buffer-identification
+		    "  " mode-name (vc-mode vc-mode)
+		    flycheck-mode-line "  " mode-line-position
 		    mode-line-end-spaces))))
 
 (add-hook 'conf-mode-hook 'display-line-numbers-mode)
