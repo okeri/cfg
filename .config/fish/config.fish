@@ -32,6 +32,7 @@ alias su 'su -'
 
 bind "[27;5;13~" execute
 bind "[27;2;13~" execute
+bind \cd delete-char
 
 if test -z "$SWAYSOCK" -a /dev/tty1 = (tty)
     sway
