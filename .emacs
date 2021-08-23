@@ -38,6 +38,7 @@
       company-async-timeout 3
       epa-pinentry-mode 'loopback
       project-find-functions '(project-try-ccj project-try-cargo project-try-pvc project-try-makefile)
+      interprogram-cut-function 'wl-clipboard
       lsp-enable-links nil
       lsp-eldoc-enable-hover nil
       lsp-enable-folding nil
@@ -132,13 +133,12 @@
 (global-set-key [f12] 'kill-emacs)
 (global-set-key [\C-/] 'undo)
 (global-set-key [\C-_] 'undo)
-(global-set-key [?\C-q] 'wl-clipboard)
 (global-set-key [?\C-c left] 'uncomment-region)
 (global-set-key [?\C-c right] 'comment-region)
 (global-set-key [?\C-c ?d] 'vc-diff)
 (global-set-key [?\C-c ?w] 'vc-annotate)
 (global-set-key [?\C-c ?l] 'vc-print-log)
-(global-set-key [?\C-c ?c] 'eshell)
+(global-set-key [?\C-c ?c] 'counsel-imenu)
 (global-set-key [?\C-c ?\t] 'untabify)
 (global-set-key [?\C-x ?x] 'previous-multiframe-window)
 (global-set-key [?\C-x ?\C-x] 'next-multiframe-window)
@@ -146,7 +146,6 @@
 (global-set-key [?\C-c ?g] 'google-translate-at-point-reverse)
 (global-set-key [\C-left] 'previous-multiframe-window)
 (global-set-key [\C-right] 'next-multiframe-window)
-(global-set-key [?\C-x ?c] 'counsel-imenu)
 (global-set-key [?\C-x ?e] 'counsel-git-grep)
 (global-set-key [?\C-x ?\C-e] 'counsel-ag)
 (global-set-key [?\C-r] 'swiper-thing-at-point)
@@ -160,20 +159,15 @@
 
 
 ;; extensions
-(defun wl-clipboard()
-  (interactive)
-  (when (region-active-p)
-    (setq wl-copy-process
+(defun wl-clipboard(text)
+  (setq wl-copy-process
 	  (make-process
 	   :name "wl-copy"
 	   :buffer nil
 	   :command '("wl-copy" "-f" "-n")
 	   :connection-type 'pipe))
-    (process-send-string wl-copy-process
-			 (buffer-substring (region-beginning)
-					   (region-end)))
-    (process-send-eof wl-copy-process)
-    (deactivate-mark)))
+    (process-send-string wl-copy-process text)
+    (process-send-eof wl-copy-process))
 
 (defun message-box(st &optional crap)
   (dframe-message st))
