@@ -44,6 +44,9 @@ bindsym --to-code {
      XF86MonBrightnessUp exec acpi_handler BRTUP
      XF86MonBrightnessDown exec acpi_handler BRTDN
 
+     #kbd layout
+     ISO_Next_Group exec pkill -SIGRTMIN+5 rstatus
+
      # moc
      $mod+p exec mocp -G
      $mod+n exec mocp -f

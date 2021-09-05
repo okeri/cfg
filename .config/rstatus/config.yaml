@@ -87,6 +87,13 @@
       invalid_color: '#CCCCCC'
       separator_width: 12
 
+  - custom:
+      signal: 5
+      prefix: " "
+      prefix_color: '#4080a0'
+      separator_width: 12
+      command: '/opt/bin/kbd_layout'
+
   - network:
       interval: 5
       prefix: ''
@@ -134,7 +141,7 @@
         30: '#FFFFFF'
       warning_level: 10
       warning_action: 'systemctl suspend'
-      
+
   - time:
       prefix: ''
       prefix_color: '#4080a0'
