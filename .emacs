@@ -42,6 +42,8 @@
       lsp-enable-links nil
       lsp-eldoc-enable-hover nil
       lsp-enable-folding nil
+      lsp-semantic-tokens-enable t
+      lsp-semantic-tokens-apply-modifiers nil
       lsp-modeline-diagnostics-enable nil
       lsp-modeline-workspace-status-enable nil
       lsp-imenu-container-name-separator "::"
@@ -49,13 +51,13 @@
       lsp-ui-doc-enable nil
       lsp-ui-peek-enable nil
       lsp-prefer-flymake nil
-      flycheck-mode-line '(:eval (my-flycheck-status))
       lsp-log-io nil
       lsp-enable-file-watchers nil
       lsp-idle-delay 0.500
+      clangd-args '("--header-insertion=never" "--completion-style=detailed" "--pch-storage=memory" "--clang-tidy=1" "--query-driver=/usr/bin/g++")
       read-process-output-max (* 1024 1024)
+      flycheck-mode-line '(:eval (my-flycheck-status))
       gc-cons-threshold 100000000
-      clangd-args '("--header-insertion=never" "--completion-style=detailed" "--pch-storage=memory" "--clang-tidy=1")
       c-syntactic-indentation nil
       compilation-scroll-output t
       use-dialog-box nil
@@ -63,8 +65,6 @@
       vc-annotate-background-mode nil
       display-line-numbers-width-start 4
       w32-get-true-file-atttributes nil
-      hide-ifdef-initially t
-      hide-ifdef-shadow t
       gud-key-prefix "\C-x\C-g"
       recentf-max-saved-items 256
       ya-cppref-path-to-doc-root "/usr/share/cpp/reference/"
@@ -254,7 +254,7 @@
   (interactive)
   (when (or (not (boundp 'compile-history))
 	    (= (length compile-history) 0))
-    (setq-local compile-history '("make -k ")))
+    (setq compile-history '("make -k ")))
   (when (and (boundp 'project) project)
     (let ((curr
 	   (if (and (boundp 'buildpath)
@@ -373,7 +373,6 @@
 	    (find-compilation-database)
 	    (local-set-key (kbd "TAB") 'format-region)
 	    (abbrev-mode 0)
-	    (hide-ifdef-mode)
 	    (setup-lsp)))
 
 (add-hook 'java-mode-hook
@@ -416,8 +415,11 @@
 ;; theme
 (deftheme okeri)
 (custom-theme-set-faces 'okeri
+ '(error ((t (:foreground "#cd0000"))))
+ '(success ((t (:bold t :foreground "#228b22"))))
+ '(shadow ((t (:foreground "#767676"))))
  '(highlight ((t (:background "#303030"))))
- '(region ((t (:background "#303030"))))
+ '(region ((t (:inherit highlight))))
  '(company-tooltip ((t (:background "grey" :foreground "black"))))
  '(company-tooltip-selection ((t (:background "#005f5f" :foreground "black"))))
  '(diff-added ((t (:foreground "#00cd00"))))
@@ -428,20 +430,22 @@
  '(diff-refine-added ((t (:background "#002000"))))
  '(diff-refine-changed ((t (:background "#202020"))))
  '(diff-refine-removed ((t (:background "#200000"))))
- '(error ((t (:foreground "#cd0000"))))
- '(success ((t (:bold t :foreground "#228b22"))))
- '(shadow ((t (:foreground "#6c6c6c"))))
- '(font-lock-comment-face ((t (:foreground "#cdcd00"))))
+ '(font-lock-comment-face ((t (:inherit shadow))))
  '(font-lock-constant-face ((t (:foreground "#af87ff"))))
  '(font-lock-doc-face ((t (:bold t :foreground "#d75f00"))))
- '(font-lock-function-name-face ((t (:bold t :foreground "#00afff"))))
+ '(font-lock-function-name-face ((t (:foreground "#ffffff")))) ;
  '(font-lock-keyword-face ((t (:foreground "#00cdcd"))))
- '(font-lock-preprocessor-face ((t (:foreground "#00afff"))))
- '(font-lock-string-face ((t (:foreground "#00afff"))))
- '(font-lock-type-face ((t (:foreground "#40dd40"))))
- '(font-lock-variable-name-face ((t (:weight normal :foreground "#d7af87"))))
+ '(font-lock-type-face ((t (:foreground "#20afff"))))
+ '(font-lock-string-face ((t (:foreground "#70cf70"))))
+ '(font-lock-preprocessor-face ((t (:inherit font-lock-string-face))))
+ '(font-lock-variable-name-face ((t  (:inherit default))))
  '(font-lock-builtin-face ((t (:foreground "#5f5f87"))))
  '(lsp-ui-doc-background ((t (:background "#00005f"))))
+ '(lsp-face-semhl-interface ((t  (:inherit font-lock-variable-name-face))))
+ '(lsp-face-semhl-definition ((t (:inherit font-lock-function-name-face))))
+ '(lsp-face-semhl-macro ((t  (:inherit default))))
+ '(lsp-face-semhl-namespace ((t  (:inherit font-lock-constant-face))))
+ '(lsp-headerline-breadcrumb-path-face ((t (:foreground "#20afff"))))
  '(minibuffer-prompt ((t (:foreground "#00afff"))))
  '(org-table ((t (:foreground "#00cdcd"))))
  '(line-number ((t (:foreground "#626262"))))
