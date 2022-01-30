@@ -280,7 +280,8 @@
   (local-set-key [?\C-x ?d] 'cff-find-other-file)
   (local-set-key [?\C-x ?\C-r] 'lsp-rename)
   (local-set-key [?\C-x ?\C-d] 'lsp-find-definition)
-  (local-set-key [?\C-x ?\C-a] 'xref-pop-marker-stack))
+  (local-set-key [?\C-x ?\C-a] 'xref-pop-marker-stack)
+  (local-set-key [?\C-c ?\C-c] 'counsel-imenu))
 
 (defun format-region(start end)
   (interactive
@@ -435,9 +436,9 @@
  '(font-lock-doc-face ((t (:bold t :foreground "#d75f00"))))
  '(font-lock-function-name-face ((t (:foreground "#ffffff")))) ;
  '(font-lock-keyword-face ((t (:foreground "#00cdcd"))))
- '(font-lock-type-face ((t (:foreground "#20afff"))))
- '(font-lock-string-face ((t (:foreground "#70cf70"))))
- '(font-lock-preprocessor-face ((t (:inherit font-lock-string-face))))
+ '(font-lock-type-face ((t (:foreground "#30bfff"))))
+ '(font-lock-string-face ((t (:foreground "#63a330"))))
+ '(font-lock-preprocessor-face ((t (:foreground "#ff8070"))))
  '(font-lock-variable-name-face ((t  (:inherit default))))
  '(font-lock-builtin-face ((t (:foreground "#5f5f87"))))
  '(lsp-ui-doc-background ((t (:background "#00005f"))))
