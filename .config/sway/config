@@ -8,8 +8,10 @@ set $ws2 "2:    "
 set $ws3 "3:    "
 set $ws4 "4:    "
 set $ws5 "5:    "
-
-set $lock exec swaylock -l -e -i ~/Documents/lock.png
+set $ws6 "6"
+set $ws7 "7"
+set $ws8 "8:    "
+set $lock input * xkb_switch_layout 0; exec pkill -SIGRTMIN+5 rstatus; exec swaylock -l -e -i ~/Documents/lock.png
 
 output eDP-1 pos 0 0 res 1920x1080
 output DP-1 pos -1920 0 res 1920x1200
@@ -19,7 +21,7 @@ output * bg ~/Documents/moon.jpg fill
 floating_modifier $mod normal
 workspace $ws1 output eDP-1
 workspace $ws2 output eDP-1
-workspace $ws3 output DP-2
+workspace $ws3 output DP-1
 workspace $ws4 output eDP-1
 workspace $ws5 output eDP-1
 
@@ -36,6 +38,7 @@ bindsym --to-code {
      Print exec grim /tmp/`date +%d.%m.%Y-%M.%H.%S.png`
      $mod+l $lock
      $mod+k exec rotate
+     $mod+y exec /opt/bin/vpn toggle
 
      # ACPI events
      XF86AudioMute exec acpi_handler MUTE
@@ -97,9 +100,9 @@ bindsym --to-code {
     bindsym $mod+3 workspace $ws3
     bindsym $mod+4 workspace $ws4
     bindsym $mod+5 workspace $ws5
-    bindsym $mod+6 workspace 6
-    bindsym $mod+7 workspace 7
-    bindsym $mod+8 workspace 8
+    bindsym $mod+6 workspace $ws6
+    bindsym $mod+7 workspace $ws7
+    bindsym $mod+8 workspace $ws8; exec rdplab
 
     # move focused container to workspace
     bindsym $mod+Shift+1 move container to workspace $ws1
@@ -107,9 +110,9 @@ bindsym --to-code {
     bindsym $mod+Shift+3 move container to workspace $ws3
     bindsym $mod+Shift+4 move container to workspace $ws4
     bindsym $mod+Shift+5 move container to workspace $ws5
-    bindsym $mod+Shift+6 move container to workspace 6
-    bindsym $mod+Shift+7 move container to workspace 7
-    bindsym $mod+Shift+8 move container to workspace 8
+    bindsym $mod+Shift+6 move container to workspace $ws6
+    bindsym $mod+Shift+7 move container to workspace $ws7
+    bindsym $mod+Shift+8 move container to workspace $ws8
 
     # Note: workspaces can have any name you want, not just numbers.
     # We just use 1-10 as the default.
@@ -193,6 +196,7 @@ assign [app_id="emacs"] $ws2
 assign [app_id="firefox"] $ws3
 assign [app_id="mocp"] $ws4
 assign [class="Skype"] $ws5
+assign [app_id="org.remmina.Remmina"] $ws8
 
 exec --no-startup-id foot --server
 exec --no-startup-id mako

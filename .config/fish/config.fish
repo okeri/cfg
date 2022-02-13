@@ -1,7 +1,6 @@
 set -gx XDG_RUNTIME_DIR /run/user/17
 set -gx LIBSEAT_BACKEND logind
 set -gx EDITOR "emacst"
-set -gx LANG en_US.UTF-8
 set -x ANDROID_SDK_ROOT /opt/android-sdk
 set -x MOZ_USE_XINPUT2 1
 set -x MOZ_ENABLE_WAYLAND 1
@@ -53,3 +52,5 @@ function mail_kernel_patch
 		return 1
 	end
 end
+
+#gsettings set org.gnome.desktop.interface cursor-theme Oxygen

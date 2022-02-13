@@ -77,7 +77,8 @@
       separator_width: 12
       invalid: '♪ muted'
       invalid_color: '#FFF600'
-      prefix_extras: ['', '']
+      jack_icons: ['', '']
+      jack_only: ['Astell&Kern PEE51 USB Audio', 'Zorloo Ztella USB Audio', 'IBASSO-DC-Series']
       color: '#CCCCCC'
       
   - custom:
