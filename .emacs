@@ -436,7 +436,7 @@
  '(font-lock-doc-face ((t (:bold t :foreground "#d75f00"))))
  '(font-lock-function-name-face ((t (:foreground "#ffffff")))) ;
  '(font-lock-keyword-face ((t (:foreground "#00cdcd"))))
- '(font-lock-type-face ((t (:foreground "#30bfff"))))
+ '(font-lock-type-face ((t (:foreground "#20afff"))))
  '(font-lock-string-face ((t (:foreground "#63a330"))))
  '(font-lock-preprocessor-face ((t (:foreground "#ff8070"))))
  '(font-lock-variable-name-face ((t  (:inherit default))))
