@@ -1,7 +1,0 @@
-# -*- mode: snippet -*-
-# name: for int
-# key: fori
-# --
-for (auto ${1:value} = 0; $1 < ${2:to}; ++$1) {
-$0
-}
