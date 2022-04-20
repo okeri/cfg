@@ -2,7 +2,7 @@
 (require 'package)
 (add-to-list 'package-archives (cons "melpa" "https://melpa.org/packages/"))
 (setq packages
-      '(cff lsp-ui flycheck yaml-mode ivy-rich fish-mode company
+      '(cff lsp-ui flycheck yaml-mode yasnippet ivy-rich fish-mode company
 	    counsel cmake-mode meson-mode cargo pinentry popup google-translate))
 
 (package-initialize)
@@ -16,6 +16,7 @@
 (add-to-list 'load-path "~/.emacs.d/lisp")
 (add-to-list 'term-file-aliases '("foot" . "xterm"))
 
+(require 'yasnippet nil t)
 ;; vars
 (defalias 'yes-or-no-p 'y-or-n-p)
 
@@ -274,6 +275,7 @@
   (setq lsp-clients-clangd-args clangd-args)
   (add-to-list 'lsp-clients-clangd-args  (concat "--compile-commands-dir=" (find-compilation-database)))
   (lsp)
+  (yas-minor-mode-on)
   (local-set-key [?\C-x ?d] 'cff-find-other-file)
   (local-set-key [?\C-x ?\C-r] 'lsp-rename)
   (local-set-key [?\C-x ?\C-d] 'lsp-find-definition)
