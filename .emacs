@@ -16,7 +16,6 @@
 (add-to-list 'load-path "~/.emacs.d/lisp")
 (add-to-list 'term-file-aliases '("foot" . "xterm"))
 
-(require 'yasnippet nil t)
 ;; vars
 (defalias 'yes-or-no-p 'y-or-n-p)
 
@@ -181,25 +180,26 @@
   (setq-local project-name (file-name-nondirectory path)))
 
 (defun project-try-template (dir id)
-  (let* ((f (locate-dominating-file dir id))
-	 (proj (when f (file-name-directory f))))
-    (when proj
-      (setq-local project (file-truename (directory-file-name proj)))
-      (set-project-name project)
-      (cons proj (concat proj (file-name-directory id))))))
+  (let ((f (locate-dominating-file dir id)))
+    (when f
+      (let ((proj (file-name-directory f)))
+	(when proj
+	  (setq-local project (file-truename (directory-file-name proj))))
+	(set-project-name project)
+	(cons proj (file-truename (concat proj (file-name-directory id))))))))
 
 (defun project-try-pvc(dir)
   (let ((proj (project-try-vc dir)))
     (setq-local project
 		(if proj
-		    (file-truename (directory-file-name (cdr proj)))
+		    (directory-file-name (cdr proj))
 		  ""))
     (set-project-name project)
     proj))
 
 (defun project-try-ccj(dir)
-  (let ((proj (or (project-try-template dir "compile_commands.json")
-		  (project-try-template dir "build/compile_commands.json"))))
+  (let ((proj (or (project-try-template dir "build/compile_commands.json")
+		  (project-try-template dir "compile_commands.json"))))
     (when proj
       (setq-local ccjpath (cdr proj))
       (when (file-exists-p (concat ccjpath "build.ninja"))
@@ -207,8 +207,8 @@
       (cons 'vc (car proj)))))
 
 (defun project-try-makefile(dir)
-  (let ((proj (or (project-try-template dir "Makefile")
-		  (project-try-template dir "build/Makefile"))))
+  (let ((proj (or (project-try-template dir "build/Makefile")
+		  (project-try-template dir "Makefile"))))
     (when proj
       (setq-local buildpath (cons "make" (cdr proj)))
       (cons 'vc (car proj)))))
@@ -221,9 +221,7 @@
 (defun find-compilation-database()
   (if (boundp 'ccjpath) ccjpath
       (let ((root (car (project-roots (project-current t)))))
-	(if (boundp 'ccjpath)
-	    (file-truename ccjpath)
-	  root))))
+	(if (boundp 'ccjpath) ccjpath root))))
 
 (defun get-buffer-project (candidate)
   (let* ((buffer (get-buffer candidate)))
