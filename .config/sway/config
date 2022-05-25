@@ -187,6 +187,7 @@ for_window [title="^EmptySpace$"] {
 }
 
 for_window [app_id="scrterm"] {
+   move window to workspace $ws2
    move scratchpad
    resize set 1900px 1036px
    move absolute position 479px 0px # wtf

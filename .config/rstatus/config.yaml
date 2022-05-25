@@ -64,7 +64,7 @@
       threshold_fix: true
       thresholds:
         0: '#CCCCCC'
-        40: '#FFF600'
+        50: '#FFF600'
         70: '#FF0000'
 
   - volume:
