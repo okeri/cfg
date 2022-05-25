@@ -37,21 +37,21 @@
       epa-pinentry-mode 'loopback
       project-find-functions '(project-try-ccj project-try-cargo project-try-pvc project-try-makefile)
       interprogram-cut-function 'wl-clipboard
+      lsp-headerline-arrow ""
       lsp-enable-links nil
-      lsp-eldoc-enable-hover nil
       lsp-enable-folding nil
       lsp-semantic-tokens-enable t
       lsp-semantic-tokens-apply-modifiers nil
       lsp-modeline-diagnostics-enable nil
       lsp-modeline-workspace-status-enable nil
+      lsp-modeline-code-actions-enable nil
       lsp-imenu-container-name-separator "::"
-      lsp-ui-sideline-enable nil
-      lsp-ui-doc-enable nil
-      lsp-ui-peek-enable nil
       lsp-prefer-flymake nil
       lsp-log-io nil
       lsp-enable-file-watchers nil
-      lsp-idle-delay 0.500
+      lsp-ui-sideline-enable nil
+      lsp-ui-doc-enable nil
+      lsp-ui-peek-enable nil
       clangd-args '("--header-insertion=never" "--completion-style=detailed" "--pch-storage=memory" "--clang-tidy=1" "--query-driver=/usr/bin/g++")
       read-process-output-max (* 1024 1024)
       flycheck-mode-line '(:eval (my-flycheck-status))
@@ -125,6 +125,7 @@
 (pinentry-start)
 
 ;; bindings
+(global-set-key [f6] 'flycheck-list-errors)
 (global-set-key [f7] 'my-compile)
 (global-set-key [f8] 'next-error)
 (global-set-key [\C-f8] 'previous-error)
@@ -148,8 +149,10 @@
 (global-set-key [?\C-c ?g] 'google-translate-at-point-reverse)
 (global-set-key [\C-left] 'previous-multiframe-window)
 (global-set-key [\C-right] 'next-multiframe-window)
-(global-set-key [?\C-x ?e] 'counsel-git-grep)
-(global-set-key [?\C-x ?\C-e] 'counsel-ag)
+(global-set-key [?\C-x ?e] 'thing-counsel-git-grep)
+(global-set-key [?\C-x ?\C-e] 'thing-counsel-ag)
+(global-set-key [?\C-c ?e] 'counsel-ag)
+
 (global-set-key [?\C-r] 'swiper-thing-at-point)
 (global-set-key [?\C-s] 'swiper)
 (global-set-key [?\C-x ?f] 'ivy-switch-buffer)
@@ -173,6 +176,21 @@
 
 (defun message-box(st &optional crap)
   (dframe-message st))
+
+(defun action-at-point(action)
+  (interactive)
+  (let ((thing (ivy-thing-at-point)))
+    (when (use-region-p)
+      (deactivate-mark))
+    (funcall action (regexp-quote thing))))
+
+(defun thing-counsel-ag()
+  (interactive)
+  (action-at-point 'counsel-ag))
+
+(defun thing-counsel-git-grep()
+  (interactive)
+  (action-at-point 'counsel-git-grep))
 
 ;; project support
 (defun set-project-name (path)
@@ -269,17 +287,6 @@
   (execute-extended-command nil "compile"))
 
 ;; lsp, code, formatting
-(defun setup-lsp()
-  (setq lsp-clients-clangd-args clangd-args)
-  (add-to-list 'lsp-clients-clangd-args  (concat "--compile-commands-dir=" (find-compilation-database)))
-  (lsp)
-  (yas-minor-mode-on)
-  (local-set-key [?\C-x ?d] 'cff-find-other-file)
-  (local-set-key [?\C-x ?\C-r] 'lsp-rename)
-  (local-set-key [?\C-x ?\C-d] 'lsp-find-definition)
-  (local-set-key [?\C-x ?\C-a] 'xref-pop-marker-stack)
-  (local-set-key [?\C-c ?\C-c] 'counsel-imenu))
-
 (defun format-region(start end)
   (interactive
    (if (use-region-p)
@@ -288,18 +295,6 @@
   (lsp-format-region start end)
   (back-to-indentation))
 
-(defun my-lsp-dispay() 
-  "Alternative (minimalistic) UI to lsp-ui-doc :)"
-  (when (bound-and-true-p lsp-mode)
-    (let ((diags (lsp--cur-line-diagnotics)))
-      (when (and (= (length diags) 0) (lsp--capability "hoverProvider"))
-	(lsp--send-request-async
-	 (lsp--make-request "textDocument/hover"
-			    (lsp--text-document-position-params))
-	 (lambda (info)
-	   (when info
-	     (message (replace-regexp-in-string "%" "" (lsp-ui-doc--extract
-						(gethash "contents" info)))))))))))
 (defun hl-nonzero(sym hl)
   (if (eq sym 0) "0"
     (propertize (int-to-string sym) 'face hl)))
@@ -348,15 +343,26 @@
 
 (defadvice vc-mode-line (after strip-backend () activate)
   (when (stringp vc-mode)
-      (setq vc-mode (concat " " (replace-regexp-in-string 
+      (setq vc-mode (concat " " (replace-regexp-in-string
                    (format "^ %s[:-]" (vc-backend buffer-file-name))
                    " " vc-mode)))))
 
-(defun my-lsp-headerline--arrow-icon () "" "")
-(advice-add 'lsp-headerline--arrow-icon :override #'my-lsp-headerline--arrow-icon)
-
 ;; hooks and etc...
-(add-hook 'lsp-eldoc-hook 'my-lsp-dispay)
+(setq lsp-eldoc-hook
+      (lambda()
+	(when (bound-and-true-p lsp-mode)
+	  (let ((diags (lsp--cur-line-diagnotics)))
+	    (when (= (length diags) 0)
+	      (lsp-hover))))))
+
+(add-hook 'lsp-configure-hook
+	  (lambda()
+	    (yas-minor-mode-on)
+	    (local-set-key [?\C-x ?\C-r] 'lsp-rename)
+	    (local-set-key [?\C-x ?\C-d] 'lsp-find-definition)
+	    (local-set-key [?\C-x ?\C-a] 'xref-pop-marker-stack)
+	    (local-set-key [?\C-c ?\C-c] 'counsel-imenu)))
+
 (add-hook 'prog-mode-hook
 	  (lambda()
 	    (display-line-numbers-mode)
@@ -365,28 +371,31 @@
 
 (add-hook 'c-mode-common-hook
 	  (lambda()
+	    (setq lsp-clients-clangd-args clangd-args)
+	    (add-to-list 'lsp-clients-clangd-args  (concat "--compile-commands-dir=" (find-compilation-database)))
 	    (find-compilation-database)
+	    (local-set-key [?\C-x ?d] 'cff-find-other-file)
 	    (local-set-key (kbd "TAB") 'format-region)
 	    (abbrev-mode 0)
-	    (setup-lsp)))
+	    (lsp)))
 
 (add-hook 'java-mode-hook
-	  (lambda ()
+	  (lambda()
 	    (setq c-comment-start-regexp "(@|/(/|[*][*]?))")
 	    (modify-syntax-entry ?@ "< b" java-mode-syntax-table)
-	    (setup-lsp)))
+	    (lsp)))
 
 (add-hook 'rust-mode-hook
 	  (lambda()
 	    (local-set-key [\C-f7] 'compile)
 	    (local-set-key [f7] 'cargo-process-build)
-	    (setup-lsp)))
+	    (lsp)))
 
 (add-hook 'emacs-lisp-mode-hook
 	  (lambda()
 	    (local-set-key [?\C-x ?\C-d] 'find-function-at-point)))
 
-(add-hook 'python-mode-hook 'setup-lsp)
+(add-hook 'python-mode-hook 'lsp)
 (add-hook 'meson-mode-hook 'find-compilation-database)
 
 (add-hook 'before-save-hook
@@ -394,11 +403,11 @@
 	    (when format-on-save
 	      (when (derived-mode-p 'c-mode 'c++-mode 'java-mode)
 		(lsp-format-buffer))
-	      (when (derived-mode-p 'python-mode)
+	      (when (derived-mode-p 'prog-mode)
 		(delete-trailing-whitespace)))))
 
 (add-hook 'window-configuration-change-hook
-	  (lambda ()
+	  (lambda()
 	    (setq mode-line-format
 		  '("%e" mode-line-modified mode-line-buffer-identification
 		    "  " mode-name (vc-mode vc-mode)
@@ -439,6 +448,7 @@
  '(lsp-face-semhl-interface ((t  (:inherit font-lock-variable-name-face))))
  '(lsp-face-semhl-definition ((t (:inherit font-lock-function-name-face))))
  '(lsp-face-semhl-macro ((t  (:inherit default))))
+ '(lsp-face-semhl-constant ((t  (:inherit default))))
  '(lsp-face-semhl-namespace ((t  (:inherit font-lock-constant-face))))
  '(lsp-headerline-breadcrumb-path-face ((t (:foreground "#20afff"))))
  '(minibuffer-prompt ((t (:foreground "#00afff"))))
