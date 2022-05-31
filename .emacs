@@ -336,16 +336,30 @@
 (with-eval-after-load 'ivy
   (define-key ivy-switch-buffer-map [?\C-d] #'ivy-switch-buffer-kill))
 
+(advice-add 'swiper--init :after
+	    (lambda (&rest rest)
+	      (if (bound-and-true-p lsp-mode)
+		  (setq my-swiper-upd (current-buffer))
+		(when (boundp 'my-swiper-upd)
+		  (makunbound 'my-swiper-upd)))))
+
+(advice-add 'swiper--update-input-ivy :after
+	    (lambda (&rest rest)
+	      (when (boundp 'my-swiper-upd)
+		(with-current-buffer my-swiper-upd
+		  (lsp-headerline--check-breadcrumb)))))
+
+(advice-add 'vc-mode-line :after (lambda (&rest args)
+  (when (stringp vc-mode)
+      (setq vc-mode (concat " " (replace-regexp-in-string
+                   (format "^ %s[:-]" (vc-backend buffer-file-name))
+                   " " vc-mode))))))
+
 (with-eval-after-load 'google-translate-tk
   (defun google-translate--search-tkk ()
     "Search TKK."
     (list 430675 2721866130)))
 
-(defadvice vc-mode-line (after strip-backend () activate)
-  (when (stringp vc-mode)
-      (setq vc-mode (concat " " (replace-regexp-in-string
-                   (format "^ %s[:-]" (vc-backend buffer-file-name))
-                   " " vc-mode)))))
 
 ;; hooks and etc...
 (setq lsp-eldoc-hook
