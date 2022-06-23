@@ -187,12 +187,12 @@ for_window [title="^EmptySpace$"] {
 }
 
 for_window [app_id="scrterm"] {
-   move window to workspace $ws2
    move scratchpad
-   resize set 1900px 1036px
    move absolute position 479px 0px # wtf
+   resize set 1900px 1036px
 }	  
 
+assign [app_id="term"] $ws1
 assign [app_id="emacs"] $ws2
 assign [app_id="firefox"] $ws3
 assign [app_id="mocp"] $ws4
@@ -205,4 +205,4 @@ exec --no-startup-id iio-sway
 exec --no-startup-id swayidle -w timeout 300 'swaymsg "$lock"' timeout 1200 'swaymsg exec suspend_discharging' timeout 7200 'swaymsg exec systemctl suspend'
 
 exec firefox
-exec sleep 0.1 && $term -a scrterm && $term -a mocp mocp && $term -a emacs emacst && $term
+exec sleep 0.1 && $term -a scrterm && $term -a mocp mocp && $term -a emacs emacst && $term -a term
