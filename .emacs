@@ -40,6 +40,7 @@
       lsp-headerline-arrow ""
       lsp-enable-links nil
       lsp-enable-folding nil
+      lsp-eldoc-render-all t
       lsp-semantic-tokens-enable t
       lsp-semantic-tokens-apply-modifiers nil
       lsp-modeline-diagnostics-enable nil
