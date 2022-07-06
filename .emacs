@@ -356,6 +356,11 @@
                    (format "^ %s[:-]" (vc-backend buffer-file-name))
                    " " vc-mode))))))
 
+(advice-add 'lsp--render-markdown :before (lambda (&rest args)
+  (goto-char (point-min))
+  (while (re-search-forward "  \n" nil t)
+    (replace-match "\n"))))
+
 (with-eval-after-load 'google-translate-tk
   (defun google-translate--search-tkk ()
     "Search TKK."
@@ -416,7 +421,7 @@
 (add-hook 'before-save-hook
 	  (lambda()
 	    (when format-on-save
-	      (when (derived-mode-p 'c-mode 'c++-mode 'java-mode)
+	      (when (derived-mode-p 'c-mode 'c++-mode 'java-mode 'rust-mode)
 		(lsp-format-buffer))
 	      (when (derived-mode-p 'prog-mode)
 		(delete-trailing-whitespace)))))
