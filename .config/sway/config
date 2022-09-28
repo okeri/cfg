@@ -71,7 +71,7 @@ bindsym --to-code {
 
      # Scratchpad:
      $mod+Shift+s move scratchpad
-     $mod+s scratchpad show
+     $mod+s scratchpad show, resize set 1900px 1036px, move position center	
 
      $mod+r mode "resize"
 }
@@ -186,10 +186,13 @@ for_window [title="^EmptySpace$"] {
    resize set 450px 800px
 }
 
+for_window [title="^unnamed$"] {
+   floating enable
+   resize set 1920px 1080px
+}
+
 for_window [app_id="scrterm"] {
    move scratchpad
-   move absolute position 479px 0px # wtf
-   resize set 1900px 1036px
 }	  
 
 assign [app_id="term"] $ws1
