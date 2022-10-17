@@ -2,9 +2,8 @@
 (require 'package)
 (add-to-list 'package-archives (cons "melpa" "https://melpa.org/packages/"))
 (setq packages
-      '(cff lsp-ui flycheck yaml-mode yasnippet ivy-rich fish-mode company
+      '(cff eglot yaml-mode yasnippet ivy-rich fish-mode company
 	    counsel cmake-mode meson-mode cargo pinentry popup google-translate))
-
 (package-initialize)
 (unless package-archive-contents
   (package-refresh-contents))
@@ -12,12 +11,7 @@
 (dolist (package packages)
   (unless (package-installed-p package)
     (package-install package)))
-
-(add-to-list 'load-path "~/.emacs.d/lisp")
-(add-to-list 'term-file-aliases '("foot" . "xterm"))
-
-;; vars
-(defalias 'yes-or-no-p 'y-or-n-p)
+(require 'yasnippet)
 
 ;; settings
 (setq fill-column 80
@@ -35,27 +29,9 @@
       company-backends '(company-capf company-files company-nxml company-cmake)
       company-async-timeout 3
       epa-pinentry-mode 'loopback
-      project-find-functions '(project-try-ccj project-try-cargo project-try-pvc project-try-makefile)
       interprogram-cut-function 'wl-clipboard
-      lsp-headerline-arrow ""
-      lsp-enable-links nil
-      lsp-enable-folding nil
-      lsp-eldoc-render-all t
-      lsp-semantic-tokens-enable t
-      lsp-semantic-tokens-apply-modifiers nil
-      lsp-modeline-diagnostics-enable nil
-      lsp-modeline-workspace-status-enable nil
-      lsp-modeline-code-actions-enable nil
-      lsp-imenu-container-name-separator "::"
-      lsp-prefer-flymake nil
-      lsp-log-io nil
-      lsp-enable-file-watchers nil
-      lsp-ui-sideline-enable nil
-      lsp-ui-doc-enable nil
-      lsp-ui-peek-enable nil
-      clangd-args '("--header-insertion=never" "--completion-style=detailed" "--pch-storage=memory" "--clang-tidy=1" "--query-driver=/usr/bin/g++")
       read-process-output-max (* 1024 1024)
-      flycheck-mode-line '(:eval (my-flycheck-status))
+      check-mode-line '(:eval (check-status))
       gc-cons-threshold 100000000
       c-syntactic-indentation nil
       compilation-scroll-output t
@@ -65,6 +41,7 @@
       display-line-numbers-width-start 4
       w32-get-true-file-atttributes nil
       gud-key-prefix "\C-x\C-g"
+      eldoc-echo-area-display-truncation-message nil
       recentf-max-saved-items 256
       ya-cppref-path-to-doc-root "/usr/share/cpp/reference/"
       ivy-height 16
@@ -123,15 +100,17 @@
 (ivy-rich-mode 1)
 (counsel-mode 1)
 (put 'downcase-region 'disabled nil)
+(put 'check-mode-line 'risky-local-variable t)
 (pinentry-start)
+(add-to-list 'term-file-aliases '("foot" . "xterm"))
 
 ;; bindings
-(global-set-key [f6] 'flycheck-list-errors)
-(global-set-key [f7] 'my-compile)
+(global-set-key [f6] 'flymake-show-buffer-diagnostics)
+(global-set-key [f7] 'compile)
 (global-set-key [f8] 'next-error)
 (global-set-key [\C-f8] 'previous-error)
-(global-set-key [f9] 'flycheck-next-error)
-(global-set-key [\C-f9] 'flycheck-previous-error)
+(global-set-key [f9] 'flymake-goto-next-error)
+(global-set-key [\C-f9] 'flymake-goto-previous-error)
 (global-set-key [f10] 'toggle-format-on-save)
 (global-set-key [f12] 'kill-emacs)
 (global-set-key [\C-/] 'undo)
@@ -143,17 +122,21 @@
 (global-set-key [?\C-c ?l] 'vc-print-log)
 (global-set-key [?\C-c ?k] 'vc-region-history)
 (global-set-key [?\C-c ?\C-c] 'counsel-imenu)
+(global-set-key [?\C-c ?c] 'eglot-code-actions)
+(global-set-key [?\C-c ?\C-r] 'eglot-rename)
 (global-set-key [?\C-c ?\t] 'untabify)
-(global-set-key [?\C-x ?x] 'previous-multiframe-window)
-(global-set-key [?\C-x ?\C-x] 'next-multiframe-window)
 (global-set-key [?\C-c ?\C-g] 'google-translate-at-point)
 (global-set-key [?\C-c ?g] 'google-translate-at-point-reverse)
+(global-set-key [?\C-c ?e] 'counsel-ag)
 (global-set-key [\C-left] 'previous-multiframe-window)
 (global-set-key [\C-right] 'next-multiframe-window)
 (global-set-key [?\C-x ?e] 'thing-counsel-git-grep)
 (global-set-key [?\C-x ?\C-e] 'thing-counsel-ag)
-(global-set-key [?\C-c ?e] 'counsel-ag)
-
+(global-set-key [?\C-x ?\C-r] 'xref-find-references)
+(global-set-key [?\C-x ?\C-d] 'xref-find-definitions)
+(global-set-key [?\C-x ?\C-a] 'xref-pop-marker-stack)
+(global-set-key [?\C-x ?x] 'previous-multiframe-window)
+(global-set-key [?\C-x ?\C-x] 'next-multiframe-window)
 (global-set-key [?\C-r] 'swiper-thing-at-point)
 (global-set-key [?\C-s] 'swiper)
 (global-set-key [?\C-x ?f] 'ivy-switch-buffer)
@@ -165,6 +148,8 @@
 
 
 ;; extensions
+(defalias 'yes-or-no-p 'y-or-n-p)
+
 (defun wl-clipboard(text)
   (setq wl-copy-process
 	  (make-process
@@ -193,129 +178,110 @@
   (interactive)
   (action-at-point 'counsel-git-grep))
 
-;; project support
-(defun set-project-name (path)
-  ;; TODO: look for same names in opening buffers
-  (setq-local project-name (file-name-nondirectory path)))
+(with-eval-after-load 'counsel
+  (let ((done (where-is-internal #'ivy-done     ivy-minibuffer-map t))
+	(alt  (where-is-internal #'ivy-alt-done ivy-minibuffer-map t)))
+    (define-key counsel-find-file-map done #'ivy-alt-done)
+    (define-key counsel-find-file-map alt  #'ivy-done)))
 
-(defun project-try-template (dir id)
-  (let ((f (locate-dominating-file dir id)))
-    (when f
-      (let ((proj (file-name-directory f)))
-	(when proj
-	  (setq-local project (file-truename (directory-file-name proj))))
-	(set-project-name project)
-	(cons proj (file-truename (concat proj (file-name-directory id))))))))
+(with-eval-after-load 'ivy
+  (define-key ivy-switch-buffer-map [?\C-d] #'ivy-switch-buffer-kill))
 
-(defun project-try-pvc(dir)
-  (let ((proj (project-try-vc dir)))
-    (setq-local project
-		(if proj
-		    (directory-file-name (cdr proj))
-		  ""))
-    (set-project-name project)
-    proj))
+;; project paths & compilation support
+(defun update-buildinfo(project)
+  (when (or (not (boundp 'compile-history))
+ 	     (= (length compile-history) 0))
+     (setq compile-history '("make -k ")))
+  (when (not (boundp 'project-buildinfo))
+    (setq project-buildinfo (make-hash-table :size 16 :test 'equal)))
+  (when (not (gethash project project-buildinfo))
+    (let ((buildcmd (cond
+		  ((file-exists-p (concat project "build/build.ninja"))
+		   (concat "ninja -C " (concat project "build")))
+		  ((file-exists-p (concat project "build/Makefile"))
+		   (concat "make -C " (concat project "build")))
+		  ((file-exists-p (concat project "Makefile"))
+		   (concat "make -C " project)))))
+      (puthash project buildcmd project-buildinfo)
+      (push buildcmd compile-history)
+      (setq compile-command (car compile-history)))))
 
-(defun project-try-ccj(dir)
-  (let ((proj (or (project-try-template dir "build/compile_commands.json")
-		  (project-try-template dir "compile_commands.json"))))
-    (when proj
-      (setq-local ccjpath (cdr proj))
-      (when (file-exists-p (concat ccjpath "build.ninja"))
-	(setq-local buildpath (cons "ninja" ccjpath)))
-      (cons 'vc (car proj)))))
 
-(defun project-try-makefile(dir)
-  (let ((proj (or (project-try-template dir "build/Makefile")
-		  (project-try-template dir "Makefile"))))
-    (when proj
-      (setq-local buildpath (cons "make" (cdr proj)))
-      (cons 'vc (car proj)))))
+(advice-add
+ 'project-try-vc
+ :around
+ (lambda (func &rest args)
+   (when buffer-file-name
+     (let ((data (apply func args)))
+       (when data
+	 (let* ((project (cdr data))
+		(project-path (file-truename project)))
+	   (setq-local project-name
+		       (file-name-nondirectory (directory-file-name project)))
+	   (setq-local project-file
+		       (substring-no-properties buffer-file-name
+						(length project-path)))
+	   (update-buildinfo project-path)))
+       data))))
 
-(defun project-try-cargo(dir)
-  (let ((proj (project-try-template dir "Cargo.toml")))
-    (when proj
-      (cons 'vc (car proj)))))
-
-(defun find-compilation-database()
-  (if (boundp 'ccjpath) ccjpath
-      (let ((root (car (project-roots (project-current t)))))
-	(if (boundp 'ccjpath) ccjpath root))))
+(defun safe-local-string(buffer symbol)
+  (or (and (local-variable-p symbol buffer)
+	   (buffer-local-value symbol buffer))
+      ""))
 
 (defun get-buffer-project (candidate)
-  (let* ((buffer (get-buffer candidate)))
-	(if (local-variable-p 'project-name buffer)
-	    (buffer-local-value 'project-name buffer) "")))
-
+  (safe-local-string (get-buffer candidate) 'project-name))
 
 (defun get-buffer-relproj-path (candidate)
-  (let* ((buffer (get-buffer candidate))
-	 (filename (buffer-local-value 'buffer-file-name buffer))
-	 (proj
-	    (when (local-variable-p 'project buffer)
-	      (buffer-local-value 'project buffer)))
-	 (relpath
-	  (if filename
-	      (if (local-variable-p 'project buffer)
-		  (let ((proj (buffer-local-value 'project buffer)))
-		    (if (not (string-empty-p proj))
-			(substring-no-properties filename (+ 1 (length proj)))
-		      filename))
-		filename)
-	    "")))
-    relpath))
+  (safe-local-string (get-buffer candidate) 'project-file))
 
-(defun my-compile()
-  "Suggest to compile of project directory"
-  (interactive)
-  (when (or (not (boundp 'compile-history))
-	    (= (length compile-history) 0))
-    (setq compile-history '("make -k ")))
-  (when (and (boundp 'project) project)
-    (let ((curr
-	   (if (and (boundp 'buildpath)
-		    (file-directory-p (cdr buildpath)))
-	       (concat (car buildpath) " -C " (cdr buildpath))
-	     (concat "make -k -C " project))))
-    (unless (catch 'found
-	      (dolist (v compile-history)
-		(when (string= curr v)
-		  (throw 'found t)))
-	      nil)
-      (push curr compile-history))))
-  (when (> (length compile-history) 0)
-    (setq compile-command (car compile-history)))
-  (execute-extended-command nil "compile"))
 
-;; lsp, code, formatting
+;; mode-line
+(defun hl-nonzero(sym hl)
+  (if (eq sym 0) "0"
+    (propertize (int-to-string sym) 'face hl)))
+
+(defun flymake-diags-count(type)
+    (let ((count 0))
+      (dolist (d (flymake-diagnostics))
+	(when (= (flymake--severity type)
+		 (flymake--severity (flymake-diagnostic-type d)))
+          (cl-incf count)))
+      count))
+
+(defun check-status()
+  (let ((errors (flymake-diags-count :error))
+	(warnings (flymake-diags-count :warning)))
+    (concat "  check: "
+	    (if (or (< 0 warnings) (< 0 errors))
+		(format "%s|%s"
+			(hl-nonzero (or errors 0) 'error)
+			(hl-nonzero (or warnings 0) 'warning))
+	      "ok"))))
+
+(advice-add 'vc-mode-line :after (lambda (&rest args)
+  (when (stringp vc-mode)
+      (setq vc-mode (concat " " (replace-regexp-in-string
+                   (format "^ %s[:-]" (vc-backend buffer-file-name))
+                   " " vc-mode))))))
+
+(add-hook 'window-configuration-change-hook
+	  (lambda()
+	    (setq mode-line-format
+		  '("%e" mode-line-modified mode-line-buffer-identification
+		    "  " mode-name (vc-mode vc-mode)
+		    check-mode-line "  " mode-line-position
+		    mode-line-end-spaces))))
+
+;; code, formatting
 (defun format-region(start end)
   (interactive
    (if (use-region-p)
        (list (region-beginning) (region-end))
      (list (point) (point))))
-  (lsp-format-region start end)
+  (eglot-format start end)
   (back-to-indentation))
 
-(defun hl-nonzero(sym hl)
-  (if (eq sym 0) "0"
-    (propertize (int-to-string sym) 'face hl)))
-
-(defun my-flycheck-status (&optional status)
-  (let ((text (pcase (or status flycheck-last-status-change)
-                (`not-checked "")
-                (`no-checker "-")
-                (`running "*")
-                (`errored "!")
-                (`finished
-                 (let-alist (flycheck-count-errors flycheck-current-errors)
-                   (if (or .error .warning)
-		       (format "%s|%s" (hl-nonzero (or .error 0) 'error)
-			       (hl-nonzero (or .warning 0) 'warning))
-                     "ok")))
-                (`interrupted ".")
-                (`suspicious "?"))))
-    (if (string-empty-p text) ""
-      (concat "  check: " text))))
 
 (defun toggle-format-on-save()
   (interactive)
@@ -328,112 +294,61 @@
       (message "format on save enabled"))))
 
 ;; hacks
-(with-eval-after-load 'counsel
-  (let ((done (where-is-internal #'ivy-done     ivy-minibuffer-map t))
-	(alt  (where-is-internal #'ivy-alt-done ivy-minibuffer-map t)))
-    (define-key counsel-find-file-map done #'ivy-alt-done)
-    (define-key counsel-find-file-map alt  #'ivy-done)))
-
-(with-eval-after-load 'ivy
-  (define-key ivy-switch-buffer-map [?\C-d] #'ivy-switch-buffer-kill))
-
-(advice-add 'swiper--init :after
-	    (lambda (&rest rest)
-	      (if (bound-and-true-p lsp-mode)
-		  (setq my-swiper-upd (current-buffer))
-		(when (boundp 'my-swiper-upd)
-		  (makunbound 'my-swiper-upd)))))
-
-(advice-add 'swiper--update-input-ivy :after
-	    (lambda (&rest rest)
-	      (when (boundp 'my-swiper-upd)
-		(with-current-buffer my-swiper-upd
-		  (lsp-headerline--check-breadcrumb)))))
-
-(advice-add 'vc-mode-line :after (lambda (&rest args)
-  (when (stringp vc-mode)
-      (setq vc-mode (concat " " (replace-regexp-in-string
-                   (format "^ %s[:-]" (vc-backend buffer-file-name))
-                   " " vc-mode))))))
-
-(advice-add 'lsp--render-markdown :before (lambda (&rest args)
-  (goto-char (point-min))
-  (while (re-search-forward "  \n" nil t)
-    (replace-match "\n"))))
+(advice-add 'eglot--format-markup :filter-args
+	    (lambda (markup)
+	      (let ((elem (car markup)))
+		(plist-put elem :value (replace-regexp-in-string
+			  (regexp-quote "  \n") "\n"
+			  (plist-get elem :value) nil 'literal)))
+	       markup))
 
 (with-eval-after-load 'google-translate-tk
   (defun google-translate--search-tkk ()
     "Search TKK."
     (list 430675 2721866130)))
 
+(add-hook 'eglot-managed-mode-hook
+          (lambda ()
+            (setq eldoc-documentation-functions
+                  (cons #'flymake-eldoc-function
+                        (remove #'flymake-eldoc-function eldoc-documentation-functions)))
+	    ))
 
-;; hooks and etc...
-(setq lsp-eldoc-hook
-      (lambda()
-	(when (bound-and-true-p lsp-mode)
-	  (let ((diags (lsp--cur-line-diagnotics)))
-	    (when (= (length diags) 0)
-	      (lsp-hover))))))
-
-(add-hook 'lsp-configure-hook
-	  (lambda()
-	    (yas-minor-mode-on)
-	    (local-set-key [?\C-x ?\C-r] 'lsp-rename)
-	    (local-set-key [?\C-x ?\C-d] 'lsp-find-definition)
-	    (local-set-key [?\C-x ?\C-a] 'xref-pop-marker-stack)
-	    (local-set-key [?\C-c ?\C-c] 'counsel-imenu)))
-
+;; programming
 (add-hook 'prog-mode-hook
 	  (lambda()
 	    (display-line-numbers-mode)
-	    (company-mode)))
-
+	    (company-mode)
+	    (yas-minor-mode-on)))
 
 (add-hook 'c-mode-common-hook
 	  (lambda()
-	    (setq lsp-clients-clangd-args clangd-args)
-	    (add-to-list 'lsp-clients-clangd-args  (concat "--compile-commands-dir=" (find-compilation-database)))
-	    (find-compilation-database)
 	    (local-set-key [?\C-x ?d] 'cff-find-other-file)
 	    (local-set-key (kbd "TAB") 'format-region)
+	    (local-set-key [?\C-c ?\C-c] 'counsel-imenu)
 	    (abbrev-mode 0)
-	    (lsp)))
+	    (eglot-ensure)))
 
 (add-hook 'java-mode-hook
 	  (lambda()
 	    (setq c-comment-start-regexp "(@|/(/|[*][*]?))")
 	    (modify-syntax-entry ?@ "< b" java-mode-syntax-table)
-	    (lsp)))
+	    (eglot-ensure)))
 
 (add-hook 'rust-mode-hook
 	  (lambda()
-	    (local-set-key [\C-f7] 'compile)
 	    (local-set-key [f7] 'cargo-process-build)
-	    (lsp)))
-
-(add-hook 'emacs-lisp-mode-hook
-	  (lambda()
-	    (local-set-key [?\C-x ?\C-d] 'find-function-at-point)))
-
-(add-hook 'python-mode-hook 'lsp)
-(add-hook 'meson-mode-hook 'find-compilation-database)
+	    (eglot-ensure)))
 
 (add-hook 'before-save-hook
 	  (lambda()
 	    (when format-on-save
 	      (when (derived-mode-p 'c-mode 'c++-mode 'java-mode 'rust-mode)
-		(lsp-format-buffer))
+		(eglot-format-buffer))
 	      (when (derived-mode-p 'prog-mode)
 		(delete-trailing-whitespace)))))
 
-(add-hook 'window-configuration-change-hook
-	  (lambda()
-	    (setq mode-line-format
-		  '("%e" mode-line-modified mode-line-buffer-identification
-		    "  " mode-name (vc-mode vc-mode)
-		    flycheck-mode-line "  " mode-line-position
-		    mode-line-end-spaces))))
-
+(add-hook 'python-mode-hook 'eglot-ensure)
 (add-hook 'conf-mode-hook 'display-line-numbers-mode)
 
 ;; theme
@@ -460,17 +375,11 @@
  '(font-lock-function-name-face ((t (:foreground "#ffffff")))) ;
  '(font-lock-keyword-face ((t (:foreground "#00cdcd"))))
  '(font-lock-type-face ((t (:foreground "#20afff"))))
- '(font-lock-string-face ((t (:foreground "#63a330"))))
+ '(font-lock-string-face ((t (:foreground "#3cb371"))))
  '(font-lock-preprocessor-face ((t (:foreground "#ff8070"))))
  '(font-lock-variable-name-face ((t  (:inherit default))))
  '(font-lock-builtin-face ((t (:foreground "#5f5f87"))))
- '(lsp-ui-doc-background ((t (:background "#00005f"))))
- '(lsp-face-semhl-interface ((t  (:inherit font-lock-variable-name-face))))
- '(lsp-face-semhl-definition ((t (:inherit font-lock-function-name-face))))
- '(lsp-face-semhl-macro ((t  (:inherit default))))
- '(lsp-face-semhl-constant ((t  (:inherit default))))
- '(lsp-face-semhl-namespace ((t  (:inherit font-lock-constant-face))))
- '(lsp-headerline-breadcrumb-path-face ((t (:foreground "#20afff"))))
+ '(eglot-diagnostic-tag-unnecessary-face ((t  (:inherit warning))))
  '(minibuffer-prompt ((t (:foreground "#00afff"))))
  '(org-table ((t (:foreground "#00cdcd"))))
  '(line-number ((t (:foreground "#626262"))))
