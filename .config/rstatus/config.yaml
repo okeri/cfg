@@ -97,12 +97,11 @@
 
   - network:
       interval: 5
-      prefix: ''
-      suffix: '%'
+      wifi: ''
       ethernet: ''
       color: '#00CC00'
       separator_width: 12
-      invalid: ''
+      invalid: ''
       invalid_color: '#FF0000'
       threshold_fix: true
       thresholds:

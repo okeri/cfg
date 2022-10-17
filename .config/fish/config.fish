@@ -1,4 +1,5 @@
 set -gx XDG_RUNTIME_DIR /run/user/17
+set -gx XDG_CACHE_HOME /tmp
 set -gx LIBSEAT_BACKEND logind
 set -gx EDITOR "emacst"
 set -x ANDROID_SDK_ROOT /opt/android-sdk
@@ -6,7 +7,7 @@ set -x MOZ_USE_XINPUT2 1
 set -x MOZ_ENABLE_WAYLAND 1
 set -x CALIB_ROOT ~/proj/calibrator
 
-#$ANDROID_SDK_ROOT/tools $ANDROID_SDK_ROOT/platform-tools $ANDROID_SDK_ROOT/build-tools/25.0.1/ 
+#$ANDROID_SDK_ROOT/tools $ANDROID_SDK_ROOT/platform-tools $ANDROID_SDK_ROOT/build-tools/25.0.1/
 if not contains /opt/android-ndk $PATH
 	set -x PATH /opt/bin ~/.cargo/bin /opt/android-ndk /opt/xilinx/Vivado/2019.1/bin $PATH
 end
