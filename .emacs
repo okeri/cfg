@@ -203,7 +203,8 @@
 		  ((file-exists-p (concat project "Makefile"))
 		   (concat "make -C " project)))))
       (puthash project buildcmd project-buildinfo)
-      (push buildcmd compile-history)
+      (when buildcmd
+	(push buildcmd compile-history))
       (setq compile-command (car compile-history)))))
 
 
