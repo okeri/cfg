@@ -12,7 +12,7 @@
   (unless (package-installed-p package)
     (package-install package)))
 (require 'yasnippet)
-
+(require 'eglot)
 ;; settings
 (setq fill-column 80
       xterm-query-timeout nil
@@ -103,6 +103,7 @@
 (put 'check-mode-line 'risky-local-variable t)
 (pinentry-start)
 (add-to-list 'term-file-aliases '("foot" . "xterm"))
+(add-to-list 'eglot-server-programs '((c++-mode c-mode) . ("clangd" "--header-insertion=never" "--completion-style=detailed" "--pch-storage=memory" "--query-driver=/usr/bin/g++")))
 
 ;; bindings
 (global-set-key [f6] 'flymake-show-buffer-diagnostics)
@@ -251,14 +252,16 @@
       count))
 
 (defun check-status()
-  (let ((errors (flymake-diags-count :error))
-	(warnings (flymake-diags-count :warning)))
-    (concat "  check: "
-	    (if (or (< 0 warnings) (< 0 errors))
-		(format "%s|%s"
-			(hl-nonzero (or errors 0) 'error)
-			(hl-nonzero (or warnings 0) 'warning))
-	      "ok"))))
+  (if (bound-and-true-p eglot--managed-mode)
+      (let ((errors (flymake-diags-count :error))
+	    (warnings (flymake-diags-count :warning)))
+	(concat "  check: "
+		(if (or (< 0 warnings) (< 0 errors))
+		    (format "%s|%s"
+			    (hl-nonzero (or errors 0) 'error)
+			    (hl-nonzero (or warnings 0) 'warning))
+		  "ok")))
+    ""))
 
 (advice-add 'vc-mode-line :after (lambda (&rest args)
   (when (stringp vc-mode)

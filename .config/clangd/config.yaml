@@ -1,0 +1,12 @@
+If:
+  PathMatch: /usr/include/.*
+
+Diagnostics:
+  Suppress: "*"
+
+---
+If:
+  PathMatch: .*
+
+Diagnostics:
+  UnusedIncludes: Strict
