@@ -42,7 +42,7 @@
       w32-get-true-file-atttributes nil
       gud-key-prefix "\C-x\C-g"
       eldoc-echo-area-display-truncation-message nil
-      recentf-max-saved-items 256
+      recentf-max-saved-items 512
       ya-cppref-path-to-doc-root "/usr/share/cpp/reference/"
       ivy-height 16
       ivy-fixed-height-minibuffer t
@@ -227,7 +227,7 @@
        data))))
 
 (defun safe-local-string(buffer symbol)
-  (or (and (local-variable-p symbol buffer)
+  (or (and (boundp symbol) (local-variable-p symbol buffer)
 	   (buffer-local-value symbol buffer))
       ""))
 
