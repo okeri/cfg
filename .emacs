@@ -2,7 +2,7 @@
 (require 'package)
 (add-to-list 'package-archives (cons "melpa" "https://melpa.org/packages/"))
 (setq packages
-      '(cff eglot yaml-mode yasnippet ivy-rich fish-mode company
+      '(cff eglot yaml-mode yasnippet ivy-rich fish-mode company rust-mode
 	    counsel cmake-mode meson-mode cargo pinentry popup google-translate))
 (package-initialize)
 (unless package-archive-contents
@@ -227,8 +227,7 @@
        data))))
 
 (defun safe-local-string(buffer symbol)
-  (or (and (boundp symbol) (local-variable-p symbol buffer)
-	   (buffer-local-value symbol buffer))
+  (or (and (buffer-local-boundp symbol buffer) (buffer-local-value symbol buffer))
       ""))
 
 (defun get-buffer-project (candidate)
@@ -352,7 +351,11 @@
 	      (when (derived-mode-p 'prog-mode)
 		(delete-trailing-whitespace)))))
 
-(add-hook 'python-mode-hook 'eglot-ensure)
+(add-hook 'python-mode-hook
+	  (lambda()
+	    (local-set-key [?\C-c ?\C-r] 'eglot-rename)
+	    (eglot-ensure)))
+
 (add-hook 'conf-mode-hook 'display-line-numbers-mode)
 
 ;; theme
