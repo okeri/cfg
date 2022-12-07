@@ -5,6 +5,7 @@ set -gx EDITOR "emacst"
 set -x ANDROID_SDK_ROOT /opt/android-sdk
 set -x MOZ_USE_XINPUT2 1
 set -x MOZ_ENABLE_WAYLAND 1
+set -x MPLBACKEND GTK3Agg
 set -x CALIB_ROOT ~/proj/calibrator
 
 #$ANDROID_SDK_ROOT/tools $ANDROID_SDK_ROOT/platform-tools $ANDROID_SDK_ROOT/build-tools/25.0.1/
