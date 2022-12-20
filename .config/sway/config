@@ -44,6 +44,11 @@ bindsym --to-code {
      XF86AudioMute exec acpi_handler MUTE
      XF86AudioRaiseVolume exec acpi_handler VOLUP
      XF86AudioLowerVolume exec acpi_handler VOLDN
+
+     Shift+XF86AudioMute exec acpi_handler MICMUTE
+     Shift+XF86AudioRaiseVolume exec acpi_handler MICVOLUP
+     Shift+XF86AudioLowerVolume exec acpi_handler MICVOLDN
+
      XF86MonBrightnessUp exec acpi_handler BRTUP
      XF86MonBrightnessDown exec acpi_handler BRTDN
 
