@@ -1,4 +1,4 @@
-  - cpuload:
+  - !cpuload
       interval: 3
       invalid: ''
       prefix: ''
@@ -12,7 +12,7 @@
         50: '#FFF600'
         80: '#FF0000'
 
-  - temperature:
+  - !temperature
       sensor: '/tmp/cputemp'
       prefix: ''
       prefix_color: '#4080a0'
@@ -26,7 +26,7 @@
         60: '#FFF600'
         70: '#FF0000'
 
-  - memory:
+  - !memory
       prefix: ''
       prefix_color: '#4080a0'
       separator_width: 12
@@ -39,7 +39,7 @@
         40: '#FFF600'
         70: '#FF0000'
 
-  - filesystem:
+  - !filesystem
       path: '/tmp'
       interval: 5
       prefix: ''
@@ -53,7 +53,7 @@
         40: '#FFF600'
         70: '#FF0000'
 
-  - filesystem:
+  - !filesystem
       path: '/'
       interval: 30
       prefix: ''
@@ -67,7 +67,7 @@
         50: '#FFF600'
         70: '#FF0000'
 
-  - volume:
+  - !volume
       mixer: 'Master'
       alsa_jack_switch_outputs: true
       alsa_jack_mute_on_unplug: true
@@ -81,21 +81,21 @@
       jack_only: ['Astell&Kern PEE51 USB Audio', 'Zorloo Ztella USB Audio', 'IBASSO-DC-Series']
       color: '#CCCCCC'
       
-  - custom:
+  - !custom
       signal: 9
       command: '/opt/bin/weather'
       invalid: 'n/a'
       invalid_color: '#CCCCCC'
       separator_width: 12
 
-  - custom:
+  - !custom
       signal: 5
       prefix: " "
       prefix_color: '#4080a0'
       separator_width: 12
       command: '/opt/bin/kbd_layout'
 
-  - network:
+  - !network
       interval: 5
       wifi: ''
       ethernet: ''
@@ -110,14 +110,14 @@
         50: '#FFF600'
         80: '#00FF00'
 
-  - custom:
+  - !custom
       signal: 8
       command: '/opt/bin/vpn'
       invalid: 'n/a'
       invalid_color: '#CCCCCC'
       separator_width: 12
 
-  - battery:
+  - !battery
       sensor: '/sys/class/power_supply/BAT1'
       interval: 10
       invalid: 'no battery'
@@ -142,7 +142,7 @@
       warning_level: 10
       warning_action: 'systemctl suspend'
 
-  - time:
+  - !time
       prefix: ''
       prefix_color: '#4080a0'
       separator_width: 8
