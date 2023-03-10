@@ -11,8 +11,10 @@
 (dolist (package packages)
   (unless (package-installed-p package)
     (package-install package)))
+
 (require 'yasnippet)
 (require 'eglot)
+
 ;; settings
 (setq fill-column 80
       xterm-query-timeout nil
@@ -274,7 +276,8 @@
 		  '("%e" mode-line-modified mode-line-buffer-identification
 		    "  " mode-name (vc-mode vc-mode)
 		    check-mode-line "  " mode-line-position
-		    mode-line-end-spaces))))
+		    mode-line-end-spaces))
+	    (set-display-table-slot standard-display-table 5 ?│)))
 
 ;; code, formatting
 (defun format-region(start end)
@@ -361,26 +364,26 @@
 ;; theme
 (deftheme okeri)
 (custom-theme-set-faces 'okeri
- '(error ((t (:foreground "#cd0000"))))
+ '(error ((t (:foreground "red"))))
  '(success ((t (:bold t :foreground "#228b22"))))
  '(shadow ((t (:foreground "#767676"))))
  '(highlight ((t (:background "#303030"))))
  '(region ((t (:inherit highlight))))
  '(company-tooltip ((t (:background "grey" :foreground "black"))))
  '(company-tooltip-selection ((t (:background "#005f5f" :foreground "black"))))
- '(diff-added ((t (:foreground "#00cd00"))))
+ '(diff-added ((t (:foreground "green"))))
  '(diff-context ((t (:foreground "white"))))
  '(diff-file-header ((t (:bold t :foreground "#585858"))))
  '(diff-header ((t (:foreground "#6c6c6c"))))
- '(diff-removed ((t (:foreground "#cd0000"))))
+ '(diff-removed ((t (:foreground "red"))))
  '(diff-refine-added ((t (:background "#002000"))))
  '(diff-refine-changed ((t (:background "#202020"))))
  '(diff-refine-removed ((t (:background "#200000"))))
  '(font-lock-comment-face ((t (:inherit shadow))))
  '(font-lock-constant-face ((t (:foreground "#af87ff"))))
  '(font-lock-doc-face ((t (:bold t :foreground "#d75f00"))))
- '(font-lock-function-name-face ((t (:foreground "#ffffff")))) ;
- '(font-lock-keyword-face ((t (:foreground "#00cdcd"))))
+ '(font-lock-function-name-face ((t (:foreground "brightwhite")))) ;
+ '(font-lock-keyword-face ((t (:foreground "cyan"))))
  '(font-lock-type-face ((t (:foreground "#20afff"))))
  '(font-lock-string-face ((t (:foreground "#3cb371"))))
  '(font-lock-preprocessor-face ((t (:foreground "#ff8070"))))
@@ -388,9 +391,8 @@
  '(font-lock-builtin-face ((t (:foreground "#5f5f87"))))
  '(eglot-diagnostic-tag-unnecessary-face ((t  (:inherit warning))))
  '(minibuffer-prompt ((t (:foreground "#00afff"))))
- '(org-table ((t (:foreground "#00cdcd"))))
+ '(org-table ((t (:inherit "font-lock-keyword-face"))))
  '(line-number ((t (:foreground "#626262"))))
  '(mode-line ((t (:background "#1a1a1a" :foreground "#767676" :box (:line-width -1 :style released-button)))))
  '(mode-line-inactive ((t (:background "#121212" :foreground "#444444" :box (:line-width -1 :color "#121212" :style nil))))))
-
 (enable-theme 'okeri)
