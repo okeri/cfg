@@ -105,7 +105,7 @@
 (put 'check-mode-line 'risky-local-variable t)
 (pinentry-start)
 (add-to-list 'term-file-aliases '("foot" . "xterm"))
-(add-to-list 'eglot-server-programs '((c++-mode c-mode) . ("clangd" "--header-insertion=never" "--completion-style=detailed" "--pch-storage=memory" "--query-driver=/usr/bin/g++")))
+(add-to-list 'eglot-server-programs '((c++-mode c-mode) . ("clangd" "--header-insertion=never" "--completion-style=detailed" "--pch-storage=memory" "--query-driver=/bin/g++")))
 
 ;; bindings
 (global-set-key [f6] 'flymake-show-buffer-diagnostics)
@@ -197,18 +197,22 @@
      (setq compile-history '("make -k ")))
   (when (not (boundp 'project-buildinfo))
     (setq project-buildinfo (make-hash-table :size 16 :test 'equal)))
-  (when (not (gethash project project-buildinfo))
-    (let ((buildcmd (cond
-		  ((file-exists-p (concat project "build/build.ninja"))
-		   (concat "ninja -C " (concat project "build")))
-		  ((file-exists-p (concat project "build/Makefile"))
-		   (concat "make -C " (concat project "build")))
-		  ((file-exists-p (concat project "Makefile"))
-		   (concat "make -C " project)))))
-      (puthash project buildcmd project-buildinfo)
-      (when buildcmd
-	(push buildcmd compile-history))
-      (setq compile-command (car compile-history)))))
+  (let ((hashedcmd (gethash project project-buildinfo)))
+    (if (not hashedcmd)
+	(let ((buildcmd (cond
+			 ((file-exists-p (concat project "build/build.ninja"))
+			  (concat "ninja -C " (concat project "build")))
+			 ((file-exists-p (concat project "build/Makefile"))
+			  (concat "make -C " (concat project "build")))
+			 ((file-exists-p (concat project "Makefile"))
+			  (concat "make -C " project)))))
+	  (puthash project buildcmd project-buildinfo)
+	  (if buildcmd
+	      (progn
+		(push buildcmd compile-history)
+		(setq compile-command buildcmd))
+	    (setq compile-command (car compile-history))))
+      (setq compile-command hashedcmd))))
 
 
 (advice-add
@@ -387,11 +391,12 @@
  '(font-lock-type-face ((t (:foreground "#20afff"))))
  '(font-lock-string-face ((t (:foreground "#3cb371"))))
  '(font-lock-preprocessor-face ((t (:foreground "#ff8070"))))
- '(font-lock-variable-name-face ((t  (:inherit default))))
+ '(font-lock-variable-name-face ((t (:inherit default))))
  '(font-lock-builtin-face ((t (:foreground "#5f5f87"))))
- '(eglot-diagnostic-tag-unnecessary-face ((t  (:inherit warning))))
+ '(eglot-diagnostic-tag-unnecessary-face ((t (:inherit warning))))
+ '(eglot-highlight-symbol-face ((t (:bold t :underline t))))
  '(minibuffer-prompt ((t (:foreground "#00afff"))))
- '(org-table ((t (:inherit "font-lock-keyword-face"))))
+ '(org-table ((t (:inherit font-lock-keyword-face))))
  '(line-number ((t (:foreground "#626262"))))
  '(mode-line ((t (:background "#1a1a1a" :foreground "#767676" :box (:line-width -1 :style released-button)))))
  '(mode-line-inactive ((t (:background "#121212" :foreground "#444444" :box (:line-width -1 :color "#121212" :style nil))))))
