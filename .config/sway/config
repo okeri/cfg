@@ -2,7 +2,7 @@
 set $mod Mod4
 
 set $term footclient -N
-set $menu wofi -S drun -t $term -W 600 -H 300 -i
+set $menu wofi -S run -t $term -W 600 -H 300 -i
 set $ws1 "1:    "
 set $ws2 "2:    "
 set $ws3 "3:    "
@@ -55,10 +55,10 @@ bindsym --to-code {
      #kbd layout
      ISO_Next_Group exec pkill -SIGRTMIN+5 rstatus
 
-     # moc
-     $mod+p exec mocp -G
-     $mod+n exec mocp -f
-     $mod+b exec mocp -r
+     # pmcp
+     $mod+p exec pmcpctl pause
+     $mod+n exec pmcpctl next
+     $mod+b exec pmcpctl prev
      
      # gaps
      $mod+g gaps inner current plus 10
@@ -195,9 +195,8 @@ for_window [title="^EmptySpace$"] {
    resize set 450px 800px
 }
 
-for_window [title="^unnamed$"] {
+for_window [title="^(unnamed)|(Model Viewer)$"] {
    floating enable
-   resize set 1920px 1080px
 }
 
 for_window [app_id="scrterm"] {
@@ -207,10 +206,10 @@ for_window [app_id="scrterm"] {
 assign [app_id="term"] $ws1
 assign [app_id="emacs"] $ws2
 assign [app_id="firefox"] $ws3
-assign [app_id="mocp"] $ws0
+assign [app_id="pmcp"] $ws0
 assign [class="Skype"] $ws5
 assign [app_id="org.remmina.Remmina"] $ws8
-assign [class="Gimp-2.10"] $ws6
+assign [app_id="rawtherapee"] $ws6
 
 exec --no-startup-id foot --server
 exec --no-startup-id mako
@@ -218,4 +217,4 @@ exec --no-startup-id iio-sway
 exec --no-startup-id swayidle -w timeout 300 'swaymsg "$lock"' timeout 1200 'swaymsg exec suspend_discharging' timeout 7200 'swaymsg exec systemctl suspend'
 
 exec firefox
-exec sleep 0.1 && $term -a scrterm && $term -a mocp mocp && $term -a emacs emacst && $term -a term
+exec sleep 0.1 && $term -a scrterm && $term -a pmcp pmcp && $term -a emacs emacst && $term -a term
