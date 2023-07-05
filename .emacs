@@ -329,13 +329,13 @@
 	  (lambda()
 	    (display-line-numbers-mode)
 	    (company-mode)
-	    (yas-minor-mode-on)))
+	    (yas-minor-mode-on)
+	    (local-set-key [?\C-c ?\C-c] 'counsel-imenu)))
 
 (add-hook 'c-mode-common-hook
 	  (lambda()
 	    (local-set-key [?\C-x ?d] 'cff-find-other-file)
 	    (local-set-key (kbd "TAB") 'format-region)
-	    (local-set-key [?\C-c ?\C-c] 'counsel-imenu)
 	    (abbrev-mode 0)
 	    (eglot-ensure)))
 
