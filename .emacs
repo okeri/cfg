@@ -222,7 +222,7 @@
    (when buffer-file-name
      (let ((data (apply func args)))
        (when data
-	 (let* ((project (cdr data))
+	 (let* ((project (car (last data)))
 		(project-path (file-truename project)))
 	   (setq-local project-name
 		       (file-name-nondirectory (directory-file-name project)))
