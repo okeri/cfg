@@ -185,24 +185,6 @@ gaps inner 10
 gaps outer 0
 default_border pixel 1
 
-for_window [app_id="firefox"] inhibit_idle fullscreen visible
-for_window [app_id="mpv"] fullscreen enable; inhibit_idle visible
-for_window [class="Skype"] inhibit_idle open
-for_window [app_id="firefox" title=".*Private.Browsing.*"] move window to workspace $ws5
-
-for_window [title="^EmptySpace$"] {
-   floating enable
-   resize set 450px 800px
-}
-
-for_window [title="^(unnamed)|(Model Viewer)$"] {
-   floating enable
-}
-
-for_window [app_id="scrterm"] {
-   move scratchpad
-}	  
-
 assign [app_id="term"] $ws1
 assign [app_id="emacs"] $ws2
 assign [app_id="firefox"] $ws3
@@ -210,6 +192,21 @@ assign [app_id="pmcp"] $ws0
 assign [class="Skype"] $ws5
 assign [app_id="org.remmina.Remmina"] $ws8
 assign [app_id="rawtherapee"] $ws6
+
+for_window {
+  [app_id="firefox"] inhibit_idle fullscreen visible
+  [app_id="mpv"] fullscreen enable; inhibit_idle visible
+  [app_id="firefox" title=".*Private.Browsing.*"] move window to workspace $ws5
+  [title="^EmptySpace$"] {
+    floating enable
+    resize set 450px 800px
+  }
+
+  [title="^(unnamed)|(Model Viewer)$"] floating enable
+  [app_id="scrterm"] move scratchpad
+  [class="Skype"] inhibit_idle open
+  [title="Skype"] inhibit_idle open
+}
 
 exec --no-startup-id foot --server
 exec --no-startup-id mako

@@ -8,7 +8,7 @@ set -x MOZ_ENABLE_WAYLAND 1
 set -x MPLBACKEND GTK3Agg
 set -x CALIB_ROOT ~/proj/calibrator
 
-#$ANDROID_SDK_ROOT/tools $ANDROID_SDK_ROOT/platform-tools $ANDROID_SDK_ROOT/build-tools/25.0.1/
+
 if not contains /opt/android-ndk $PATH
 	set -x PATH /opt/bin ~/.cargo/bin /opt/android-ndk /opt/xilinx/Vivado/2019.1/bin $PATH
 end
