@@ -214,4 +214,4 @@ exec --no-startup-id iio-sway
 exec --no-startup-id swayidle -w timeout 300 'swaymsg "$lock"' timeout 1200 'swaymsg exec suspend_discharging' timeout 7200 'swaymsg exec systemctl suspend'
 
 exec firefox
-exec sleep 0.1 && $term -a scrterm && $term -a pmcp pmcp && $term -a emacs emacst && $term -a term
+exec sleep 0.1 && $term -a scrterm && $term -a emacs emacst && $term -a term && $term -a pmcp pmcp
