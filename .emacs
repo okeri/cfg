@@ -44,6 +44,7 @@
       w32-get-true-file-atttributes nil
       gud-key-prefix "\C-x\C-g"
       eldoc-echo-area-display-truncation-message nil
+      eldoc-echo-area-use-multiline-p 0.5
       recentf-max-saved-items 512
       ya-cppref-path-to-doc-root "/usr/share/cpp/reference/"
       ivy-height 16
