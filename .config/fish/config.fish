@@ -5,9 +5,11 @@ set -x MOZ_USE_XINPUT2 1
 set -x MOZ_ENABLE_WAYLAND 1
 set -x MPLBACKEND GTK3Agg
 set -x CALIB_ROOT ~/proj/calibrator
+set -x XDG_CURRENT_DESKTOP sway
+set -x XDG_SESSION_TYPE wayland
 
-if not contains /opt/android-ndk $PATH
-	set -x PATH /opt/bin ~/.cargo/bin /opt/android-ndk /opt/mb/bin $PATH
+if not contains /opt/bin $PATH
+	set -x PATH /opt/bin ~/.cargo/bin /opt/android-ndk /opt/mb/bin ~/.local/bin $PATH
 end
 
 function fish_right_prompt
@@ -28,8 +30,6 @@ alias em 'emacsclient -t'
 alias emacs 'emacsclient -t'
 alias su 'su -'
 
-bind "[27;5;13~" execute
-bind "[27;2;13~" execute
 bind \cd delete-char
 
 function fish_greeting

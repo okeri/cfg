@@ -78,7 +78,7 @@
       invalid: '♪ muted'
       invalid_color: '#FFF600'
       jack_icons: [' ', ' ']
-      jack_only: ['Astell&Kern PEE51 USB Audio', 'Zorloo Ztella USB Audio', 'IBASSO-DC-Series']
+      jack_only: ['Astell&Kern PEE51 USB Audio', 'Zorloo Ztella USB Audio', 'IBASSO-DC-Series', 'TC44Pro M3']
       color: '#CCCCCC'
       
   - !custom
