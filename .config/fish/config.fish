@@ -1,17 +1,3 @@
-set -gx LIBSEAT_BACKEND logind
-set -gx EDITOR "emacst"
-set -x ANDROID_SDK_ROOT /opt/android-sdk
-set -x MOZ_USE_XINPUT2 1
-set -x MOZ_ENABLE_WAYLAND 1
-set -x MPLBACKEND GTK3Agg
-set -x CALIB_ROOT ~/proj/calibrator
-set -x XDG_CURRENT_DESKTOP sway
-set -x XDG_SESSION_TYPE wayland
-
-if not contains /opt/bin $PATH
-	set -x PATH /opt/bin ~/.cargo/bin /opt/android-ndk /opt/mb/bin ~/.local/bin $PATH
-end
-
 function fish_right_prompt
 	set cmd_status_ $status
 	if test $cmd_status_ -ne 0

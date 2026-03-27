@@ -45,7 +45,7 @@ bindsym --to-code {
      Print exec grim /tmp/`date +%d.%m.%Y-%M.%H.%S.png`
      $mod+l $lock
      $mod+k exec rotate
-     $mod+y exec /opt/bin/vpn toggle
+     $mod+y exec vpn toggle
 
      # ACPI events
      XF86AudioMute exec acpi_handler MUTE
@@ -202,7 +202,7 @@ assign [app_id="aerc"] $ws9
 assign [app_id="pmcp"] $ws0
 
 for_window {
-  [app_id="firefox"] inhibit_idle fullscreen visible
+  [app_id="firefox"] inhibit_idle fullscreen
   [class="Compass On-premise"] inhibit_idle visible
   [app_id="mpv"] fullscreen enable; inhibit_idle visible
   [app_id="firefox" title=".*Private.Browsing.*"] move window to workspace $ws5
@@ -217,23 +217,10 @@ for_window {
 }
 
 
+exec dbus-update-activation-environment --all
+exec systemctl --user import-environment && systemctl --user start foot-server.socket emacs.service && $term -a scrterm && $term -a term && $term -a emacs emacst && $term -a aerc aerc && $term -a pmcp pmcp
 
-exec systemctl --user set-environment XDG_CURRENT_DESKTOP=sway
-exec systemctl --user import-environment DISPLAY \
-                                         SWAYSOCK \
-                                         WAYLAND_DISPLAY \
-                                         XDG_CURRENT_DESKTOP
-
-exec dbus-update-activation-environment 2>/dev/null && \
-     dbus-update-activation-environment --systemd DISPLAY \
-                                                  SWAYSOCK \
-                                                  XDG_CURRENT_DESKTOP=sway \
-                                                  WAYLAND_DISPLAY
-
-exec --no-startup-id foot --server
+exec firefox
 exec --no-startup-id mako
 exec --no-startup-id iio-sway
 exec --no-startup-id swayidle -w timeout 300 'swaymsg "$lock"' timeout 1200 'swaymsg exec suspend_discharging' timeout 7200 'swaymsg exec systemctl suspend'
-
-exec firefox
-exec inotifywait -e create ${XDG_RUNTIME_DIR} --include 'foot' && $term -a scrterm && $term -a emacs emacst && $term -a term && $term -a aerc aerc && $term -a pmcp pmcp
