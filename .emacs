@@ -56,6 +56,13 @@
   (eglot-format start end)
   (back-to-indentation))
 
+(defun toggle-delete-other-windows ()
+  (interactive)
+  (if (and winner-mode
+           (equal (selected-window) (next-window)))
+      (winner-undo)
+    (delete-other-windows)))
+
 ;;; Core settings
 
 (use-package emacs
@@ -72,18 +79,25 @@
         save-abbrevs nil
         column-number-mode t
         custom-file "/tmp/custom.el"
-        read-process-output-max (* 1024 1024)
+        read-process-output-max (* 4096 1024)
         gc-cons-threshold 100000000
         compilation-scroll-output t
         use-dialog-box nil
         display-line-numbers-width-start 4
         format-on-save t
         interprogram-cut-function 'wl-clipboard
+        bidi-display-reordering 'left-to-right
+        bidi-paragraph-direction 'left-to-right
+        kill-do-not-save-duplicates t
+        redisplay-skip-fontification-on-input t
+        window-combination-resize t
+        global-auto-revert-mode t
         gud-key-prefix "\C-x\C-g")
 
   (defalias 'yes-or-no-p 'y-or-n-p)
   (normal-erase-is-backspace-mode 0)
   (show-paren-mode 1)
+  (winner-mode +1)
   (menu-bar-mode 0)
   (xterm-mouse-mode)
   (put 'downcase-region 'disabled nil)
@@ -96,6 +110,7 @@
          ([?\C-c left]  . uncomment-region)
          ([?\C-c right] . comment-region)
          ([?\C-c ?\t]   . untabify)
+         ([?\C-x ?1]    . toggle-delete-other-windows)
          ([\C-left]     . previous-multiframe-window)
          ([\C-right]    . next-multiframe-window)
          ([?\C-x ?x]    . previous-multiframe-window)
@@ -328,6 +343,9 @@
               (when (derived-mode-p 'prog-mode)
                 (delete-trailing-whitespace)))))
 
+(add-hook 'after-save-hook
+          #'executable-make-buffer-file-executable-if-script-p)
+
 ;;; Mode line
 (put 'check-mode-line 'risky-local-variable t)
 (setq check-mode-line '(:eval (check-status)))
@@ -344,6 +362,7 @@
                 "  " mode-name (vc-mode vc-mode)
                 check-mode-line "  " mode-line-position
                 mode-line-end-spaces))
+
 
 (set-display-table-slot standard-display-table 5 ?│)
 
