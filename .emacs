@@ -97,7 +97,6 @@
   (defalias 'yes-or-no-p 'y-or-n-p)
   (normal-erase-is-backspace-mode 0)
   (show-paren-mode 1)
-  (winner-mode +1)
   (menu-bar-mode 0)
   (xterm-mouse-mode)
   (put 'downcase-region 'disabled nil)
@@ -254,6 +253,17 @@
   (setq eldoc-echo-area-display-truncation-message nil
         eldoc-echo-area-use-multiline-p 0.5))
 
+(use-package winner
+  :ensure nil ; Built-in package
+  :init
+  (winner-mode 1)
+  :bind
+  (:map winner-mode-map
+        ("C-c <left>" . nil)
+        ("C-c <right>" . nil)
+        ("C-x w u" . winner-undo)
+        ("C-x w r" . winner-redo)))
+
 ;;; Language modes
 
 (use-package rust-mode
@@ -265,6 +275,7 @@
 (use-package yaml-mode)
 (use-package cmake-mode)
 (use-package meson-mode)
+(use-package dts-mode)
 
 (defun switch-header-source ()
   (interactive)
@@ -316,6 +327,7 @@
   (with-eval-after-load 'google-translate-tk
     (defun google-translate--search-tkk () (list 430675 2721866130))))
 
+
 ;;; Hooks
 (add-hook 'prog-mode-hook #'display-line-numbers-mode)
 (add-hook 'conf-mode-hook #'display-line-numbers-mode)
@@ -343,8 +355,6 @@
               (when (derived-mode-p 'prog-mode)
                 (delete-trailing-whitespace)))))
 
-(add-hook 'after-save-hook
-          #'executable-make-buffer-file-executable-if-script-p)
 
 ;;; Mode line
 (put 'check-mode-line 'risky-local-variable t)
