@@ -13,7 +13,7 @@
         80: '#FF0000'
 
   - !temperature
-      sensor: '/tmp/cputemp'
+      sensor: 'cpu-?-?-?-thermal'
       prefix: ' '
       prefix_color: '#4080a0'
       separator_width: 12
@@ -118,7 +118,7 @@
       separator_width: 12
 
   - !battery
-      sensor: '/sys/class/power_supply/BAT1'
+      sensor: '/sys/class/power_supply/qcom-battmgr-bat'
       interval: 10
       invalid: 'no battery'
       prefix_color: '#4080a0'
