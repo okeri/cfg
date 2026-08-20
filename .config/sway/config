@@ -13,7 +13,7 @@ set $ws7 "7"
 set $ws8 "8"
 set $ws9 "9:  "
 set $ws0 "10:  "
-set $lock input * xkb_switch_layout 0; exec pkill -SIGRTMIN+5 rstatus; exec swaylock -l -e -i ~/Documents/lock.png
+set $lock input * xkb_switch_layout 0; exec pkill -SIGRTMIN+5 rstatus; exec swaylock -f -l -e -i ~/Documents/lock.png
 
 output eDP-1 pos 0 0 res 1920x1200
 output * render_bit_depth 10
@@ -216,4 +216,4 @@ exec systemctl --user import-environment && systemctl --user start foot-server.s
 
 exec chromium
 exec --no-startup-id mako
-exec --no-startup-id swayidle -w timeout 300 'swaymsg "$lock"' timeout 1200 'swaymsg exec suspend_discharging' timeout 7200 'swaymsg exec systemctl suspend'
+exec --no-startup-id swayidle -w before-sleep 'swaymsg "$lock"' timeout 300 'swaymsg "$lock"' timeout 1200 'swaymsg exec suspend_discharging' timeout 7200 'swaymsg exec systemctl suspend'

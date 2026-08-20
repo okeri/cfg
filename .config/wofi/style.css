@@ -15,11 +15,10 @@ window {
 
 #inner-box {
     margin: 5px;
-    color: #c75f00;
+    color: #5c8093;
 }
 
 flowboxchild:selected {
     background-color: #101010;
     font-weight: bold;
-    color: #ca6405;
 }
