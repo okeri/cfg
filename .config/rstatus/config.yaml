@@ -1,5 +1,5 @@
   - !cpuload
-      interval: 3
+      interval: 5
       invalid: ''
       prefix: ' '
       prefix_color: '#4080a0'
@@ -18,7 +18,7 @@
       prefix_color: '#4080a0'
       separator_width: 12
       suffix: ' °C'
-      interval: 3
+      interval: 5
       color: '#CCCCCC'
       threshold_fix: true
       thresholds:
@@ -147,5 +147,5 @@
       prefix_color: '#4080a0'
       separator_width: 8
       format: '%a, %B, %d  %H:%M'
-      interval: 1
+      interval: 5
       color: '#CCCCCC'

@@ -1,3 +1,4 @@
+;;; -*- lexical-binding: t; -*-
 (require 'package)
 (add-to-list 'package-archives '("melpa" .  "https://melpa.org/packages/"))
 (package-initialize)
@@ -6,6 +7,9 @@
   (package-refresh-contents)
   (package-install 'use-package))
 (require 'use-package)
+
+;;; User variables
+(defvar format-on-save t)
 
 ;;; Helper functions
 
@@ -84,7 +88,6 @@
         compilation-scroll-output t
         use-dialog-box nil
         display-line-numbers-width-start 4
-        format-on-save t
         interprogram-cut-function 'wl-clipboard
         bidi-display-reordering 'left-to-right
         bidi-paragraph-direction 'left-to-right
@@ -144,7 +147,7 @@
   :ensure nil
   :config
   (defun project-update-compile-command ()
-    (when-let ((pr (project-current)))
+    (when-let* ((pr (project-current)))
       (let* ((root (expand-file-name (project-root pr)))
              (build-cmd (cond
                          ((file-exists-p (concat root "build/build.ninja")) (concat "ninja -C " root "build"))
@@ -216,7 +219,7 @@
 (use-package xref
   :bind (("C-x C-r" . xref-find-references)
          ("C-x C-d" . xref-find-definitions)
-         ("C-x C-a" . xref-pop-marker-stack)))
+         ("C-x C-a" . xref-go-back)))
 
 ;;; LSP & diagnostics
 
@@ -224,7 +227,7 @@
   :bind (("C-c C-c"   . eglot-code-actions)
          ("C-c C-r" . eglot-rename))
   :custom
-  (eglot-workspace-configuration '(:java (:configuration (:updateBuildConfiguration "interactive"))))
+  (eglot-workspace-configuration '(:java (:configuration (:updateBuildConfiguration "interactive")):rust-analyzer (:files (:excludeDirs ["target"]))))
   :config
   (add-to-list 'eglot-server-programs
                '((c++-mode c-mode) . ("clangd" "--header-insertion=never"
@@ -358,7 +361,7 @@
 
 ;;; Mode line
 (put 'check-mode-line 'risky-local-variable t)
-(setq check-mode-line '(:eval (check-status)))
+(defvar check-mode-line '(:eval (check-status)))
 
 (advice-add 'vc-mode-line :after
             (lambda (&rest _args)

@@ -1,8 +1,8 @@
 ### Variables
 set $mod Mod4
 
-set $term footclient -N
-set $menu wofi -S drun -t $term -W 600 -H 300 -i
+set $term footclient -N -s $XDG_RUNTIME_DIR/foot.sock
+set $menu wofi -S drun -t "$term" -W 600 -H 300 -i
 set $ws1 "1:  "
 set $ws2 "2:  "
 set $ws3 "3:  "
@@ -53,7 +53,7 @@ bindsym --to-code {
      XF86AudioMute exec acpi_handler MUTE
      XF86AudioRaiseVolume exec acpi_handler VOLUP
      XF86AudioLowerVolume exec acpi_handler VOLDN
-     Shift+XF86AudioMute exec acpi_handler MICMUTE
+     XF86AudioMicMute exec acpi_handler MICMUTE
      Shift+XF86AudioRaiseVolume exec acpi_handler MICVOLUP
      Shift+XF86AudioLowerVolume exec acpi_handler MICVOLDN
 
@@ -68,6 +68,9 @@ bindsym --to-code {
      $mod+p exec pmcpctl pause
      $mod+n exec pmcpctl next
      $mod+b exec pmcpctl prev
+
+     # mako
+     $mod+m exec makoctl mode -t do-not-disturb
      
      # gaps
      $mod+g gaps inner current plus 10
@@ -92,7 +95,7 @@ bindsym --to-code {
 
 #
 # Moving around:
-#
+#m
     # Move your focus around
     bindsym $mod+Left focus left
     bindsym $mod+Right focus right
@@ -180,7 +183,7 @@ input "1739:53208:hid-over-i2c_06CB:CFD8_Touchpad" {
       dwt enabled
 }
 
-input "1165:33755:hid-over-i2c_048D:83DB_Keyboard" {
+input "1165:33755:hid-over-i2c_048D:83DB" {
       xkb_layout us,ru
       xkb_options grp:toggle,compose:rctrl
 }
@@ -216,4 +219,4 @@ exec systemctl --user import-environment && systemctl --user start foot-server.s
 
 exec chromium
 exec --no-startup-id mako
-exec --no-startup-id swayidle -w before-sleep 'swaymsg "$lock"' timeout 300 'swaymsg "$lock"' timeout 1200 'swaymsg exec suspend_discharging' timeout 7200 'swaymsg exec systemctl suspend'
+exec --no-startup-id swayidle -w before-sleep 'swaymsg "$lock"' timeout 300 'swaymsg "$lock"' timeout 600 'swaymsg exec suspend_discharging' timeout 7200 'swaymsg exec systemctl suspend'
